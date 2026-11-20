@@ -54,25 +54,30 @@ font-size: 0.92rem;
 flex-shrink: 0;
 }
 .brand-title { font-weight: 800; font-size: 0.98rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.brand-sub { font-size: 0.73rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brand-sub { font-size: 0.75rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-.top-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.top-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 .icon-btn {
 background: var(--card-2);
 color: var(--text);
 border: 1px solid var(--border);
 border-radius: 10px;
-padding: 7px 10px;
+padding: 7px 11px;
 font-size: 0.85rem;
 font-weight: 700;
 cursor: pointer;
 }
 .icon-btn.lime { background: var(--lime); color: #0e0e0e; border-color: var(--lime); }
 
+/* Sur téléphone : cacher le taux dans la barre du haut et déplacer Notif + Admin dans le menu */
+@media (max-width: 860px) {
+.desktop-only { display: none !important; }
+}
+
 /* App Shell: Responsive Drawer + Desktop Sidebar */
 .app-shell { display: flex; min-height: calc(100vh - 58px); }
 .sidebar {
-width: 255px;
+width: 265px;
 flex-shrink: 0;
 background: var(--sidebar-bg);
 border-right: 1px solid var(--border);
@@ -80,6 +85,7 @@ padding: 14px;
 display: flex;
 flex-direction: column;
 justify-content: space-between;
+overflow-y: auto;
 }
 .nav-list { display: flex; flex-direction: column; gap: 6px; }
 .nav-item {
@@ -94,11 +100,30 @@ font-size: 0.88rem;
 font-weight: 700;
 display: flex;
 align-items: center;
+justify-content: space-between;
 gap: 8px;
 cursor: pointer;
 }
 .nav-item:hover { background: var(--card-2); border-color: var(--border); }
 .nav-item.active { background: var(--lime); color: #0e0e0e; border-color: var(--lime); }
+.nav-pill {
+background: var(--lime);
+color: #0e0e0e;
+font-size: 0.72rem;
+font-weight: 900;
+padding: 2px 7px;
+border-radius: 999px;
+}
+.nav-item.active .nav-pill {
+background: #0e0e0e;
+color: var(--lime);
+}
+
+.sidebar-divider {
+height: 1px;
+background: var(--border);
+margin: 8px 0;
+}
 
 .sidebar-footer {
 border-top: 1px solid var(--border);
@@ -123,9 +148,9 @@ z-index: 50;
 .sidebar {
 position: fixed;
 top: 0;
-left: -275px;
+left: -280px;
 bottom: 0;
-width: 268px;
+width: 272px;
 z-index: 55;
 transition: left 0.22s ease;
 min-height: 100vh;
@@ -283,8 +308,8 @@ margin-bottom: 10px;
 background: #111;
 }
 .pdg-photo {
-width: 84px;
-height: 84px;
+width: 88px;
+height: 88px;
 border-radius: 14px;
 object-fit: cover;
 border: 2px solid var(--lime);
@@ -383,12 +408,14 @@ box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
 <div class="logo-badge">CBK</div>
 <div>
 <div class="brand-title">CBK Chico Business</div>
-<div id="headerSessionInfo" class="brand-sub">Kinshasa • Taux 1$ = 2800 FC</div>
+<!-- Sur PC : affiche le pseudo et le taux en $ ; sur téléphone : masqué pour ne pas encombrer -->
+<div id="headerSessionInfo" class="brand-sub desktop-only">Kinshasa • Taux 1$ = 2800 FC</div>
 </div>
 </div>
-<div class="top-actions">
-<button type="button" id="btnNotif" class="icon-btn" title="Notifications">🔔 <span id="notifCount">0</span></button>
-<button type="button" id="btnAdminToggle" class="icon-btn lime">Admin</button>
+<!-- Sur PC uniquement : raccourcis rapides Notifications et Admin (sur téléphone, ils sont dans le menu près de FAQ & A Propos) -->
+<div class="top-actions desktop-only">
+<button type="button" id="btnNotifDesktop" class="icon-btn" title="Notifications">🔔 <span id="notifCountDesktop">0</span></button>
+<button type="button" id="btnAdminDesktop" class="icon-btn lime">Admin</button>
 </div>
 </header>
 
@@ -398,24 +425,34 @@ box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
 <div>
 <div style="margin-bottom:12px;">
 <div style="font-weight:900; font-size:1rem;">CBK Chico Business</div>
-<div class="muted small">Kinshasa • Mobile & PC</div>
+<div id="sidebarUserLabel" class="muted small">@client_cbk • Kinshasa</div>
 </div>
 <div class="nav-list">
-<button type="button" class="nav-item active" data-view="home">🏠 1. Accueil</button>
-<button type="button" class="nav-item" data-view="about">ℹ️ 2. A Propos</button>
-<button type="button" class="nav-item" data-view="account">👤 3. Créer un compte / Connexion</button>
-<button type="button" class="nav-item" data-view="services">🛠️ 4. Mes Services</button>
-<button type="button" class="nav-item" data-view="payments">💰 5. Mode de paiement & Dons</button>
-<button type="button" class="nav-item" data-view="market">🛒 6. Marché CBK</button>
-<button type="button" class="nav-item" data-view="artists">🎤 7. Artistes & Actifs</button>
-<button type="button" class="nav-item" data-view="faq">❓ 8. FAQ & Contact</button>
-<button type="button" id="adminNavItem" class="nav-item" data-view="admin" style="display:none;">⚡ Espace PDG / Admin</button>
+<button type="button" class="nav-item active" data-view="home"><span>🏠 1. Accueil</span></button>
+<button type="button" class="nav-item" data-view="account"><span>👤 2. Créer un compte / Connexion</span></button>
+<button type="button" class="nav-item" data-view="services"><span>🛠️ 3. Mes Services</span></button>
+<button type="button" class="nav-item" data-view="payments"><span>💰 4. Mode de paiement & Dons</span></button>
+<button type="button" class="nav-item" data-view="market"><span>🛒 5. Marché CBK</span></button>
+<button type="button" class="nav-item" data-view="artists"><span>🎤 6. Artistes & Actifs</span></button>
+
+<div class="sidebar-divider"></div>
+
+<!-- Regroupement demandé : A Propos, FAQ, Notifications et Admin au même endroit -->
+<button type="button" class="nav-item" data-view="about"><span>ℹ️ 7. A Propos</span></button>
+<button type="button" class="nav-item" data-view="faq"><span>❓ 8. FAQ & Contact</span></button>
+<button type="button" id="menuNotifBtn" class="nav-item">
+<span>🔔 Notifications</span>
+<span id="notifCountMenu" class="nav-pill">0</span>
+</button>
+<button type="button" id="menuAdminBtn" class="nav-item">
+<span id="menuAdminLabel">🔐 Espace Admin</span>
+</button>
 </div>
 </div>
 
 <div class="sidebar-footer">
 <button type="button" class="btn btn-sm" style="width:100%; margin-bottom:8px;" onclick="logoutToAccount()">🚪 Déconnexion</button>
-<div>Version 1.2.4 - Kinshasa</div>
+<div>Version 1.2.5 - Kinshasa</div>
 </div>
 </aside>
 
@@ -462,29 +499,11 @@ Accompagnement business, production studio, démarches et services rapides à Ki
 </div>
 </section>
 
-<!-- 2. A PROPOS -->
-<section id="view-about" class="view">
-<div class="page-header">
-<h1 class="page-title">A Propos</h1>
-<p class="page-desc">Présentation de Chico Business Kinshasa (CBK) et de sa vision.</p>
-</div>
-
-<div class="card card-lime">
-<h3 class="section-title">Chico Business Kinshasa (CBK)</h3>
-<p class="muted" style="margin-bottom:10px;">
-<strong>CBK</strong> est une plateforme de services et de gestion d'activités basée à <strong>Kinshasa</strong>, dirigée par le PDG <strong>CHICO MOFONGA</strong> au sein de <strong>Chico Business Production</strong>.
-</p>
-<p class="muted">
-Elle réunit dans un seul espace la gestion de portefeuille (USD et FC), les dons communautaires, l'assistance passeport rapide, la réservation studio (vidéo, photo, audio), le marché d'articles vérifiés et la mise en valeur des artistes et utilisateurs actifs du mois.
-</p>
-</div>
-</section>
-
-<!-- 3. CRÉER UN COMPTE / CONNEXION & KYC -->
+<!-- 2. CRÉER UN COMPTE / CONNEXION & KYC -->
 <section id="view-account" class="view">
 <div class="page-header">
 <h1 class="page-title">Créer un compte / Connexion</h1>
-<p class="page-desc">Fenêtre dédiée à l'inscription d'un nouveau compte, à la connexion et à la vérification KYC.</p>
+<p class="page-desc">Inscription d'un nouveau compte, connexion et vérification KYC.</p>
 </div>
 
 <div class="grid-2">
@@ -534,7 +553,7 @@ Elle réunit dans un seul espace la gestion de portefeuille (USD et FC), les don
 </div>
 </section>
 
-<!-- 4. MES SERVICES (PASSEPORT & STUDIO) -->
+<!-- 3. MES SERVICES (PASSEPORT & STUDIO) -->
 <section id="view-services" class="view">
 <div class="page-header">
 <h1 class="page-title">Mes Services</h1>
@@ -582,7 +601,7 @@ Elle réunit dans un seul espace la gestion de portefeuille (USD et FC), les don
 </div>
 </section>
 
-<!-- 5. MODE DE PAIEMENT, PORTEFEUILLE USD/FC & DONS -->
+<!-- 4. MODE DE PAIEMENT, PORTEFEUILLE USD/FC & DONS -->
 <section id="view-payments" class="view">
 <div class="page-header">
 <h1 class="page-title">Mode de paiement & Dons</h1>
@@ -683,7 +702,7 @@ Ajoutez un don avec le nom du donateur, le montant en USD/FC et un message.
 </div>
 </section>
 
-<!-- 6. MARCHÉ CBK -->
+<!-- 5. MARCHÉ CBK -->
 <section id="view-market" class="view">
 <div class="page-header">
 <h1 class="page-title">Marché CBK</h1>
@@ -696,7 +715,7 @@ Ajoutez un don avec le nom du donateur, le montant en USD/FC et un message.
 </div>
 </section>
 
-<!-- 7. ARTISTES & UTILISATEURS ACTIFS -->
+<!-- 6. ARTISTES & UTILISATEURS ACTIFS -->
 <section id="view-artists" class="view">
 <div class="page-header">
 <h1 class="page-title">Artistes & Actifs du mois</h1>
@@ -711,6 +730,24 @@ Ajoutez un don avec le nom du donateur, le montant en USD/FC et un message.
 <div id="artistsList" class="grid-2"></div>
 </section>
 
+<!-- 7. A PROPOS -->
+<section id="view-about" class="view">
+<div class="page-header">
+<h1 class="page-title">A Propos</h1>
+<p class="page-desc">Présentation de Chico Business Kinshasa (CBK) et de sa vision.</p>
+</div>
+
+<div class="card card-lime">
+<h3 class="section-title">Chico Business Kinshasa (CBK)</h3>
+<p class="muted" style="margin-bottom:10px;">
+<strong>CBK</strong> est une plateforme de services et de gestion d'activités basée à <strong>Kinshasa</strong>, dirigée par le PDG <strong>CHICO MOFONGA</strong> au sein de <strong>Chico Business Production</strong>.
+</p>
+<p class="muted">
+Elle réunit dans un seul espace la gestion de portefeuille (USD et FC), les dons communautaires, l'assistance passeport rapide, la réservation studio (vidéo, photo, audio), le marché d'articles vérifiés et la mise en valeur des artistes et utilisateurs actifs du mois.
+</p>
+</div>
+</section>
+
 <!-- 8. FAQ & CONTACT -->
 <section id="view-faq" class="view">
 <div class="page-header">
@@ -722,7 +759,7 @@ Ajoutez un don avec le nom du donateur, le montant en USD/FC et un message.
 <div class="small" style="display:grid; gap:12px;">
 <div>
 <strong>Comment créer un compte ou me connecter ?</strong>
-<p class="muted">Ouvrez « 3. Créer un compte / Connexion » dans le menu pour inscrire un nouveau compte ou vous connecter.</p>
+<p class="muted">Ouvrez « Créer un compte / Connexion » dans le menu pour inscrire un nouveau compte ou vous connecter.</p>
 </div>
 <div>
 <strong>Quels sont les numéros de paiement officiels ?</strong>
@@ -730,11 +767,11 @@ Ajoutez un don avec le nom du donateur, le montant en USD/FC et un message.
 </div>
 <div>
 <strong>Comment faire un don avec le nom du donateur ?</strong>
-<p class="muted">Dans « 5. Mode de paiement & Dons », cliquez sur « Faire un don », entrez le nom du donateur, le montant (USD ou FC) et son message.</p>
+<p class="muted">Dans « Mode de paiement & Dons », cliquez sur « Faire un don », entrez le nom du donateur, le montant (USD ou FC) et son message.</p>
 </div>
 <div>
 <strong>Comment commenter et répondre sur les artistes ?</strong>
-<p class="muted">Dans « 7. Artistes & Actifs », écrivez un commentaire puis cliquez directement dessus pour répondre.</p>
+<p class="muted">Dans « Artistes & Actifs », écrivez un commentaire puis cliquez directement dessus pour répondre.</p>
 </div>
 <div>
 <strong>Comment contacter l'équipe ?</strong>
@@ -750,26 +787,39 @@ Ajoutez un don avec le nom du donateur, le montant en USD/FC et un message.
 <div class="row-between">
 <div>
 <h1 class="page-title">⚡ Espace PDG / Admin</h1>
-<p class="page-desc">Gestion complète des soldes, taux USD/FC, validations, produits, artistes, actifs du mois, dons, utilisateurs et messages privés.</p>
+<p class="page-desc">Gestion des soldes, taux USD/FC, photos (Accueil, Produits, Artistes), validations, dons et messages privés.</p>
 </div>
 <button type="button" class="btn btn-sm btn-danger" onclick="logoutAdmin()">Quitter Admin</button>
 </div>
 </div>
 
+<div class="grid-2">
 <div class="card card-lime">
 <form id="rateForm">
 <label>Taux du jour (1 USD en FC)</label>
 <div class="row-gap">
 <input id="adminRateInput" type="number" step="1" min="1" style="margin:0; flex:1;" required />
-<button type="submit" class="btn btn-lime">Mettre à jour le taux</button>
+<button type="submit" class="btn btn-lime">Mettre à jour</button>
 </div>
 </form>
 <div class="row-gap" style="margin-top:12px;">
-<button type="button" class="btn btn-sm" onclick="exportBackup()">Exporter sauvegarde JSON</button>
+<button type="button" class="btn btn-sm" onclick="exportBackup()">Exporter JSON</button>
 <label class="btn btn-sm" style="margin:0;">
 Importer JSON <input type="file" accept=".json" style="display:none;" onchange="importBackup(event)" />
 </label>
-<button type="button" class="btn btn-sm btn-danger" onclick="resetDemoData()">Réinitialiser données</button>
+<button type="button" class="btn btn-sm btn-danger" onclick="resetDemoData()">Réinitialiser</button>
+</div>
+</div>
+
+<div class="card">
+<h3 class="section-title">🖼️ Photo PDG / Accueil</h3>
+<label>Choisir une photo depuis la galerie / le PC</label>
+<input type="file" accept="image/*" onchange="updatePdgPhotoFromFile(event)" />
+<label>Ou coller un lien URL image</label>
+<div class="row-gap">
+<input id="pdgUrlInput" type="text" placeholder="https://..." style="margin:0; flex:1;" />
+<button type="button" class="btn btn-sm btn-lime" onclick="updatePdgPhotoFromUrl()">Enregistrer</button>
+</div>
 </div>
 </div>
 
@@ -818,7 +868,7 @@ Importer JSON <input type="file" accept=".json" style="display:none;" onchange="
 </div>
 
 <div class="card">
-<h3 class="section-title">🛒 Ajouter un produit au Marché</h3>
+<h3 class="section-title">🛒 Publier & Gérer les produits du Marché</h3>
 <form id="adminProductForm">
 <label>Nom du produit</label>
 <input id="prodName" type="text" placeholder="Ex: Pack Studio / Accessoire CBK" required />
@@ -837,12 +887,19 @@ Importer JSON <input type="file" accept=".json" style="display:none;" onchange="
 </div>
 <label>Badge</label>
 <input id="prodBadge" type="text" value="Vérifié CBK" />
-<label>Image (URL optionnelle)</label>
+<label>Photo de l'article (depuis votre galerie / PC)</label>
+<input id="prodFile" type="file" accept="image/*" />
+<label>Ou lien URL de l'image (optionnel)</label>
 <input id="prodImg" type="text" placeholder="https://..." />
 <label>Description</label>
 <textarea id="prodDesc" rows="2"></textarea>
 <button type="submit" class="btn btn-lime">Publier le produit</button>
 </form>
+
+<div style="margin-top:14px;">
+<strong class="small">Produits publiés (changer photo ou supprimer) :</strong>
+<div id="adminProductsManageList"></div>
+</div>
 <div id="adminOrdersList" style="margin-top:14px;"></div>
 </div>
 
@@ -854,10 +911,13 @@ Importer JSON <input type="file" accept=".json" style="display:none;" onchange="
 <input id="artName" type="text" required />
 <label>Style / Catégorie</label>
 <input id="artGenre" type="text" required />
-<label>Photo (URL optionnelle)</label>
+<label>Photo de l'artiste (galerie / PC)</label>
+<input id="artFile" type="file" accept="image/*" />
+<label>Ou lien URL image (optionnel)</label>
 <input id="artImg" type="text" placeholder="https://..." />
 <button type="submit" class="btn btn-lime">Publier l'artiste</button>
 </form>
+<div id="adminArtistsManageList" style="margin-top:10px;"></div>
 </div>
 
 <div class="card">
@@ -980,13 +1040,14 @@ Contactez l'équipe de <strong>Chico Mofonga</strong> :
 
 <script>
 const ADMIN_CODE = "Chico899";
-const STORAGE_KEY = "cbk_kinshasa_state_v4";
+const STORAGE_KEY = "cbk_kinshasa_state_v5";
 
 const DEFAULT_STATE = {
 rateUsdToFc: 2800,
 isAdmin: false,
 currentUserId: "u_client_1",
 activeView: "home",
+pdgPhoto: "https://via.placeholder.com/150/1a1a1a/D2F801?text=PDG+CBK",
 users: [
 {
 id: "u_client_1",
@@ -1030,8 +1091,37 @@ return structuredClone(DEFAULT_STATE);
 }
 
 function saveState() {
+try {
 localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+} catch (e) {
+showToast("Espace de stockage plein. Supprimez d'anciennes images.");
+}
 renderAll();
+}
+
+/* Compression d'image pour garder les photos des articles & artistes sans perte */
+function readAndCompressImage(file) {
+return new Promise((resolve) => {
+if (!file) return resolve("");
+const reader = new FileReader();
+reader.onload = (ev) => {
+const img = new Image();
+img.onload = () => {
+const canvas = document.createElement("canvas");
+const maxW = 720;
+const scale = Math.min(1, maxW / img.width);
+canvas.width = Math.round(img.width * scale);
+canvas.height = Math.round(img.height * scale);
+const ctx = canvas.getContext("2d");
+ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+resolve(canvas.toDataURL("image/jpeg", 0.78));
+};
+img.onerror = () => resolve(ev.target.result || "");
+img.src = ev.target.result;
+};
+reader.onerror = () => resolve("");
+reader.readAsDataURL(file);
+});
 }
 
 function showToast(msg) {
@@ -1097,7 +1187,7 @@ closeDrawer();
 saveState();
 }
 
-document.querySelectorAll(".nav-item").forEach(btn => {
+document.querySelectorAll(".nav-item[data-view]").forEach(btn => {
 btn.addEventListener("click", () => switchView(btn.dataset.view));
 });
 
@@ -1105,13 +1195,24 @@ btn.addEventListener("click", () => switchView(btn.dataset.view));
 function openModal(id) { document.getElementById(id).classList.add("open"); }
 function closeModal(id) { document.getElementById(id).classList.remove("open"); }
 document.getElementById("fabChat").addEventListener("click", () => openModal("chatModal"));
-document.getElementById("btnNotif").addEventListener("click", () => { renderNotifs(); openModal("notifModal"); });
 
-/* Admin Auth */
-document.getElementById("btnAdminToggle").addEventListener("click", () => {
+/* Notifications (PC + Menu Mobile à côté de FAQ & A Propos) */
+function openNotifModal() {
+closeDrawer();
+renderNotifs();
+openModal("notifModal");
+}
+document.getElementById("btnNotifDesktop").addEventListener("click", openNotifModal);
+document.getElementById("menuNotifBtn").addEventListener("click", openNotifModal);
+
+/* Admin (PC + Menu Mobile à côté de FAQ & A Propos) */
+function handleAdminAccessClick() {
+closeDrawer();
 if (state.isAdmin) switchView("admin");
 else openModal("adminAuthModal");
-});
+}
+document.getElementById("btnAdminDesktop").addEventListener("click", handleAdminAccessClick);
+document.getElementById("menuAdminBtn").addEventListener("click", handleAdminAccessClick);
 
 document.getElementById("adminPinForm").addEventListener("submit", (e) => {
 e.preventDefault();
@@ -1137,6 +1238,27 @@ function logoutToAccount() {
 state.isAdmin = false;
 switchView("account");
 showToast("Ouverture de la page Compte / Connexion.");
+}
+
+/* PDG Photo Updates */
+async function updatePdgPhotoFromFile(event) {
+const file = event.target.files[0];
+if (!file) return;
+const dataUrl = await readAndCompressImage(file);
+if (dataUrl) {
+state.pdgPhoto = dataUrl;
+showToast("Photo de l'Accueil mise à jour !");
+saveState();
+}
+}
+
+function updatePdgPhotoFromUrl() {
+const url = document.getElementById("pdgUrlInput").value.trim();
+if (!url) return;
+state.pdgPhoto = url;
+document.getElementById("pdgUrlInput").value = "";
+showToast("Photo de l'Accueil mise à jour !");
+saveState();
 }
 
 /* Registration & Account Switch */
@@ -1508,24 +1630,47 @@ showToast("Utilisateur supprimé.");
 saveState();
 }
 
-document.getElementById("adminProductForm").addEventListener("submit", (e) => {
+/* Produits : publication avec photo fichier OU URL + mise à jour photo + suppression */
+document.getElementById("adminProductForm").addEventListener("submit", async (e) => {
 e.preventDefault();
+const fileInput = document.getElementById("prodFile");
+let imgSrc = document.getElementById("prodImg").value.trim();
+if (fileInput.files && fileInput.files[0]) {
+imgSrc = await readAndCompressImage(fileInput.files[0]);
+}
+
 const prod = {
 id: "p_" + Date.now(),
 name: document.getElementById("prodName").value.trim(),
 price: parseFloat(document.getElementById("prodPrice").value),
 currency: document.getElementById("prodCurrency").value,
 badge: document.getElementById("prodBadge").value.trim() || "Vérifié CBK",
-img: document.getElementById("prodImg").value.trim(),
+img: imgSrc,
 desc: document.getElementById("prodDesc").value.trim(),
 likes: 0
 };
 state.products.unshift(prod);
 pushNotif(`🛒 Nouveau produit au Marché : ${prod.name} (${formatMoney(prod.price, prod.currency)})`);
 e.target.reset();
-showToast("Produit publié !");
+showToast("Produit et photo publiés !");
 saveState();
 });
+
+async function changeProductPhoto(prodId, event) {
+const file = event.target.files[0];
+if (!file) return;
+const prod = state.products.find(p => p.id === prodId);
+if (!prod) return;
+prod.img = await readAndCompressImage(file);
+showToast("Photo de l'article mise à jour !");
+saveState();
+}
+
+function deleteProduct(prodId) {
+state.products = state.products.filter(p => p.id !== prodId);
+showToast("Article retiré.");
+saveState();
+}
 
 function updateOrderStatus(orderId, status) {
 const ord = state.orders.find(o => o.id === orderId);
@@ -1535,13 +1680,20 @@ showToast("Statut commande mis à jour.");
 saveState();
 }
 
-document.getElementById("adminArtistForm").addEventListener("submit", (e) => {
+/* Artistes : publication avec photo fichier OU URL + mise à jour photo + suppression */
+document.getElementById("adminArtistForm").addEventListener("submit", async (e) => {
 e.preventDefault();
+const fileInput = document.getElementById("artFile");
+let imgSrc = document.getElementById("artImg").value.trim();
+if (fileInput.files && fileInput.files[0]) {
+imgSrc = await readAndCompressImage(fileInput.files[0]);
+}
+
 const art = {
 id: "art_" + Date.now(),
 name: document.getElementById("artName").value.trim(),
 genre: document.getElementById("artGenre").value.trim(),
-img: document.getElementById("artImg").value.trim(),
+img: imgSrc,
 comments: []
 };
 state.artists.unshift(art);
@@ -1550,6 +1702,22 @@ e.target.reset();
 showToast("Artiste publié !");
 saveState();
 });
+
+async function changeArtistPhoto(artId, event) {
+const file = event.target.files[0];
+if (!file) return;
+const art = state.artists.find(a => a.id === artId);
+if (!art) return;
+art.img = await readAndCompressImage(file);
+showToast("Photo de l'artiste mise à jour !");
+saveState();
+}
+
+function deleteArtist(artId) {
+state.artists = state.artists.filter(a => a.id !== artId);
+showToast("Artiste retiré.");
+saveState();
+}
 
 document.getElementById("adminActiveUsersForm").addEventListener("submit", (e) => {
 e.preventDefault();
@@ -1638,10 +1806,18 @@ const unreadCount = state.notifications.filter(n => !n.read).length;
 
 document.getElementById("headerSessionInfo").textContent =
 `@${user.username} • Taux 1$ = ${state.rateUsdToFc} FC`;
-document.getElementById("notifCount").textContent = unreadCount;
-document.getElementById("btnAdminToggle").textContent = state.isAdmin ? "Admin ACTIF" : "Admin";
-document.getElementById("adminNavItem").style.display = state.isAdmin ? "flex" : "none";
+document.getElementById("sidebarUserLabel").textContent =
+`@${user.username} • Kinshasa`;
+
+document.getElementById("notifCountDesktop").textContent = unreadCount;
+document.getElementById("notifCountMenu").textContent = unreadCount;
+
+document.getElementById("btnAdminDesktop").textContent = state.isAdmin ? "Admin ACTIF" : "Admin";
+document.getElementById("menuAdminLabel").textContent = state.isAdmin ? "⚡ Espace Admin (Actif)" : "🔐 Espace Admin";
+document.getElementById("menuAdminBtn").classList.toggle("active", state.activeView === "admin");
+
 document.getElementById("exchangeRateBadge").textContent = `1 USD = ${state.rateUsdToFc} FC`;
+document.getElementById("pdgImg").src = state.pdgPhoto || "https://via.placeholder.com/150/1a1a1a/D2F801?text=PDG+CBK";
 
 // Wallet
 document.getElementById("balUsd").textContent = formatMoney(user.usd, "USD");
@@ -1704,7 +1880,7 @@ ${p.img ? `<img class="media-preview" src="${p.img}" alt="${p.name}" />` : ""}
 <div class="row-gap" style="margin-top:10px;">
 <button type="button" class="btn btn-sm btn-lime" onclick="orderProduct('${p.id}')">Commander</button>
 <button type="button" class="btn btn-sm" onclick="likeProduct('${p.id}')">👍 Aimer (${p.likes || 0})</button>
-<button type="button" class="btn btn-sm" onclick='shareProduct(${JSON.stringify(p).replace(/'/g, "&apos;")})'>🔗 Partager</button>
+<button type="button" class="btn btn-sm" onclick='shareProduct(${JSON.stringify({ name: p.name, price: p.price, currency: p.currency }).replace(/'/g, "&apos;")})'>🔗 Partager</button>
 </div>
 </div>
 `).join("")
@@ -1860,6 +2036,38 @@ document.getElementById("adminUsersList").innerHTML = state.users.map(u => `
 </div>
 `).join("");
 
+document.getElementById("adminProductsManageList").innerHTML = state.products.length
+? state.products.map(p => `
+<div class="list-box">
+<div class="row-between">
+<div><strong>${p.name}</strong> — ${formatMoney(p.price, p.currency)}</div>
+<div class="row-gap">
+<label class="btn btn-sm" style="margin:0;">
+📷 Photo <input type="file" accept="image/*" style="display:none;" onchange="changeProductPhoto('${p.id}', event)" />
+</label>
+<button type="button" class="btn btn-sm btn-danger" onclick="deleteProduct('${p.id}')">Supprimer</button>
+</div>
+</div>
+</div>
+`).join("")
+: `<p class="muted small">Aucun produit publié.</p>`;
+
+document.getElementById("adminArtistsManageList").innerHTML = state.artists.length
+? state.artists.map(a => `
+<div class="list-box">
+<div class="row-between">
+<div><strong>${a.name}</strong> (${a.genre})</div>
+<div class="row-gap">
+<label class="btn btn-sm" style="margin:0;">
+📷 Photo <input type="file" accept="image/*" style="display:none;" onchange="changeArtistPhoto('${a.id}', event)" />
+</label>
+<button type="button" class="btn btn-sm btn-danger" onclick="deleteArtist('${a.id}')">Supprimer</button>
+</div>
+</div>
+</div>
+`).join("")
+: "";
+
 document.getElementById("adminOrdersList").innerHTML = state.orders.length
 ? state.orders.map(o => `
 <div class="list-box">
@@ -1908,3 +2116,4 @@ renderAll();
 </script>
 </body>
 </html>
+
