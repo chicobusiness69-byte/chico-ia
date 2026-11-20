@@ -558,10 +558,12 @@ Pour chaque rubrique, vous pouvez importer une photo (avec recadrage) OU coller 
 
 <script>
 // =========================================================================
-// 1. CONFIGURATION SUPABASE (Connecté au projet CBK Chico Business)
+// 1. CONFIGURATION SUPABASE (Optionnel au début : fonctionne aussi en local)
+// Remplacez SUPABASE_URL et SUPABASE_ANON_KEY par vos clés Supabase pour
+// activer la synchronisation base de données sur tous les appareils.
 // =========================================================================
-const SUPABASE_URL = "https://sluyxkduglypjvgunxxm.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_ku3bD0z7vYTU4lw8Z3b8RQ_FQ_AfsFD";
+const SUPABASE_URL = "";
+const SUPABASE_ANON_KEY = "";
 const SUPABASE_TABLE = "cbk_platform_state";
 const SUPABASE_ROW_ID = "main";
 const LOCAL_STORAGE_KEY = "CBK_CHICO_BUSINESS_STATE_V1";
