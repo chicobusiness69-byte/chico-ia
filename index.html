@@ -13,17 +13,23 @@ label{font-weight:700;font-size:14px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .service{background:#F9FAFB;border-radius:14px;padding:14px;text-align:center;cursor:pointer}
 .hidden{display:none}
-.menu{position:fixed;top:0;left:0;width:260px;height:100%;background:white;z-index:99;padding:20px;box-shadow:5px 0 20px #0003;transform:translateX(-110%);transition:.3s}
+.menu{position:fixed;top:0;left:0;width:280px;height:100%;background:white;z-index:99;padding:20px;box-shadow:5px 0 20px #0003;transform:translateX(-110%);transition:.3s}
 .menu.open{transform:none}.menu a{display:block;padding:13px;border-radius:10px;text-decoration:none;color:#111;font-weight:700}
 .menu a:hover{background:#FEF3C7}
+.close-btn{background:#111827;color:white;border:0;padding:10px 14px;border-radius:10px;font-weight:800;width:100%;margin-bottom:10px;cursor:pointer}
+.back-btn{background:#eee;border:0;padding:10px 14px;border-radius:10px;font-weight:800;margin-bottom:10px;cursor:pointer}
 .pay{display:flex;gap:10px;align-items:center;background:#F9FAFB;padding:12px;border-radius:12px;margin-top:8px}
 .badge{padding:9px 10px;border-radius:10px;color:white;font-weight:900;min-width:75px;text-align:center}
 .logo-img{width:75px;height:75px;border-radius:18px;object-fit:cover}
+.overlay{position:fixed;inset:0;background:#0008;display:none;z-index:90}.overlay.show{display:block}
 </style></head>
 <body>
 
-<!-- MENU ☰ -->
+<div id="overlay" class="overlay" onclick="closeMenu()"></div>
+
+<!-- MENU AVEC BOUTON RETOUR -->
 <div id="menu" class="menu">
+<button class="close-btn" onclick="closeMenu()">❌ Fermer le menu</button>
 <div style="display:flex;gap:10px;align-items:center">
 <img src="logo.png" onerror="this.style.display='none'" style="width:45px;height:45px;border-radius:12px">
 <b>CBK Chico<br>Business</b>
@@ -36,68 +42,59 @@ label{font-weight:700;font-size:14px}
 <p style="font-size:11px;color:#888">Version 1.2.4 - Kinshasa</p>
 </div>
 
-<div class="top"><span onclick="toggleMenu()" style="font-size:24px;cursor:pointer">☰</span><div class="logo">CBK<span>.</span></div><span>🔔</span></div>
+<div class="top"><span onclick="openMenu()" style="font-size:24px;cursor:pointer">☰</span><div class="logo">CBK<span>.</span></div><span>🔔</span></div>
 
-<!-- PAGE 1 : CREER COMPTE - COMME SUR LA PHOTO -->
 <div id="page-auth">
 <div class="card" style="text-align:center">
 <img src="logo.png" onerror="this.outerHTML='<div style=\'font-size:50px\'>🛡️</div>'" class="logo-img">
 <h1 style="margin:8px 0 4px">CBK Chico Business<br>Kinshasa</h1>
 <p style="font-size:13px;color:#666;margin:0 0 14px">Créer votre compte pour commencer</p>
 <div style="text-align:left">
-<label>Nom complet</label>
-<input id="nom" placeholder="Ex: Jean Mputu">
-<label>Email / Mail</label>
-<input id="mail" type="email" placeholder="exemple@email.com">
-<label>Numéro WhatsApp</label>
-<input id="phone" placeholder="+243 8XX XXX XXX">
-<label>Mot de passe</label>
-<input id="pass" type="password" placeholder="••••••••">
+<label>Nom complet</label><input id="nom" placeholder="Ex: Jean Mputu">
+<label>Email / Mail</label><input id="mail" type="email" placeholder="exemple@email.com">
+<label>Numéro WhatsApp</label><input id="phone" placeholder="+243 8XX XXX XXX">
+<label>Mot de passe</label><input id="pass" type="password" placeholder="••••••••">
 </div>
 <button class="btn btn-yellow" onclick="creerCompte()">Créer un compte</button>
 <button class="btn btn-dark" onclick="entrer()" style="background:white;color:black;border:1px solid #111">Se connecter</button>
-<p style="font-size:11px;color:#888">En créant un compte, vous acceptez les Conditions d'utilisation et la Politique de confidentialité</p>
+<p style="font-size:11px;color:#888">En créant un compte, vous acceptez les Conditions d'utilisation</p>
 </div>
 </div>
 
-<!-- PAGE 2 : TABLEAU DE BORD -->
 <div id="page-app" class="hidden">
 <div id="sec-accueil">
 <div class="card"><small>Bonjour 👋</small><h2 id="hello" style="margin:4px 0">Bonjour, Jean</h2>
-<div style="background:#111827;color:white;border-radius:14px;padding:16px"><small>Total Payé</small><h2 style="margin:5px 0">1 250 000 CDF</h2><small>↑ +12% vs septembre</small></div>
-</div>
+<div style="background:#111827;color:white;border-radius:14px;padding:16px"><small>Total Payé</small><h2 style="margin:5px 0">1 250 000 CDF</h2><small>↑ +12% vs septembre</small></div></div>
 <div class="card"><h3>Accès rapides</h3><div class="grid">
 <div class="service" onclick="go('services')" style="background:#FACC15">🗂<br><b>Services</b></div>
 <div class="service" onclick="go('paiements')" style="background:#22C55E;color:white">💰<br><b>Payer</b></div>
 <div class="service" onclick="go('faq')">❓<br><b>FAQ</b></div>
 <div class="service" onclick="openWA()" style="background:#22C55E;color:white">💬<br><b>WhatsApp</b></div>
-</div></div>
-</div>
+</div></div></div>
 
-<div id="sec-services" class="hidden"><div class="card"><h2>Mes Services</h2>
+<div id="sec-services" class="hidden"><div class="card"><button class="back-btn" onclick="go('accueil')">⏪ Retour</button><h2>Mes Services</h2>
 <div class="service" style="text-align:left">📦 <b>Livraison Rapide</b><br><small>Kinshasa - 5 000 CDF</small></div><br>
 <div class="service" style="text-align:left">💻 <b>Service Digital</b><br><small>Création, Design, Aide</small></div><br>
-<div class="service" style="text-align:left">🛒 <b>Commande</b><br><small>Sur WhatsApp</small></div>
-</div></div>
+<div class="service" style="text-align:left">🛒 <b>Commande</b><br><small>Sur WhatsApp</small></div></div></div>
 
-<div id="sec-paiements" class="hidden"><div class="card"><h2>Mes Paiements</h2>
+<div id="sec-paiements" class="hidden"><div class="card"><button class="back-btn" onclick="go('accueil')">⏪ Retour</button><h2>Mes Paiements</h2>
 <div class="pay"><span class="badge" style="background:#4CAF50">M-PESA</span><div><b>M-Pesa</b><br>+243 815 897 990</div></div>
 <div class="pay"><span class="badge" style="background:#E40000">airtel</span><div><b>Airtel Money</b><br>+243 983 995 019</div></div>
 <div class="pay"><span class="badge" style="background:#FF7900">Orange</span><div><b>Orange Money</b><br>0859312214</div></div>
-<button class="btn" style="background:#22C55E;color:white" onclick="openWA()">J'ai payé - Confirmer sur WhatsApp</button>
-</div></div>
+<button class="btn" style="background:#22C55E;color:white" onclick="openWA()">J'ai payé - Confirmer sur WhatsApp</button></div></div>
 
-<div id="sec-faq" class="hidden"><div class="card"><h2>FAQ</h2>
+<div id="sec-faq" class="hidden"><div class="card"><button class="back-btn" onclick="go('accueil')">⏪ Retour</button><h2>FAQ</h2>
 <b>Comment payer ?</b><p>Choisis M-Pesa / Airtel / Orange, envoie l'argent, clique "J'ai payé".</p>
 <b>Combien de temps ?</b><p>Quelques minutes après confirmation WhatsApp.</p>
-<b>Où êtes-vous ?</b><p>Kinshasa, RDC.</p>
-</div></div>
+<b>Où êtes-vous ?</b><p>Kinshasa, RDC.</p></div></div>
 </div>
 
 <script>
-function toggleMenu(){document.getElementById('menu').classList.toggle('open')}
+function openMenu(){document.getElementById('menu').classList.add('open');document.getElementById('overlay').classList.add('show')}
+function closeMenu(){document.getElementById('menu').classList.remove('open');document.getElementById('overlay').classList.remove('show')}
+function toggleMenu(){if(document.getElementById('menu').classList.contains('open')) closeMenu(); else openMenu();}
 function go(sec){
- document.getElementById('menu').classList.remove('open');
+ closeMenu();
  document.getElementById('page-auth').classList.add('hidden');
  document.getElementById('page-app').classList.remove('hidden');
  ['accueil','services','paiements','faq'].forEach(s=>document.getElementById('sec-'+s).classList.add('hidden'));
@@ -105,14 +102,10 @@ function go(sec){
  window.scrollTo(0,0);
 }
 function creerCompte(){
- let n=document.getElementById('nom').value;
- let m=document.getElementById('mail').value;
- if(!n) return alert('Mets ton nom');
- if(!m) return alert('Mets ton Email / Mail');
- localStorage.setItem('cbk_nom',n);
- localStorage.setItem('cbk_mail',m);
- document.getElementById('hello').innerText='Bonjour, '+n;
- go('accueil');
+ let n=document.getElementById('nom').value; let m=document.getElementById('mail').value;
+ if(!n) return alert('Mets ton nom'); if(!m) return alert('Mets ton Email / Mail');
+ localStorage.setItem('cbk_nom',n); localStorage.setItem('cbk_mail',m);
+ document.getElementById('hello').innerText='Bonjour, '+n; go('accueil');
 }
 function entrer(){let n=localStorage.getItem('cbk_nom')||'Bienvenue'; document.getElementById('hello').innerText='Bonjour, '+n; go('accueil');}
 function logout(){localStorage.removeItem('cbk_nom'); location.reload();}
