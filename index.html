@@ -100,7 +100,34 @@ input,select{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-r
 </div>
 
 </div>
-
+<!-- PAIEMENTS + FAQ + AIDE -->
+<div class="big" style="background:#00A651;">
+<h3>💳 MOYENS DE PAIEMENT</h3>
+<p>Paie facile à Kinshasa, choisis ton réseau :</p>
+</div>
+<div style="height:12px"></div>
+<div class="grid">
+<div class="card" onclick="payer('Airtel Money')"><span>🔴</span><h3>Airtel Money</h3><p>Numéro : +243 ___<br>Clique pour payer</p></div>
+<div class="card" onclick="payer('Orange Money')"><span>🟠</span><h3>Orange Money</h3><p>Numéro : +243 ___<br>Clique pour payer</p></div>
+<div class="card" onclick="payer('M-Pesa')"><span>🟢</span><h3>M-Pesa</h3><p>Numéro : +243 ___<br>Clique pour payer</p></div>
+<div class="card" onclick="payer('Cash')"><span>💵</span><h3>Cash</h3><p>Paie en main à Kinshasa</p></div>
+</div>
+<div class="big" style="background:#0B3D91;">
+<h3>❓ FAQ - QUESTIONS FRÉQUENTES</h3>
+<p>Clique sur une question pour voir la réponse</p>
+</div>
+<div style="background:white;margin:12px 0;padding:15px;border-radius:15px;">
+<p onclick="alert('Tu cliques sur Créer Compte en haut, tu mets ton nom, c est gratuit !')"><b>1. Comment créer un compte ? →</b></p>
+<p onclick="alert('Tu choisis Airtel Money, Orange Money, M-Pesa ou Cash.')"><b>2. Comment payer ? →</b></p>
+<p onclick="alert('Passeport : tu remplis le formulaire Passeport Rapide, on te rappelle.')"><b>3. Comment demander un Passeport ? →</b></p>
+<p onclick="alert('Studio : tu choisis Vidéo ou Photo, tu choisis le jour.')"><b>4. Comment réserver le Studio ? →</b></p>
+</div>
+<div class="big" style="background:#FF6B00;" onclick="aideWhatsApp()">
+<h3>🆘 AIDE & CONTACT</h3>
+<p>Besoin d'aide ? Parle directement à Chico !</p>
+<button style="background:white;color:#FF6B00;">Parler sur WhatsApp →</button>
+</div>
+<div style="height:12px"></div>
 <!-- AUTRES PAGES SIMPLES -->
 <div id="pageBoutique" class="section"><h2>🛍️ Boutique</h2><p>Produits de Kinshasa bientôt ici.</p><button class="btn-blue" onclick="showPage('accueil')">← Retour</button></div>
 <div id="pageFemmes" class="section"><h2>👩‍💼 Femmes</h2><p>Espace Femmes Entrepreneures CBK.</p><button class="btn-blue" onclick="showPage('accueil')">← Retour</button></div>
