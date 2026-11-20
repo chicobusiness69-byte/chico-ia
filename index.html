@@ -3,247 +3,193 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chico Business Kinshasa - V13.2 Admin Wallet</title>
+<title>CBK - Chico Business Kinshasa</title>
 <style>
-*{box-sizing:border-box}
-body{font-family:'Segoe UI',Arial,sans-serif;background:#F6F7FB;color:#1A1A2E;margin:0;text-align:center}
-.top{background:white;padding:14px;position:sticky;top:0;z-index:10;box-shadow:0 2px 15px rgba(0,0,0,0.08)}
-.logo{font-size:28px;font-weight:900;color:#1E3A8A}.logo b{color:#F59E0B}.logo span{font-size:11px;color:#666;display:block;letter-spacing:3px}
-.nav{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin-top:10px}
-.nav button{background:#EEF2FF;color:#1E3A8A;border:0;padding:8px 11px;border-radius:25px;font-weight:700;cursor:pointer;font-size:11px}
-.nav button.active{background:#1E3A8A;color:white}
-.page{display:none;padding:14px}.page.active{display:block}
-.hero{background:linear-gradient(135deg,#1E3A8A,#3B82F6);color:white;padding:22px 16px;border-radius:22px;max-width:520px;margin:0 auto}
-.hero h1{font-size:26px;margin:0}
-.box{background:white;padding:16px;border-radius:20px;max-width:520px;margin:11px auto;text-align:left;box-shadow:0 4px 20px rgba(0,0,0,0.06)}
-input,select,textarea{width:100%;padding:11px;border-radius:12px;border:1px solid #E5E7EB;background:#F9FAFB;font-size:14px;margin-bottom:8px}
-button.main{background:#1E3A8A;color:white;border:0;padding:11px;border-radius:12px;width:100%;font-weight:800;cursor:pointer;margin-top:6px}
-button.small{padding:7px 10px;border-radius:8px;border:0;font-weight:800;cursor:pointer;font-size:12px;margin:2px}
-.gold{background:#F59E0B!important;color:white!important}.green{background:#22C55E!important;color:white!important}.pink{background:#EC4899!important;color:white!important}.purple{background:#8B5CF6!important;color:white!important}.red{background:#EF4444!important;color:white!important}
-.vipbox{background:linear-gradient(135deg,#FEF3C7,#FDE68A);border:2px solid #F59E0B;padding:16px;border-radius:20px;max-width:520px;margin:11px auto;text-align:left}
-.walletbox{background:linear-gradient(135deg,#1E3A8A,#3B82F6);color:white;padding:18px;border-radius:20px;max-width:520px;margin:11px auto;text-align:left}
-.wa{background:#22C55E;display:block;text-align:center;text-decoration:none;color:white;padding:11px;border-radius:12px;font-weight:800;margin-top:8px}
-.card{background:#F9FAFB;padding:13px;border-radius:14px;margin-bottom:8px;text-align:left}
-.produit{background:white;border-radius:16px;overflow:hidden;margin-bottom:13px;text-align:left;box-shadow:0 4px 15px rgba(0,0,0,0.07)}
-.produit img{width:100%;height:200px;object-fit:cover}.produit-info{padding:12px}.prix{font-size:20px;font-weight:900;color:#1E3A8A}
-.carte{width:100%;max-width:320px;margin:0 auto;background:linear-gradient(135deg,#1E3A8A,#F59E0B);color:white;padding:20px;border-radius:18px;text-align:left}
-.msg{background:#F1F5FF;padding:8px 11px;border-radius:12px;margin-bottom:6px;text-align:left}
-.donor{background:#FFFBEB;padding:8px;border-radius:12px;margin-bottom:6px;text-align:left;border:1px solid #FDE68A}
-.retrait{background:#FEF2F2;border:1px solid #FECACA;padding:12px;border-radius:12px;margin-bottom:8px;text-align:left}
-.walletAdmin{background:#EFF6FF;border:2px solid #1E3A8A;padding:12px;border-radius:14px;margin-bottom:10px;text-align:left}
-.footer{background:white;padding:20px;margin-top:12px}.footer a{color:#1E3A8A;text-decoration:none;margin:0 6px;font-weight:700}
-.social{display:flex;justify-content:center;gap:10px;margin-top:10px}.social a{font-size:24px;text-decoration:none;background:#F1F5FF;width:46px;height:46px;line-height:46px;border-radius:50%}
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#EEF2F7;padding-bottom:90px}
+header{background:#0B3D91;color:white;padding:15px;text-align:center;position:sticky;top:0;z-index:10}
+header h1{margin:0;font-size:32px;letter-spacing:2px;cursor:pointer}
+header p{margin:2px 0 0;font-size:13px;opacity:.9}
+.wallet{background:white;margin:12px;border-radius:15px;padding:15px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.wallet b{font-size:18px}
+.btn-blue{background:#0B3D91;color:white;border:none;padding:10px 14px;border-radius:10px;font-weight:bold}
+.hero{background:#0B3D91;color:white;margin:0 12px;border-radius:15px;padding:18px}
+.hero h2{margin:0 0 5px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px}
+.card{background:white;border-radius:15px;padding:15px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.08);cursor:pointer}
+.card span{font-size:32px}
+.card h3{margin:8px 0 4px;font-size:16px}
+.card p{margin:0;font-size:12px;color:#666}
+.big{margin:0 12px;border-radius:15px;padding:18px;color:white;cursor:pointer}
+.big h3{margin:0}
+.big p{margin:6px 0 0;font-size:13px}
+.big button{border:none;padding:10px 15px;border-radius:10px;font-weight:bold;margin-top:10px}
+nav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;padding:10px 0;border-top:1px solid #ddd}
+nav button{border:none;background:none;font-size:12px;text-align:center}
+.section{padding:0 12px;display:none}
+.section.active{display:block}
+input,select{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:10px}
 </style>
 </head>
 <body>
-<div class="top">
-<div class="logo">CBK <b>•</b><span>CHICO BUSINESS KINSHASA</span></div>
-<select id="langSelect" onchange="changerLangue()" style="width:200px;margin-top:6px"><option value="fr">🇫🇷 Français</option><option value="ln">🇨🇩 Lingala</option></select>
-<div class="nav">
-<button onclick="show('accueil')" id="b-accueil" class="active">🏠 Accueil</button>
-<button onclick="show('boutique')" id="b-boutique">🛍️ Boutique</button>
-<button onclick="show('femmes')" id="b-femmes">💃 Femmes</button>
-<button onclick="show('emploi')" id="b-emploi">💼 Emploi</button>
-<button onclick="show('marche')" id="b-marche">🥦 Marché</button>
-<button onclick="show('wallet')" id="b-wallet">👛 Wallet</button>
-<button onclick="show('parrainage')" id="b-parrainage">🎁 Parrainage</button>
-<button onclick="show('dashboard')" id="b-dashboard">📊 Dashboard</button>
-<button onclick="show('services')" id="b-services">🛎️ Services</button>
-<button onclick="show('vip')" id="b-vip">👑 VIP</button>
-<button onclick="show('formation')" id="b-formation">🎓 Formation</button>
-<button onclick="show('radio')" id="b-radio">🎙️ Radio</button>
-<button onclick="show('communaute')" id="b-communaute">💬 Communauté</button>
-<button onclick="show('profil')" id="b-profil">👤 Profil</button>
-<button onclick="show('admin')" id="b-admin">🔐 Admin</button>
-</div>
+
+<header>
+<h1 id="logoCBK">CBK</h1>
+<p>Chico Business Kinshasa - Ton Business, Version Pro</p>
+</header>
+
+<div class="wallet">
+<div><div>👋 Bonjour, <b id="nomUser">Invité</b></div><div style="font-size:13px;color:#666">Ton Wallet</div></div>
+<div><b id="walletTxt">0$ | 0 Points</b><br><button class="btn-blue" onclick="creerCompte()">Créer Compte</button></div>
 </div>
 
-<div id="accueil" class="page active">
-<div class="hero"><h1 id="titreHero">Ton Business, Version Pro à Kinshasa 🇨🇩</h1><p>Wallet + Retrait + Boutique + Emploi + Marché + Radio.</p></div>
-<div class="walletbox"><b>👛 Ton CBK Wallet</b><br><span style="font-size:28px;font-weight:900" id="soldeWallet">0$</span> <span> | ⭐ <span id="pointsCBK">0</span> Points = <span id="pointsDollar">0$</span></span><br><button class="main gold" onclick="show('wallet')">Recharger / Retirer</button></div>
-<div class="box" style="background:#FFFBEB;border:2px solid #F59E0B;text-align:center"><h3 style="margin:0">🏆 CONCOURS - GAGNE 5$</h3><p>Invite 10 amis = 5$ | Tu as <b id="nbInvites">0</b>/10</p><button class="main gold" onclick="inviterAmi()">Inviter</button></div>
-<div class="box" style="background:#FEF2F2;border:2px solid #EF4444;text-align:center"><b>🔴 LIVE TIKTOK SAMEDI 18H</b><br><a href="https://www.tiktok.com/@chicobusinesskinshasa" target="_blank" style="color:#EF4444;font-weight:800">Voir Live →</a></div>
-<div class="box" id="inscriptionBox"><h3 style="margin-top:0">🔐 Crée ton compte</h3><input id="nomIns" placeholder="Nom complet"><input id="telIns" placeholder="WhatsApp +243..."><input id="passIns" type="password" placeholder="Mot de passe"><button class="main" onclick="creerCompte()">Créer →</button></div>
-<div class="box"><h3 style="margin-top:0">🤖 Chico IA</h3><input id="q" placeholder="Ex: Comment vendre plus ?"><button class="main" onclick="repondre()">Demander →</button><div id="reponse" style="background:#EFF6FF;padding:11px;border-radius:12px;margin-top:9px">Connecte-toi...</div><h3>🧮 Calculateur</h3><input id="cout" type="number" placeholder="Coût ?"><input id="vente" type="number" placeholder="Vente ?"><button class="main gold" onclick="calculer()">Calculer</button><div id="resultatCalc"></div></div>
+<!-- ACCUEIL -->
+<div id="pageAccueil" class="section active">
+<div class="hero">
+<h2>Ton Business, Version Pro à Kinshasa</h2>
+<p>💰 Wallet • Boutique • Emploi • Passeport • Studio • Marché • Femmes</p>
 </div>
 
-<div id="boutique" class="page"><h2>🛍️ Boutique CBK</h2><div class="box" style="text-align:center"><label><input type="checkbox" id="livraisonCheck" style="width:auto"> 🚚 Livraison +3$</label></div><div id="listeProduits" style="max-width:520px;margin:0 auto"></div><div class="box" style="text-align:center;background:#FFFBEB;border:2px dashed #F59E0B"><h3>📦 Tu as un article ?</h3><a class="wa" href="https://wa.me/243815897990?text=Bonjour%20CBK%20j'ai%20un%20article">💬 Nous contacter</a><button class="main gold" onclick="abonnementBoutique()">Abonnement Boutique 15$/mois</button><button class="main green" onclick="statutWhatsApp()">Statut WhatsApp - 1$</button></div></div>
-<div id="femmes" class="page"><h2>💃 Femmes Entrepreneures</h2><div class="box" style="background:#FDF2F8;border:2px solid #EC4899;text-align:center"><b>👑 Espace dédié aux Femmes de Kinshasa</b></div><div id="listeFemmes"></div></div>
-<div id="emploi" class="page"><h2>💼 Emploi Kinshasa</h2><div class="box" style="text-align:center"><b>Entreprise ? Poste ton offre - 5$</b><br><button class="main gold" onclick="posterEmploi()">Poster - 5$</button></div><div id="listeEmploi"></div></div>
-<div id="marche" class="page"><h2>🥦 Prix du Marché - Aujourd'hui</h2><div class="box"><div class="card">🍚 Sac Riz 25kg: <b>32$</b></div><div class="card">🛢️ Huile 5L: <b>12$</b></div><div class="card">🍬 Sucre 10kg: <b>11$</b></div><div class="card">🥫 Tomate: <b>2.5$</b></div><div class="card">🧅 Oignon sac: <b>25$</b></div></div></div>
-
-<div id="wallet" class="page">
-<h2>👛 CBK Wallet</h2>
-<div class="walletbox"><b>Solde:</b> <span style="font-size:30px;font-weight:900" id="soldeWallet2">0$</span><br>⭐ Points: <b id="pointsCBK2">0</b> = <b id="pointsDollar2">0$</b></div>
-<div class="box"><h3>💰 Recharger</h3><input id="montantRecharge" type="number" placeholder="Montant $"><select id="payWallet"><option>M-Pesa - +243 815 897 990</option><option>Airtel Money - +243 983 995 019</option></select><button class="main green" onclick="rechargerWallet()">Recharger mon Wallet</button><p style="font-size:12px;color:#666">1. Envoie l'argent sur le numéro<br>2. Chico vérifie le SMS et charge ton solde dans Admin<br>3. Tu vois ton solde ici</p></div>
-<div class="box" style="border:2px solid #EF4444"><h3>💸 Demander un Retrait</h3><input id="montantRetrait" type="number" placeholder="Montant à retirer $"><input id="numeroRetrait" placeholder="Ton numéro pour recevoir Ex: +243 81..."><select id="methodeRetrait"><option>M-Pesa</option><option>Airtel Money</option></select><button class="main red" onclick="demanderRetrait()">Demander mon Retrait 💸</button><div id="historiqueRetraits" style="margin-top:10px"></div></div>
-<div class="box"><h3>💳 Payer avec Wallet</h3><button class="main" onclick="payerWallet('VIP 5$')">Payer VIP - 5$</button><button class="main" onclick="payerWallet('Boost 2$')">Payer Boost - 2$</button><button class="main" onclick="payerWallet('Livraison 3$')">Payer Livraison - 3$</button><button class="main gold" onclick="convertirPoints()">Convertir mes Points en $</button></div>
+<div class="grid">
+<div class="card" onclick="showPage('boutique')"><span>🛍️</span><h3>Boutique</h3><p>Achete & Vends à Kinshasa</p></div>
+<div class="card" onclick="showPage('femmes')"><span>👩‍💼</span><h3>Femmes</h3><p>Business Femmes CBK</p></div>
+<div class="card" onclick="showPage('emploi')"><span>💼</span><h3>Emploi</h3><p>Trouve un travail</p></div>
+<div class="card" onclick="showPage('marche')"><span>🛒</span><h3>Marché</h3><p>Prix du marché à Kinshasa</p></div>
 </div>
 
-<div id="parrainage" class="page"><h2>🎁 Parrainage</h2><div class="box" style="text-align:center;background:#ECFDF5"><h3>Invite, gagne 1$ + 10 Points</h3><input id="lienParrain" value="https://chico-business.vercel.app?ref=CBK-TOI" readonly><button class="main green" onclick="copierLien()">Copier lien</button><p>Amis: <b id="nbParrain">0</b> | Gains: <b id="gainsParrain">0$</b></p><button class="main" onclick="partagerParrain()">Partager WhatsApp</button></div><div class="box"><h3>🪪 Carte Membre CBK - 3$</h3><div class="carte"><b>CBK • CHICO BUSINESS</b><br><br><span style="font-size:20px;font-weight:900" id="carteNom">TON NOM</span><br><span style="font-size:12px">MEMBRE N° CBK-2026-001 • VIP 👑</span></div><button class="main gold" onclick="commanderCarte()">Commander ma Carte - 3$</button></div></div>
-<div id="dashboard" class="page"><h2>📊 Dashboard</h2><div class="box"><p>👋 <b id="nomUser">Invité</b> <span id="badgeVIP"></span></p><p>👛 Wallet: <b id="soldeDash">0$</b> | ⭐ Points: <b id="pointsDash">0</b></p><p>📦 Services: <b id="nbService">0</b> | 💬 Messages: <b id="nbMsg">0</b> | ❤️ Dons: <b id="totalDons">0 $</b> | 💸 Retraits: <b id="totalRetraitsDash">0$</b></p><button class="main gold" onclick="show('vip')">👑 VIP - 5$</button><button class="main red" onclick="show('wallet')">💸 Demander Retrait</button></div></div>
-<div id="services" class="page"><h2>🛎️ Services</h2><div class="box"><div class="card"><b>🤖 Assistant IA</b><br><button class="main" onclick="show('accueil')">Utiliser</button></div><div class="card"><b>🧑‍🏫 Coach Personnel - 10$/mois</b><br><button class="main purple" onclick="commander('Coach Personnel 10$')">Prendre Coach - 10$</button></div><div class="card"><b>🛂 Passeport - 20$</b><br><button class="main" onclick="commander('Passeport')">Commander</button></div><div class="card"><b>🎬 Studio Vidéo - 15$</b><br><button class="main" onclick="commander('Studio Vidéo')">Réserver</button></div><div class="card"><b>📸 Studio Photo - 10$</b><br><button class="main" onclick="commander('Studio Photo')">Réserver</button></div><div class="card"><b>🚚 Livraison - 3$</b><br><button class="main green" onclick="commander('Livraison 3$')">Commander</button></div><div class="card"><b>📱 Statut WhatsApp - 1$</b><br><button class="main green" onclick="statutWhatsApp()">Commander</button></div><div class="card"><b>🎬 Vidéo TikTok Auto</b><br><button class="main" onclick="videoAuto()">Créer ma vidéo</button></div></div></div>
-<div id="vip" class="page"><h2>👑 VIP CBK</h2><div class="vipbox"><h3 style="margin:0">VIP - 5$ / mois</h3><p>✅ IA illimitée<br>✅ -20% services<br>✅ Groupe WhatsApp Privé VIP<br>✅ Badge VIP</p><input id="nomVIP" placeholder="Ton nom"><select id="payVIP"><option>M-Pesa - +243 815 897 990</option><option>Airtel Money - +243 983 995 019</option></select><button class="main" onclick="devenirVIP()">Devenir VIP - 5$</button><button class="main green" onclick="rejoindreGroupeVIP()">💬 Rejoindre Groupe VIP</button></div></div>
-<div id="formation" class="page"><h2>🎓 Formation 7 Jours - 20$</h2><div class="box"><p><b>20$</b> <span style="text-decoration:line-through;color:#999">40$</span></p><input id="nomForm" placeholder="Ton nom"><select id="payForm"><option>M-Pesa - +243 815 897 990</option><option>Airtel Money - +243 983 995 019</option></select><button class="main gold" onclick="acheterFormation()">Acheter - 20$</button></div></div>
-<div id="radio" class="page"><h2>🎙️ CBK Radio</h2><div class="box"><b>EP 12: Comment vendre sans argent</b><br><button class="main purple" onclick="jouerPodcast()">▶️ Écouter</button><div id="podcastMsg"></div></div></div>
-<div id="communaute" class="page"><h2>💬 Communauté</h2><div class="box"><div id="chatBox"></div><input id="msgInput" placeholder="Ton avis..."><button class="main" onclick="envoyerMsg()">Envoyer +10 Points</button></div><div class="box"><h3>❤️ Don</h3><input id="nomDon" placeholder="Ton nom"><input id="montantDon" type="number" placeholder="Montant $"><select id="payDon"><option>M-Pesa - +243 815 897 990</option><option>Airtel Money - +243 983 995 019</option></select><button class="main gold" onclick="faireDon()">Faire un Don ❤️</button></div><div class="box"><h3>🏆 Mur des Donateurs</h3><div id="murDons"></div></div></div>
-<div id="profil" class="page"><h2>👤 Mon Profil</h2><div class="box"><input type="file" onchange="changerPhoto(event)"><br><img id="photoProfil" src="https://via.placeholder.com/100" style="width:100px;height:100px;border-radius:50%;object-fit:cover"><br><br><input id="profilNom" placeholder="Nom complet"><input id="profilNaissance" type="date"><input id="profilVille" placeholder="Quartier"><input id="profilBusiness" placeholder="Ton business"><button class="main" onclick="sauverProfil()">Sauvegarder</button><div id="profilMsg"></div></div></div>
-
-<div id="admin" class="page">
-<h2>🔐 Admin - Toi seulement</h2>
-<div class="box"><input id="codeAdmin" type="password" placeholder="Code: 1234"><button class="main" onclick="ouvrirAdmin()">Ouvrir</button>
-<div id="adminZone" style="display:none">
-
-<h3 style="color:#1E3A8A">👛 GESTION WALLET - TU CONTRÔLES TOUT</h3>
-<p style="font-size:13px">Quand quelqu'un t'envoie de l'argent sur M-Pesa / Airtel, tu vérifies le SMS, puis tu charges son solde ici.</p>
-
-<!-- Recherche + Ajout rapide -->
-<div style="background:#EFF6FF;padding:12px;border-radius:12px">
-<b>🔍 Chercher une personne:</b>
-<input id="rechercheWallet" placeholder="Tape son nom Ex: Jean" oninput="afficherWalletsAdmin()">
+<!-- NOUVEAU PASSEPORT -->
+<div class="big" style="background:#0B3D91;" onclick="ouvrirPasseport()">
+<h3>🛂 ASSISTANTE PASSEPORT RAPIDE</h3>
+<p>Passeport vite à Kinshasa ? On t'aide de A à Z. Formulaire, rendez-vous, suivi.</p>
+<button style="background:white;color:#0B3D91;">Demander mon Passeport →</button>
 </div>
 
-<div id="listeWalletsAdmin" style="margin-top:10px"></div>
+<div style="height:12px"></div>
 
-<div style="background:#FFFBEB;padding:12px;border-radius:12px;margin-top:10px">
-<b>➕ Charger un nouveau dépôt:</b><br>
-<input id="nomDepot" placeholder="Nom de la personne">
-<input id="montantDepot" type="number" placeholder="Montant reçu $ Ex: 10">
-<button class="main green" onclick="chargerDepotManuel()">✅ J'ai reçu l'argent - Charger son solde</button>
-<p style="font-size:12px">Exemple: Jean t'a envoyé 10$ sur M-Pesa. Tu mets Jean + 10$, son solde devient 10$.</p>
+<!-- NOUVEAU STUDIO -->
+<div class="big" style="background:#FF6B00;" onclick="ouvrirStudio()">
+<h3>🎥 STUDIO ENREGISTREMENT VIDÉO / PHOTO</h3>
+<p>Vidéo Pro, Photo Pro, Clip, Anniversaire, Mariage. Réserve ton studio !</p>
+<button style="background:white;color:#FF6B00;">Réserver le Studio →</button>
 </div>
 
-<h3 style="color:#EF4444">💸 DEMANDES DE RETRAIT - À PAYER</h3>
-<div id="listeRetraitsAdmin">Aucune demande</div>
+<div style="height:12px"></div>
 
-<h3>💰 TON ARGENT TOTAL</h3>
-<p>Total Wallet utilisateurs: <b id="totalWalletAdmin">0$</b><br>Total retraits demandés: <b id="totalRetraitAdmin">0$</b><br>Total dons: <b id="argentGagne">0$</b></p>
-
-<h3>🛍️ Publier article</h3><input type="file" id="photoProduit" accept="image/*"><input id="nomProduit" placeholder="Nom article"><input id="prixProduit" type="number" placeholder="Prix $"><textarea id="descProduit" placeholder="Description"></textarea><label><input type="checkbox" id="femmeCheck" style="width:auto"> Femmes Entrepreneures</label><button class="main gold" onclick="publierProduit()">Publier + Vidéo + Notif 🔔</button>
-<h3>💼 Publier Emploi</h3><input id="titreEmploi" placeholder="Titre poste"><input id="salaireEmploi" placeholder="Salaire"><button class="main" onclick="publierEmploi()">Publier Emploi</button>
-<h3>Utilisateurs:</h3><div id="listeUsers"></div>
-</div></div>
+<div class="big" style="background:#00A651;" onclick="alert('Wallet : Recharge via Airtel Money / Orange Money bientôt !')">
+<h3>💰 MON WALLET</h3>
+<p>Recharge, gagne des points, paie dans l'app.</p>
+<button style="background:white;color:#00A651;">Voir mon Wallet →</button>
 </div>
 
-<div class="footer"><a href="#" onclick="showFAQ()">FAQ</a> | <a href="#" onclick="showAide()">AIDE</a> | <a href="#" onclick="showApropos()">À PROPOS</a><div id="footerInfo" style="margin-top:10px;font-size:13px"></div><div class="social"><a href="https://www.facebook.com/chicobusinesskinshasa" target="_blank">📘</a><a href="https://wa.me/243815897990" target="_blank">💬</a><a href="https://www.tiktok.com/@chicobusinesskinshasa" target="_blank">🎬</a></div><p style="color:#888;font-size:12px">© 2026 CBK 🇨🇩<br>M-Pesa +243 815 897 990 | Airtel Money +243 983 995 019</p></div>
+<!-- FORMULAIRE PASSEPORT CACHÉ -->
+<div id="formPasseport" style="display:none;background:white;margin:12px 0;padding:15px;border-radius:15px;">
+<h3>🛂 Demande Passeport Rapide</h3>
+<input id="pNom" placeholder="Nom complet">
+<input id="pWa" placeholder="Numéro WhatsApp +243...">
+<select id="pType"><option>Passeport Ordinaire</option><option>Passeport Urgent</option><option>Renouvellement</option></select>
+<button class="btn-blue" style="width:100%" onclick="envoyerPasseport()">Envoyer ma demande</button>
+</div>
+
+<!-- FORMULAIRE STUDIO CACHÉ -->
+<div id="formStudio" style="display:none;background:white;margin:12px 0;padding:15px;border-radius:15px;">
+<h3>🎥 Réserver Studio</h3>
+<select id="sType"><option>Vidéo Clip</option><option>Photo Pro</option><option>Vidéo Anniversaire</option><option>Vidéo Mariage</option><option>Photo + Vidéo</option></select>
+<input id="sJour" placeholder="Quel jour ? Ex: Samedi 22 Nov">
+<input id="sWa" placeholder="Ton WhatsApp">
+<button class="btn-blue" style="width:100%;background:#FF6B00" onclick="envoyerStudio()">Réserver Studio</button>
+</div>
+
+</div>
+
+<!-- AUTRES PAGES SIMPLES -->
+<div id="pageBoutique" class="section"><h2>🛍️ Boutique</h2><p>Produits de Kinshasa bientôt ici.</p><button class="btn-blue" onclick="showPage('accueil')">← Retour</button></div>
+<div id="pageFemmes" class="section"><h2>👩‍💼 Femmes</h2><p>Espace Femmes Entrepreneures CBK.</p><button class="btn-blue" onclick="showPage('accueil')">← Retour</button></div>
+<div id="pageEmploi" class="section"><h2>💼 Emploi</h2><p>Offres d'emploi à Kinshasa.</p><button class="btn-blue" onclick="showPage('accueil')">← Retour</button></div>
+<div id="pageMarche" class="section"><h2>🛒 Marché</h2><p>Prix du marché : Riz, Huile, etc.</p><button class="btn-blue" onclick="showPage('accueil')">← Retour</button></div>
+
+<!-- ADMIN CACHÉ -->
+<div id="pageAdmin" class="section">
+<h2>🔐 Admin - Chico Seulement</h2>
+<p>Utilisateurs : <b id="nbUsers">1</b> | Demandes Passeport : <b id="nbPass">0</b> | Réservations Studio : <b id="nbStudio">0</b></p>
+<div id="listeDemandes" style="background:white;padding:12px;border-radius:12px">Aucune demande pour le moment.</div>
+<button class="btn-blue" onclick="showPage('accueil')">← Retour Accueil</button>
+</div>
+
+<nav>
+<button onclick="showPage('accueil')">🏠<br>Accueil</button>
+<button onclick="showPage('boutique')">🛍️<br>Boutique</button>
+<button onclick="ouvrirPasseport()">🛂<br>Passeport</button>
+<button onclick="ouvrirStudio()">🎥<br>Studio</button>
+<button id="btnAdmin" style="display:none;" onclick="ouvrirAdmin()">🔐<br>Admin</button>
+</nav>
 
 <script>
-let users=JSON.parse(localStorage.getItem('cbk_users')||'[]');
-let dons=JSON.parse(localStorage.getItem('cbk_dons')||'[]');
-let msgs=JSON.parse(localStorage.getItem('cbk_msgs')||'[]');
-let produits=JSON.parse(localStorage.getItem('cbk_produits')||'[{"nom":"Montre Homme Premium","prix":25,"desc":"Très propre","img":"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500","boost":false,"stars":5,"femme":false}]');
-let emplois=JSON.parse(localStorage.getItem('cbk_emplois')||'[{"titre":"Vendeuse Boutique - Limete","salaire":"150$/mois"}]');
-let retraits=JSON.parse(localStorage.getItem('cbk_retraits')||'[]');
-let wallets=JSON.parse(localStorage.getItem('cbk_wallets')||'[]');
-let currentUser=null,isVIP=false,invites=0,gains=0,solde=0,points=0;
-function show(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));let btn=document.getElementById('b-'+id);if(btn)btn.classList.add('active');window.scrollTo(0,0);}
-function majWallet(){document.getElementById('soldeWallet').innerText=solde+'$';document.getElementById('soldeWallet2').innerText=solde+'$';document.getElementById('soldeDash').innerText=solde+'$';document.getElementById('pointsCBK').innerText=points;document.getElementById('pointsCBK2').innerText=points;document.getElementById('pointsDash').innerText=points;document.getElementById('pointsDollar').innerText=(points/100).toFixed(2)+'$';document.getElementById('pointsDollar2').innerText=(points/100).toFixed(2)+'$';let totRet=retraits.reduce((a,b)=>a+parseFloat(b.montant),0);let el=document.getElementById('totalRetraitsDash');if(el)el.innerText=totRet+'$';}
-function ajouterPoints(n){points+=n;majWallet();}
-function changerLangue(){let l=document.getElementById('langSelect').value;if(l==='ln'){document.getElementById('titreHero').innerText='Mosalá Na Yo, Version Pro Na Kinshasa 🇨🇩';alert('Mboté ! Version Lingala');}else{document.getElementById('titreHero').innerText='Ton Business, Version Pro à Kinshasa 🇨🇩';}}
-function creerCompte(){let n=document.getElementById('nomIns').value,t=document.getElementById('telIns').value,p=document.getElementById('passIns').value;if(!n||!t||!p){alert('Remplis tout !');return;}users.push({nom:n,tel:t});if(!wallets.find(w=>w.nom===n))wallets.push({nom:n,tel:t,solde:0});localStorage.setItem('cbk_users',JSON.stringify(users));localStorage.setItem('cbk_wallets',JSON.stringify(wallets));currentUser=n;document.getElementById('nomUser').innerText=n;document.getElementById('carteNom').innerText=n.toUpperCase();document.getElementById('lienParrain').value='https://chico-business.vercel.app?ref='+n.replaceAll(' ','');document.getElementById('inscriptionBox').innerHTML='<b>✅ Bienvenue '+n+' ! +20 Points</b>';ajouterPoints(20);alert('Bienvenue '+n);show('dashboard');}
-function calculer(){let c=parseFloat(document.getElementById('cout').value),v=parseFloat(document.getElementById('vente').value),res=document.getElementById('resultatCalc');if(!c||!v){res.innerHTML='⚠️ Mets les 2 prix';return;}let b=v-c,m=Math.round((b/v)*100);res.innerHTML='✅ Tu gagnes '+b+'$ ! Marge '+m+'%';}
-function repondre(){if(!currentUser){alert('Crée ton compte !');return;}let q=document.getElementById('q').value.toLowerCase(),r=document.getElementById('reponse');if(q.includes('vendre'))r.innerHTML='💰 Poste 1 TikTok par jour.';else if(q.includes('prix'))r.innerHTML='🏷️ Coût + Transport + Bénéfice.';else r.innerHTML='💡 Commence petit, vends chaque jour.';ajouterPoints(5);}
-function commander(s){if(!currentUser){alert('Crée ton compte !');return;}document.getElementById('nbService').innerText=parseInt(document.getElementById('nbService').innerText)+1;ajouterPoints(10);window.open('https://wa.me/243815897990?text=Je%20veux%20'+encodeURIComponent(s),'_blank');}
-function devenirVIP(){let n=document.getElementById('nomVIP').value||currentUser;if(!n){alert('Mets ton nom');return;}isVIP=true;document.getElementById('statutVIP').innerText='VIP 👑';document.getElementById('badgeVIP').innerText='👑';alert('Merci '+n+' ! Envoie 5$ via '+document.getElementById('payVIP').value);window.open('https://wa.me/243815897990?text=Je%20veux%20VIP%20CBK%20-'+n,'_blank');}
-function acheterFormation(){let n=document.getElementById('nomForm').value||currentUser;if(!n){alert('Mets ton nom');return;}alert('Merci '+n+' ! Envoie 20$ via '+document.getElementById('payForm').value);window.open('https://wa.me/243815897990?text=Je%20veux%20Formation%20CBK%20-'+n,'_blank');}
-function envoyerMsg(){let t=document.getElementById('msgInput').value;if(!t)return;msgs.push((currentUser||'Invité')+': '+t);localStorage.setItem('cbk_msgs',JSON.stringify(msgs));afficherMsgs();document.getElementById('msgInput').value='';ajouterPoints(10);}
-function afficherMsgs(){document.getElementById('chatBox').innerHTML='<div class="msg"><b>Chico:</b> Bienvenue !</div>'+msgs.map(m=>'<div class="msg">'+m+'</div>').join('');document.getElementById('nbMsg').innerText=msgs.length;}
-function faireDon(){let n=document.getElementById('nomDon').value||currentUser||'Anonyme',m=document.getElementById('montantDon').value,p=document.getElementById('payDon').value;if(!m){alert('Mets montant');return;}dons.push({nom:n,montant:m,pay:p});localStorage.setItem('cbk_dons',JSON.stringify(dons));afficherDons();alert('Merci '+n+' !');}
-function afficherDons(){let total=dons.reduce((a,b)=>a+parseFloat(b.montant),0);document.getElementById('totalDons').innerText=total+' $';document.getElementById('murDons').innerHTML=dons.map(d=>'<div class="donor">❤️ <b>'+d.nom+'</b> a donné <b>'+d.montant+'$</b> via '+d.pay+'</div>').join('')||'Aucun don';document.getElementById('argentGagne').innerText=total+'$ dons';}
-function sauverProfil(){let n=document.getElementById('profilNom').value;document.getElementById('nomUser').innerText=n||currentUser;document.getElementById('carteNom').innerText=(n||currentUser||'TON NOM').toUpperCase();document.getElementById('profilMsg').innerHTML='✅ Profil sauvegardé !';currentUser=n;}
-function changerPhoto(e){let r=new FileReader();r.onload=function(){document.getElementById('photoProfil').src=r.result};r.readAsDataURL(e.target.files[0]);}
-function ouvrirAdmin(){if(document.getElementById('codeAdmin').value!=='1234'){alert('Code faux');return;}document.getElementById('adminZone').style.display='block';document.getElementById('listeUsers').innerHTML=users.map((u,i)=>'<div class="card">'+u.nom+' - '+u.tel+' <button onclick="bloquerUser('+i+')">Supprimer</button></div>').join('')||'Aucun';afficherWalletsAdmin();afficherRetraitsAdmin();}
-function bloquerUser(i){users.splice(i,1);localStorage.setItem('cbk_users',JSON.stringify(users));ouvrirAdmin();}
-function afficherProduits(){document.getElementById('listeProduits').innerHTML=produits.map((p,i)=>'<div class="produit"><img src="'+p.img+'"><div class="produit-info"><b>'+p.nom+'</b><br><span style="color:#666;font-size:13px">'+p.desc+'</span><br><div class="prix">'+p.prix+'$</div><button class="main green" onclick="discuterProduit(\''+p.nom+'\')">💬 Discuter</button><button class="main" onclick="acheterProduit(\''+p.nom+'\')">🛒 Acheter + Livraison 3$</button><button class="main gold" onclick="boosterProduit('+i+')">🚀 Booster - 2$</button></div></div>').join('');document.getElementById('listeFemmes').innerHTML=produits.filter(p=>p.femme).map(p=>'<div class="produit"><img src="'+p.img+'"><div class="produit-info"><b>'+p.nom+'</b> - <span class="prix">'+p.prix+'$</span><br><button class="main pink" onclick="discuterProduit(\''+p.nom+'\')">💬 Discuter</button></div></div>').join('')||'<div class="box">Aucun article femmes.</div>';}
-function afficherEmplois(){document.getElementById('listeEmploi').innerHTML=emplois.map(e=>'<div class="card"><b>'+e.titre+'</b><br>Salaire: <b>'+e.salaire+'</b><br><button class="main green" onclick="postulerEmploi(\''+e.titre+'\')">Postuler</button></div>').join('');}
-function boosterProduit(i){alert('Envoie 2$ via M-Pesa +243 815 897 990 ou Airtel +243 983 995 019');produits[i].boost=true;let item=produits.splice(i,1)[0];produits.unshift(item);localStorage.setItem('cbk_produits',JSON.stringify(produits));afficherProduits();window.open('https://wa.me/243815897990?text=Je%20veux%20booster%20-'+produits[0].nom,'_blank');}
-function publierProduit(){let nom=document.getElementById('nomProduit').value,prix=document.getElementById('prixProduit').value,desc=document.getElementById('descProduit').value,femme=document.getElementById('femmeCheck').checked,file=document.getElementById('photoProduit').files[0];if(!nom||!prix){alert('Mets nom + prix');return;}let save=(img)=>{produits.unshift({nom:nom,prix:prix,desc:desc,img:img,boost:false,stars:5,femme:femme});localStorage.setItem('cbk_produits',JSON.stringify(produits));afficherProduits();alert('✅ Publié + Vidéo + Notif');show('boutique');};if(file){let r=new FileReader();r.onload=function(){save(r.result)};r.readAsDataURL(file);}else{save('https://via.placeholder.com/500');}}
-function discuterProduit(nom){window.open('https://wa.me/243815897990?text=Bonjour%20CBK%20je%20veux%20discuter%20:%20'+encodeURIComponent(nom),'_blank');}
-function acheterProduit(nom){ajouterPoints(15);window.open('https://wa.me/243815897990?text=Bonjour%20CBK%20je%20veux%20acheter%20'+encodeURIComponent(nom)+' + Livraison 3$','_blank');}
-function abonnementBoutique(){alert('Envoie 15$ via M-Pesa +243 815 897 990 ou Airtel +243 983 995 019');window.open('https://wa.me/243815897990?text=Je%20veux%20Abonnement%20Boutique%2015$','_blank');}
-function statutWhatsApp(){alert('Envoie 1$ via M-Pesa +243 815 897 990 ou Airtel +243 983 995 019');window.open('https://wa.me/243815897990?text=Je%20veux%20Statut%20WhatsApp%201$','_blank');}
-function inviterAmi(){invites++;document.getElementById('nbInvites').innerText=invites;document.getElementById('nbParrain').innerText=invites;if(invites>=10){alert('🎉 Tu as gagné 5$ !');}partagerParrain();}
-function copierLien(){let l=document.getElementById('lienParrain');l.select();document.execCommand('copy');alert('Lien copié !');}
-function partagerParrain(){gains+=1;document.getElementById('gainsParrain').innerText=gains+'$';ajouterPoints(10);window.open('https://wa.me/?text=Rejoins%20CBK%20👉%20'+encodeURIComponent(document.getElementById('lienParrain').value),'_blank');}
-function rechargerWallet(){let m=parseFloat(document.getElementById('montantRecharge').value);if(!m){alert('Mets montant');return;}alert('Envoie '+m+'$ via '+document.getElementById('payWallet').value+' puis confirme sur WhatsApp. Chico va charger ton solde après vérification du SMS.');window.open('https://wa.me/243815897990?text='+encodeURIComponent('Bonjour CBK, je viens d’envoyer '+m+'$ pour recharger mon Wallet. Mon nom: '+(currentUser||'Invité')),'_blank');}
-function payerWallet(service){if(solde<5){alert('Solde insuffisant, recharge');show('wallet');return;}solde-=5;majWallet();alert('✅ Payé avec Wallet: '+service);ajouterPoints(10);}
-function convertirPoints(){if(points<100){alert('Il faut 100 points minimum');return;}let dollars=Math.floor(points/100);solde+=dollars;points=points%100;majWallet();alert('✅ Tu as converti '+dollars+'$ !');}
-function demanderRetrait(){let m=parseFloat(document.getElementById('montantRetrait').value);let num=document.getElementById('numeroRetrait').value;let meth=document.getElementById('methodeRetrait').value;if(!m||!num){alert('Mets montant + ton numéro');return;}if(m>solde){alert('Tu as seulement '+solde+'$ dans ton Wallet.');return;}if(!currentUser){alert('Crée ton compte d’abord !');return;}solde-=m;majWallet();let dem={nom:currentUser,montant:m,numero:num,methode:meth,statut:'En attente',date:new Date().toLocaleDateString()};retraits.push(dem);localStorage.setItem('cbk_retraits',JSON.stringify(retraits));afficherHistoriqueRetraits();alert('✅ Demande envoyée ! Chico va t’envoyer '+m+'$ sur '+num+' via '+meth);window.open('https://wa.me/243815897990?text='+encodeURIComponent('💸 DEMANDE RETRAIT CBK\nNom: '+currentUser+'\nMontant: '+m+'$\nRecevoir sur: '+num+'\nVia: '+meth),'_blank');}
-function afficherHistoriqueRetraits(){document.getElementById('historiqueRetraits').innerHTML=retraits.filter(r=>r.nom===currentUser).map(r=>'<div class="retrait">💸 <b>'+r.montant+'$</b> vers '+r.numero+' via '+r.methode+' - <b>'+r.statut+'</b></div>').join('')||'Aucun retrait';}
-function afficherRetraitsAdmin(){let totalRet=retraits.reduce((a,b)=>a+parseFloat(b.montant),0);document.getElementById('totalRetraitAdmin').innerText=totalRet+'$';let totalWal=wallets.reduce((a,b)=>a+parseFloat(b.solde||0),0);document.getElementById('totalWalletAdmin').innerText=totalWal+'$';document.getElementById('listeRetraitsAdmin').innerHTML=retraits.map((r,i)=>'<div class="retrait"><b>'+r.nom+'</b> veut retirer <b>'+r.montant+'$</b><br>Envoyer sur: <b>'+r.numero+'</b> via <b>'+r.methode+'</b><br>Statut: '+r.statut+' | '+r.date+'<br><button class="small green" onclick="validerRetrait('+i+')">✅ J’ai envoyé</button> <button class="small red" onclick="refuserRetrait('+i+')">❌ Refuser</button></div>').join('')||'Aucune demande';}
-function validerRetrait(i){retraits[i].statut='✅ Payé';localStorage.setItem('cbk_retraits',JSON.stringify(retraits));afficherRetraitsAdmin();alert('Retrait validé ! N’oublie pas d’envoyer l’argent sur M-Pesa / Airtel du client.');}
-function refuserRetrait(i){retraits.splice(i,1);localStorage.setItem('cbk_retraits',JSON.stringify(retraits));afficherRetraitsAdmin();alert('Retrait refusé.');}
-
-// --- NOUVEAU : TOI TU CHARGES LE SOLDE ---
-function afficherWalletsAdmin(){
-let recherche=(document.getElementById('rechercheWallet')?document.getElementById('rechercheWallet').value.toLowerCase():'');
-let filtres=wallets.filter(w=>w.nom.toLowerCase().includes(recherche));
-document.getElementById('listeWalletsAdmin').innerHTML=filtres.map((w,i)=>{
-let vraiIndex=wallets.indexOf(w);
-return '<div class="walletAdmin"><b>'+w.nom+'</b> - '+w.tel+'<br>Solde actuel: <b style="font-size:20px;color:#1E3A8A">'+(w.solde||0)+'$</b><br>'+
-'<button class="small green" onclick="ajouterSoldeAdmin('+vraiIndex+',5)">➕ +5$</button>'+
-'<button class="small green" onclick="ajouterSoldeAdmin('+vraiIndex+',10)">➕ +10$</button>'+
-'<button class="small green" onclick="ajouterSoldeAdmin('+vraiIndex+',20)">➕ +20$</button>'+
-'<button class="small gold" onclick="ajouterSoldeCustom('+vraiIndex+')">➕ Montant libre</button><br>'+
-'<button class="small red" onclick="enleverSoldeAdmin('+vraiIndex+',5)">➖ -5$</button>'+
-'<button class="small red" onclick="enleverSoldeAdmin('+vraiIndex+',10)">➖ -10$</button>'+
-'<button class="small" style="background:#333;color:white" onclick="mettreSoldeZero('+vraiIndex+')">Mettre à 0$</button>'+
-'</div>'}).join('')||'Aucune personne trouvée. Demande à la personne de créer un compte d’abord.';
+let demandes = [];
+function showPage(p){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  if(p==='accueil') document.getElementById('pageAccueil').classList.add('active');
+  if(p==='boutique') document.getElementById('pageBoutique').classList.add('active');
+  if(p==='femmes') document.getElementById('pageFemmes').classList.add('active');
+  if(p==='emploi') document.getElementById('pageEmploi').classList.add('active');
+  if(p==='marche') document.getElementById('pageMarche').classList.add('active');
+  if(p==='admin') document.getElementById('pageAdmin').classList.add('active');
+  window.scrollTo(0,0);
 }
-function ajouterSoldeAdmin(index,montant){
-if(!confirm('Tu as bien reçu '+montant+'$ sur ton M-Pesa / Airtel de '+wallets[index].nom+' ?\nSi oui, on ajoute '+montant+'$ à son solde.')) return;
-wallets[index].solde=(parseFloat(wallets[index].solde)||0)+montant;
-localStorage.setItem('cbk_wallets',JSON.stringify(wallets));
-if(wallets[index].nom===currentUser){solde=wallets[index].solde;majWallet();}
-afficherWalletsAdmin();afficherRetraitsAdmin();
-alert('✅ +'+montant+'$ ajouté à '+wallets[index].nom+'. Nouveau solde: '+wallets[index].solde+'$');
+function creerCompte(){
+  let nom = prompt("Ton nom complet ?");
+  if(!nom) return;
+  document.getElementById('nomUser').innerText = nom;
+  alert("Bienvenue " + nom + " ! Ton compte CBK est créé. Wallet : 0$ | 0 Points");
 }
-function ajouterSoldeCustom(index){
-let m=parseFloat(prompt('Combien tu as reçu de '+wallets[index].nom+' ? Ex: 15'));
-if(!m) return;
-ajouterSoldeAdmin(index,m);
+function ouvrirPasseport(){
+  showPage('accueil');
+  document.getElementById('formPasseport').style.display='block';
+  document.getElementById('formStudio').style.display='none';
+  document.getElementById('formPasseport').scrollIntoView({behavior:'smooth'});
 }
-function enleverSoldeAdmin(index,montant){
-if(!confirm('Tu veux enlever '+montant+'$ à '+wallets[index].nom+' ?')) return;
-wallets[index].solde=Math.max(0,(parseFloat(wallets[index].solde)||0)-montant);
-localStorage.setItem('cbk_wallets',JSON.stringify(wallets));
-if(wallets[index].nom===currentUser){solde=wallets[index].solde;majWallet();}
-afficherWalletsAdmin();afficherRetraitsAdmin();
-alert('➖ -'+montant+'$ enlevé. Nouveau solde: '+wallets[index].solde+'$');
+function ouvrirStudio(){
+  showPage('accueil');
+  document.getElementById('formStudio').style.display='block';
+  document.getElementById('formPasseport').style.display='none';
+  document.getElementById('formStudio').scrollIntoView({behavior:'smooth'});
 }
-function mettreSoldeZero(index){
-if(!confirm('Mettre le solde de '+wallets[index].nom+' à 0$ ?')) return;
-wallets[index].solde=0;
-localStorage.setItem('cbk_wallets',JSON.stringify(wallets));
-if(wallets[index].nom===currentUser){solde=0;majWallet();}
-afficherWalletsAdmin();
+function envoyerPasseport(){
+  let nom=document.getElementById('pNom').value;
+  let wa=document.getElementById('pWa').value;
+  let type=document.getElementById('pType').value;
+  if(!nom||!wa){alert("Remplis Nom + WhatsApp");return;}
+  demandes.push("🛂 PASSEPORT: "+nom+" | "+wa+" | "+type);
+  document.getElementById('nbPass').innerText = demandes.filter(d=>d.includes('PASSEPORT')).length;
+  document.getElementById('listeDemandes').innerHTML = demandes.join('<br><br>');
+  alert("Merci "+nom+" ! Demande Passeport "+type+" envoyée. On te contacte sur "+wa);
+  document.getElementById('formPasseport').style.display='none';
 }
-function chargerDepotManuel(){
-let nom=document.getElementById('nomDepot').value.trim();
-let m=parseFloat(document.getElementById('montantDepot').value);
-if(!nom||!m){alert('Mets nom + montant');return;}
-let w=wallets.find(x=>x.nom.toLowerCase()===nom.toLowerCase());
-if(!w){alert('Personne introuvable. Demande à '+nom+' de créer un compte d’abord.');return;}
-if(!confirm(nom+' t’a bien envoyé '+m+'$ sur ton M-Pesa / Airtel ? Vérifie ton SMS avant de valider.')) return;
-w.solde=(parseFloat(w.solde)||0)+m;
-localStorage.setItem('cbk_wallets',JSON.stringify(wallets));
-if(w.nom===currentUser){solde=w.solde;majWallet();}
-afficherWalletsAdmin();afficherRetraitsAdmin();
-alert('✅ +'+m+'$ chargé à '+nom+'. Son solde: '+w.solde+'$');
-document.getElementById('nomDepot').value='';document.getElementById('montantDepot').value='';
+function envoyerStudio(){
+  let type=document.getElementById('sType').value;
+  let jour=document.getElementById('sJour').value;
+  let wa=document.getElementById('sWa').value;
+  if(!jour||!wa){alert("Remplis Jour + WhatsApp");return;}
+  demandes.push("🎥 STUDIO: "+type+" | Jour: "+jour+" | "+wa);
+  document.getElementById('nbStudio').innerText = demandes.filter(d=>d.includes('STUDIO')).length;
+  document.getElementById('listeDemandes').innerHTML = demandes.join('<br><br>');
+  alert("Super ! Studio "+type+" réservé pour "+jour+". On te contacte sur "+wa);
+  document.getElementById('formStudio').style.display='none';
 }
-
-function commanderCarte(){alert('Envoie 3$ via M-Pesa +243 815 897 990 ou Airtel +243 983 995 019');window.open('https://wa.me/243815897990?text=Je%20veux%20ma%20Carte%20Membre%20CBK%203$','_blank');}
-function rejoindreGroupeVIP(){if(!isVIP){alert('Groupe VIP seulement pour VIP 5$');show('vip');return;}window.open('https://wa.me/243815897990?text=Ajoute-moi%20au%20Groupe%20WhatsApp%20VIP','_blank');}
-function posterEmploi(){alert('Envoie 5$ via M-Pesa +243 815 897 990 ou Airtel +243 983 995 019');window.open('https://wa.me/243815897990?text=Je%20veux%20poster%20une%20offre%20emploi%205$','_blank');}
-function publierEmploi(){let t=document.getElementById('titreEmploi').value,s=document.getElementById('salaireEmploi').value;if(!t)return;emplois.unshift({titre:t,salaire:s});localStorage.setItem('cbk_emplois',JSON.stringify(emplois));afficherEmplois();alert('Emploi publié !');}
-function postulerEmploi(titre){window.open('https://wa.me/243815897990?text=Je%20veux%20postuler%20pour%20:%20'+encodeURIComponent(titre),'_blank');}
-function videoAuto(){alert('🎬 Vidéo TikTok Auto créée !');window.open('https://www.tiktok.com/@chicobusinesskinshasa','_blank');}
-function jouerPodcast(){document.getElementById('podcastMsg').innerHTML='🎙️ En lecture... "Comment vendre sans argent"';ajouterPoints(5);}
-function showFAQ(){document.getElementById('footerInfo').innerHTML='<b>FAQ:</b> VIP 5$, Formation 20$, Boost 2$, Livraison 3$, Statut 1$, Boutique 15$, Coach 10$, Carte 3$, Emploi 5$. Retrait: demande dans Wallet, Chico envoie sur ton M-Pesa / Airtel. M-Pesa +243 815 897 990 | Airtel +243 983 995 019';}
-function showAide(){document.getElementById('footerInfo').innerHTML='<b>AIDE:</b> WhatsApp +243 815 897 990';}
-function showApropos(){document.getElementById('footerInfo').innerHTML='<b>À PROPOS:</b> Chico Business Kinshasa aide les entrepreneurs.';}
-afficherMsgs();afficherDons();afficherProduits();afficherEmplois();majWallet();afficherHistoriqueRetraits();
+function ouvrirAdmin(){
+  let code = prompt("Mot de passe Admin ?");
+  if(code==="1234"){ showPage('admin'); } else { alert("Mauvais mot de passe"); }
+}
+// SECRET : 3 clics sur CBK = Admin apparaît
+let clicLogo=0;
+document.getElementById('logoCBK').addEventListener('click', function(){
+  clicLogo++;
+  if(clicLogo===3){
+    document.getElementById('btnAdmin').style.display='block';
+    alert('Mode Admin débloqué ! Clique sur Admin en bas.');
+    clicLogo=0;
+  }
+  setTimeout(()=>{clicLogo=0},2000);
+});
 </script>
 </body>
 </html>
