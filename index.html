@@ -3,2571 +3,1212 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>CBK — Chico Business Kinshasa</title>
+<title>CBK Chico Business — Plateforme & Admin Synchronisés</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
---lime: #D2F801;
---lime-soft: rgba(210, 248, 1, 0.14);
---bg: #0e0e0e;
---card: #171717;
---card-2: #212121;
---sidebar-bg: #131313;
---text: #f7f7f7;
---muted: #ababab;
---border: #2c2c2c;
---danger: #ff4d4d;
---ok: #38e54d;
---warn: #ffbe0b;
+--green: #0b6b3a;
+--green-dark: #074b28;
+--yellow: #f4c400;
+--bg: #f4f6f8;
+--card: #ffffff;
+--text: #14181f;
+--muted: #5c6675;
+--border: #dfe4ec;
+--danger: #c62828;
+--ok: #1b7a3d;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
+font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
 background: var(--bg);
 color: var(--text);
-font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 line-height: 1.5;
-min-height: 100vh;
 }
 
-/* Top Bar */
-.topbar {
+header {
+background: linear-gradient(135deg, var(--green-dark), var(--green));
+color: #fff;
+padding: 16px 20px;
 position: sticky;
 top: 0;
-z-index: 40;
-background: rgba(14, 14, 14, 0.96);
-backdrop-filter: blur(8px);
-border-bottom: 1px solid var(--border);
-padding: 10px 16px;
+z-index: 30;
+box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+}
+
+.topbar {
+max-width: 1120px;
+margin: 0 auto;
 display: flex;
+flex-wrap: wrap;
 align-items: center;
 justify-content: space-between;
-gap: 10px;
+gap: 12px;
 }
-.brand-box { display: flex; align-items: center; gap: 10px; min-width: 0; }
-.logo-badge {
-background: var(--lime);
-color: #0e0e0e;
-font-weight: 900;
-padding: 6px 10px;
-border-radius: 10px;
-font-size: 0.92rem;
-flex-shrink: 0;
+
+.brand-box {
+display: flex;
+align-items: center;
+gap: 12px;
 }
-.brand-logo-img {
-width: 38px;
-height: 38px;
+
+.brand-logo {
+width: 48px;
+height: 48px;
 border-radius: 10px;
 object-fit: cover;
-border: 1.5px solid var(--lime);
-flex-shrink: 0;
-background: #141414;
-}
-.brand-title { font-weight: 800; font-size: 0.96rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.brand-sub { font-size: 0.74rem; color: var(--lime); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-.top-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-.icon-btn {
-background: var(--card-2);
-color: var(--text);
-border: 1px solid var(--border);
-border-radius: 10px;
-padding: 7px 11px;
-font-size: 0.85rem;
-font-weight: 700;
-cursor: pointer;
-}
-.icon-btn.lime { background: var(--lime); color: #0e0e0e; border-color: var(--lime); }
-
-/* Sur téléphone : garder le taux visible en haut, déplacer Notif + Admin dans le menu */
-@media (max-width: 860px) {
-.desktop-only-actions { display: none !important; }
-.brand-title { font-size: 0.88rem; }
-.brand-sub { font-size: 0.71rem; }
+background: #fff;
+border: 2px solid var(--yellow);
 }
 
-/* App Shell */
-.app-shell { display: flex; min-height: calc(100vh - 58px); }
-.sidebar {
-width: 268px;
-flex-shrink: 0;
-background: var(--sidebar-bg);
-border-right: 1px solid var(--border);
-padding: 14px;
-display: flex;
-flex-direction: column;
-justify-content: space-between;
-overflow-y: auto;
-}
-.nav-list { display: flex; flex-direction: column; gap: 6px; }
-.nav-item {
-width: 100%;
-text-align: left;
-background: transparent;
-color: var(--text);
-border: 1px solid transparent;
-border-radius: 12px;
-padding: 10px 12px;
-font-size: 0.88rem;
-font-weight: 700;
-display: flex;
+.brand-title { font-size: 1.15rem; font-weight: 800; }
+.brand-sub { font-size: 0.82rem; opacity: 0.9; }
+
+.sync-badge {
+font-size: 0.78rem;
+padding: 5px 10px;
+border-radius: 999px;
+background: rgba(255,255,255,0.16);
+border: 1px solid rgba(255,255,255,0.28);
+display: inline-flex;
 align-items: center;
-justify-content: space-between;
+gap: 6px;
+}
+
+.nav-tabs {
+max-width: 1120px;
+margin: 14px auto 0;
+display: flex;
 gap: 8px;
+flex-wrap: wrap;
+}
+
+.tab-btn {
+border: none;
+padding: 9px 15px;
+border-radius: 8px;
 cursor: pointer;
-}
-.nav-item:hover { background: var(--card-2); border-color: var(--border); }
-.nav-item.active { background: var(--lime); color: #0e0e0e; border-color: var(--lime); }
-.nav-pill {
-background: var(--lime);
-color: #0e0e0e;
-font-size: 0.72rem;
-font-weight: 900;
-padding: 2px 7px;
-border-radius: 999px;
-}
-.nav-item.active .nav-pill { background: #0e0e0e; color: var(--lime); }
-
-.sidebar-divider { height: 1px; background: var(--border); margin: 8px 0; }
-.sidebar-footer {
-border-top: 1px solid var(--border);
-padding-top: 12px;
-margin-top: 16px;
-font-size: 0.76rem;
-color: var(--muted);
+font-weight: 700;
+font-size: 0.9rem;
+background: rgba(255,255,255,0.16);
+color: #fff;
+transition: 0.2s;
 }
 
-.drawer-backdrop {
-display: none;
-position: fixed;
-inset: 0;
-background: rgba(0, 0, 0, 0.72);
-z-index: 50;
-}
-.drawer-backdrop.open { display: block; }
-
-.menu-toggle-btn { display: none; }
-@media (max-width: 860px) {
-.menu-toggle-btn { display: inline-flex; }
-.sidebar {
-position: fixed;
-top: 0;
-left: -280px;
-bottom: 0;
-width: 272px;
-z-index: 55;
-transition: left 0.22s ease;
-min-height: 100vh;
-}
-.sidebar.open { left: 0; }
+.tab-btn.active {
+background: var(--yellow);
+color: #111;
 }
 
-/* Main Content */
-.main-content { flex: 1; min-width: 0; padding: 18px 16px 104px; }
-.page-container { max-width: 980px; margin: 0 auto; }
-.view { display: none; }
-.view.active { display: block; }
-
-/* Hero Banner */
-.hero-banner {
-background: linear-gradient(135deg, rgba(210, 248, 1, 0.16), rgba(23, 23, 23, 0.96));
-border: 1px solid rgba(210, 248, 1, 0.45);
-border-radius: 18px;
-padding: 20px 18px;
-margin-bottom: 18px;
+main {
+max-width: 1120px;
+margin: 22px auto;
+padding: 0 16px 60px;
 }
-.hero-kicker {
-display: inline-block;
-background: var(--lime);
-color: #0e0e0e;
-font-weight: 900;
-font-size: 0.74rem;
-padding: 4px 10px;
-border-radius: 999px;
-margin-bottom: 8px;
-}
-.hero-title { font-size: 1.5rem; font-weight: 900; line-height: 1.2; }
-.hero-sub { font-size: 0.98rem; font-weight: 700; color: var(--lime); margin-top: 4px; }
-.hero-desc { color: var(--muted); font-size: 0.9rem; margin-top: 8px; max-width: 680px; }
 
-.page-header {
-margin-bottom: 16px;
-padding-bottom: 10px;
-border-bottom: 1px solid var(--border);
-}
-.page-title { font-size: 1.25rem; font-weight: 900; }
-.page-desc { font-size: 0.84rem; color: var(--muted); margin-top: 3px; }
+.panel { display: none; }
+.panel.active { display: block; }
 
-/* Cards & Grids */
-.card {
+.hero {
 background: var(--card);
 border: 1px solid var(--border);
 border-radius: 16px;
-padding: 16px;
-margin-bottom: 16px;
+overflow: hidden;
+margin-bottom: 22px;
+box-shadow: 0 4px 16px rgba(0,0,0,0.04);
 }
-.card-lime {
-border-color: rgba(210, 248, 1, 0.45);
-background: linear-gradient(180deg, rgba(210, 248, 1, 0.08), var(--card));
+
+.banner-img {
+width: 100%;
+height: 230px;
+object-fit: cover;
+display: block;
+background: #e5eadf;
 }
-.section-title {
-font-size: 1.05rem;
-font-weight: 800;
-margin-bottom: 8px;
-display: flex;
+
+.hero-content {
+padding: 20px;
+display: grid;
+grid-template-columns: 1fr auto;
+gap: 16px;
 align-items: center;
-justify-content: space-between;
-gap: 8px;
 }
-.muted { color: var(--muted); font-size: 0.85rem; }
-.small { font-size: 0.78rem; }
 
-.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
-.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
-.wallet-box {
-background: var(--card-2);
-border: 1px solid var(--border);
-border-radius: 14px;
-padding: 14px;
+@media (max-width: 700px) {
+.hero-content { grid-template-columns: 1fr; }
 }
-.wallet-amount { font-size: 1.5rem; font-weight: 900; color: var(--lime); margin: 4px 0; }
 
-.pay-card {
-background: var(--card-2);
-border: 1px solid var(--border);
-border-radius: 14px;
-padding: 14px;
+.rate-pill {
+background: #fff9db;
+border: 1px solid #f0d043;
+color: #4a3900;
+padding: 12px 16px;
+border-radius: 12px;
+font-weight: 800;
 text-align: center;
 }
-.pay-tag {
-display: inline-block;
-background: var(--lime);
-color: #0e0e0e;
-font-weight: 900;
-font-size: 0.82rem;
-padding: 4px 10px;
-border-radius: 999px;
-margin-bottom: 8px;
+
+.grid-2 {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+gap: 16px;
+margin-bottom: 20px;
 }
 
-/* Controls */
-button, .link-btn { font-family: inherit; cursor: pointer; }
-.btn {
-background: var(--card-2);
-color: var(--text);
+.card {
+background: var(--card);
 border: 1px solid var(--border);
-border-radius: 11px;
-padding: 9px 14px;
+border-radius: 14px;
+padding: 16px;
+box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+}
+
+.card h3 {
+font-size: 1rem;
+margin-bottom: 10px;
+color: var(--green-dark);
+}
+
+.thumb {
+width: 100%;
+height: 165px;
+object-fit: cover;
+border-radius: 10px;
+background: #eef2f6;
+margin-bottom: 10px;
+display: block;
+}
+
+.pay-list {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+gap: 14px;
+margin-top: 10px;
+}
+
+.pay-item {
+border: 1px solid var(--border);
+border-radius: 12px;
+padding: 12px;
+background: #fafbfd;
+display: flex;
+gap: 12px;
+align-items: center;
+}
+
+.pay-logo {
+width: 54px;
+height: 54px;
+border-radius: 10px;
+object-fit: cover;
+border: 1px solid var(--border);
+background: #fff;
+flex-shrink: 0;
+}
+
+.pub-card {
+border: 1px solid var(--border);
+border-radius: 12px;
+padding: 14px;
+margin-bottom: 12px;
+background: #fff;
+}
+
+.pub-card img {
+width: 100%;
+max-height: 240px;
+object-fit: cover;
+border-radius: 10px;
+margin-top: 10px;
+}
+
+.form-group { margin-bottom: 12px; }
+
+label {
+display: block;
 font-size: 0.85rem;
 font-weight: 700;
+margin-bottom: 5px;
+color: #263040;
+}
+
+input[type="text"],
+input[type="url"],
+textarea,
+select {
+width: 100%;
+padding: 9px 11px;
+border: 1px solid #cbd3e0;
+border-radius: 8px;
+font-size: 0.92rem;
+background: #fff;
+}
+
+textarea { min-height: 78px; resize: vertical; }
+
+.row-inline {
+display: flex;
+gap: 8px;
+align-items: center;
+flex-wrap: wrap;
+}
+
+.row-inline input[type="url"] { flex: 1; min-width: 180px; }
+
+.btn {
+border: none;
+border-radius: 8px;
+padding: 9px 14px;
+font-weight: 700;
+font-size: 0.88rem;
+cursor: pointer;
 display: inline-flex;
 align-items: center;
 justify-content: center;
 gap: 6px;
-text-decoration: none;
 }
-.btn:hover { border-color: var(--lime); }
-.btn-lime { background: var(--lime); color: #0e0e0e; border-color: var(--lime); }
-.btn-danger { background: rgba(255, 77, 77, 0.16); color: #ff8585; border-color: rgba(255, 77, 77, 0.45); }
-.btn-sm { padding: 6px 10px; font-size: 0.78rem; border-radius: 9px; }
 
-input, select, textarea {
-width: 100%;
-background: #101010;
-color: var(--text);
-border: 1px solid var(--border);
+.btn-primary { background: var(--green); color: #fff; }
+.btn-primary:hover { background: var(--green-dark); }
+.btn-yellow { background: var(--yellow); color: #111; }
+.btn-outline { background: #eef2f6; color: #1e2530; }
+.btn-danger { background: #fdecec; color: var(--danger); }
+
+.status-box {
+padding: 12px 14px;
 border-radius: 10px;
-padding: 9px 11px;
-font-size: 0.88rem;
-margin-top: 5px;
-margin-bottom: 10px;
-}
-input:focus, select:focus, textarea:focus { outline: none; border-color: var(--lime); }
-label { font-size: 0.8rem; font-weight: 700; color: #dcdcdc; }
-
-/* Badges & Media */
-.badge {
-display: inline-block;
-padding: 3px 8px;
-border-radius: 999px;
-font-size: 0.72rem;
-font-weight: 800;
-background: var(--lime-soft);
-color: var(--lime);
-border: 1px solid rgba(210, 248, 1, 0.35);
-margin-right: 5px;
-margin-bottom: 4px;
-}
-.status-pending { color: var(--warn); font-weight: 700; }
-.status-ok { color: var(--ok); font-weight: 700; }
-.status-bad { color: var(--danger); font-weight: 700; }
-
-.media-preview {
-width: 100%;
-max-height: 220px;
-object-fit: cover;
-border-radius: 12px;
-border: 1px solid var(--border);
-margin-bottom: 10px;
-background: #111;
-}
-.pdg-photo {
-width: 90px;
-height: 90px;
-border-radius: 14px;
-object-fit: cover;
-border: 2px solid var(--lime);
-flex-shrink: 0;
-}
-.avatar-photo {
-width: 56px;
-height: 56px;
-border-radius: 50%;
-object-fit: cover;
-border: 2px solid var(--lime);
-flex-shrink: 0;
-background: #121212;
-}
-.list-box {
-background: var(--card-2);
-border: 1px solid var(--border);
-border-radius: 11px;
-padding: 10px 12px;
-margin-top: 8px;
-}
-.receipt-box {
-background: rgba(210, 248, 1, 0.09);
-border: 1px solid rgba(210, 248, 1, 0.45);
-border-radius: 12px;
-padding: 12px;
-margin-top: 10px;
-}
-.comment-item {
-background: var(--card-2);
-border: 1px solid var(--border);
-border-radius: 11px;
-padding: 9px 11px;
-margin-top: 8px;
-cursor: pointer;
-}
-.comment-item:hover { border-color: var(--lime); }
-.reply-list {
-margin-left: 14px;
-margin-top: 7px;
-padding-left: 10px;
-border-left: 2px solid var(--lime);
-}
-
-/* Floating Chat Button */
-.fab-chat {
-position: fixed;
-right: 18px;
-bottom: 20px;
-z-index: 45;
-width: 56px;
-height: 56px;
-border-radius: 50%;
-background: var(--lime);
-color: #0e0e0e;
-border: 2px solid #0e0e0e;
-font-weight: 900;
-font-size: 1.15rem;
-box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65);
-}
-
-/* Modals & Toast */
-.modal-backdrop {
+margin-bottom: 16px;
+font-weight: 700;
+font-size: 0.9rem;
 display: none;
+}
+
+.status-box.show { display: block; }
+.status-ok { background: #e7f6ec; color: var(--ok); border: 1px solid #a9dfc0; }
+.status-err { background: #fdecec; color: var(--danger); border: 1px solid #f5b5b5; }
+
+/* Modal recadrage */
+.modal-backdrop {
 position: fixed;
 inset: 0;
-background: rgba(0, 0, 0, 0.78);
-z-index: 70;
+background: rgba(0,0,0,0.68);
+display: none;
 align-items: center;
 justify-content: center;
-padding: 14px;
-}
-.modal-backdrop.open { display: flex; }
-.modal-box {
-width: 100%;
-max-width: 520px;
-max-height: 88vh;
-overflow-y: auto;
-background: var(--card);
-border: 1px solid var(--lime);
-border-radius: 16px;
 padding: 16px;
+z-index: 60;
 }
-.toast {
-position: fixed;
-top: 66px;
-left: 50%;
-transform: translateX(-50%);
-background: var(--lime);
-color: #0e0e0e;
-font-weight: 800;
-padding: 9px 16px;
-border-radius: 999px;
-z-index: 85;
-display: none;
-font-size: 0.85rem;
-box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+
+.modal-backdrop.open { display: flex; }
+
+.modal-card {
+background: #fff;
+border-radius: 16px;
+max-width: 540px;
+width: 100%;
+padding: 18px;
+box-shadow: 0 20px 50px rgba(0,0,0,0.3);
 }
-.row-between { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
-.row-gap { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+.crop-stage {
+position: relative;
+width: 100%;
+height: 290px;
+background: #14181f;
+border-radius: 12px;
+overflow: hidden;
+margin: 12px 0;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.crop-stage img {
+max-width: 100%;
+max-height: 100%;
+user-select: none;
+transition: transform 0.08s ease-out;
+}
+
+.crop-frame-guide {
+position: absolute;
+inset: 22px;
+border: 2px dashed var(--yellow);
+border-radius: 10px;
+pointer-events: none;
+box-shadow: 0 0 0 9999px rgba(0,0,0,0.35);
+}
+
+.muted { color: var(--muted); font-size: 0.85rem; }
 </style>
 </head>
 <body>
 
-<div id="toast" class="toast"></div>
-<div id="drawerBackdrop" class="drawer-backdrop" onclick="closeDrawer()"></div>
-
-<!-- Top Bar -->
-<header class="topbar">
+<header>
+<div class="topbar">
 <div class="brand-box">
-<button type="button" class="icon-btn menu-toggle-btn" onclick="toggleDrawer()" aria-label="Menu">☰</button>
-<img id="headerLogoImg" class="brand-logo-img" style="display:none;" alt="Logo CBK" />
-<div id="headerLogoText" class="logo-badge">CBK</div>
+<img id="headerLogo" class="brand-logo" alt="Logo CBK" />
 <div>
-<div class="brand-title">CBK Chico Business</div>
-<!-- Taux en $ visible sur téléphone et sur ordinateur -->
-<div id="headerSessionInfo" class="brand-sub">Taux 1$ = 2800 FC • Kinshasa</div>
+<div class="brand-title" id="headerTitle">CBK Chico Business</div>
+<div class="brand-sub" id="headerSubtitle">Services, Taux, Publications & Paiements</div>
 </div>
+</div>
+<div id="syncStatusBadge" class="sync-badge">🔄 Synchronisation prête</div>
 </div>
 
-<!-- Sur PC : raccourcis rapides Notifications et Admin (sur téléphone, ils sont dans le menu près de FAQ & A Propos) -->
-<div class="top-actions desktop-only-actions">
-<button type="button" id="btnNotifDesktop" class="icon-btn" title="Notifications">🔔 <span id="notifCountDesktop">0</span></button>
-<button type="button" id="btnAdminDesktop" class="icon-btn lime">Admin</button>
+<div class="nav-tabs">
+<button type="button" class="tab-btn active" data-tab="vitrine">🏠 Vitrine Publique</button>
+<button type="button" class="tab-btn" data-tab="admin">⚙️ Espace Admin (Tout Modifier)</button>
 </div>
 </header>
 
-<div class="app-shell">
-<!-- Sidebar / Mobile Drawer -->
-<aside id="sidebarMenu" class="sidebar">
+<main>
+<div id="globalAlert" class="status-box"></div>
+
+<!-- ONGLET 1 : VITRINE PUBLIQUE -->
+<section id="tab-vitrine" class="panel active">
+<div class="hero">
+<img id="viewBanner" class="banner-img" alt="Bannière Accueil" />
+<div class="hero-content">
 <div>
-<div class="row-gap" style="margin-bottom:12px;">
-<img id="sidebarLogoImg" class="brand-logo-img" style="display:none;" alt="Logo CBK" />
-<div>
-<div style="font-weight:900; font-size:1rem;">CBK Chico Business</div>
-<div id="sidebarUserLabel" class="muted small">@client_cbk • Kinshasa</div>
+<h1 id="viewBusinessName">CBK Chico Business</h1>
+<p id="viewWelcomeText" class="muted"></p>
+</div>
+<div class="rate-pill" id="viewRateBox">Taux : 1$ = 225 FC</div>
 </div>
 </div>
 
-<div class="nav-list">
-<button type="button" class="nav-item active" data-view="home"><span>🏠 1. Accueil</span></button>
-<button type="button" class="nav-item" data-view="account"><span>👤 2. Créer un compte / Connexion</span></button>
-<button type="button" class="nav-item" data-view="services"><span>🛠️ 3. Mes Services</span></button>
-<button type="button" class="nav-item" data-view="payments"><span>💰 4. Mode de paiement & Dons</span></button>
-<button type="button" class="nav-item" data-view="market"><span>🛒 5. Marché CBK</span></button>
-<button type="button" class="nav-item" data-view="artists"><span>🎤 6. Artistes & Actifs</span></button>
+<div class="grid-2">
+<div class="card">
+<h3>👤 Direction / PDG</h3>
+<img id="viewPdgImg" class="thumb" alt="Photo PDG" />
+<strong id="viewPdgName"></strong>
+</div>
+<div class="card">
+<h3>🛂 Service Passeport</h3>
+<img id="viewPassportImg" class="thumb" alt="Service Passeport" />
+<p id="viewPassportText" class="muted"></p>
+</div>
+<div class="card">
+<h3>🎬 Studio Vidéo / Photo / Audio</h3>
+<img id="viewStudioImg" class="thumb" alt="Photo Studio" />
+<p id="viewStudioText" class="muted"></p>
+</div>
+</div>
 
-<div class="sidebar-divider"></div>
+<div class="card" style="margin-bottom: 20px;">
+<h3>💳 Modes de Paiement</h3>
+<div id="viewPaymentsList" class="pay-list"></div>
+</div>
 
-<!-- Regroupement : A Propos, FAQ, Notifications et Admin au même endroit -->
-<button type="button" class="nav-item" data-view="about"><span>ℹ️ 7. A Propos</span></button>
-<button type="button" class="nav-item" data-view="faq"><span>❓ 8. FAQ & Assistant IA</span></button>
-<button type="button" id="menuNotifBtn" class="nav-item">
-<span>🔔 Notifications</span>
-<span id="notifCountMenu" class="nav-pill">0</span>
+<div class="grid-2">
+<div class="card">
+<h3>💰 Infos Paiements</h3>
+<img id="viewPayInfoImg" class="thumb" alt="Photo Paiements" />
+<p id="viewPayInfoText" class="muted"></p>
+</div>
+<div class="card">
+<h3>🎁 Dons</h3>
+<img id="viewDonateImg" class="thumb" alt="Photo Dons" />
+<p id="viewDonateText" class="muted"></p>
+</div>
+<div class="card">
+<h3>ℹ️ À Propos</h3>
+<img id="viewAboutImg" class="thumb" alt="Photo À Propos" />
+<p id="viewAboutText" class="muted"></p>
+</div>
+</div>
+
+<div class="card">
+<h3>📰 Publications & Annonces</h3>
+<div id="viewPublications"></div>
+</div>
+</section>
+
+<!-- ONGLET 2 : ESPACE ADMIN -->
+<section id="tab-admin" class="panel">
+<div class="card" style="margin-bottom: 18px;">
+<h3>1. Informations Générales, Noms & Taux</h3>
+<div class="grid-2">
+<div class="form-group">
+<label for="inpBusinessName">Nom de l'entreprise / plateforme</label>
+<input type="text" id="inpBusinessName" />
+</div>
+<div class="form-group">
+<label for="inpRate">Taux actuel (ex: 1$ = 225 FC)</label>
+<input type="text" id="inpRate" />
+</div>
+<div class="form-group">
+<label for="inpPdgName">Nom du PDG / Responsable</label>
+<input type="text" id="inpPdgName" />
+</div>
+<div class="form-group">
+<label for="inpWelcomeText">Texte d'accueil</label>
+<input type="text" id="inpWelcomeText" />
+</div>
+</div>
+</div>
+
+<div class="card" style="margin-bottom: 18px;">
+<h3>2. Photos des Rubriques (Fichier + Recadrage + URL)</h3>
+<p class="muted" style="margin-bottom: 14px;">
+Pour chaque rubrique, vous pouvez importer une photo (avec recadrage) OU coller un lien URL direct puis cliquer sur OK.
+</p>
+<div id="adminMediaSlots" class="grid-2"></div>
+</div>
+
+<div class="card" style="margin-bottom: 18px;">
+<h3>3. Modes de Paiement (Logo + Fichier/Recadrage + URL)</h3>
+<div id="adminPaymentsList"></div>
+
+<div class="card" style="margin-top: 14px; background: #f8fafc;">
+<h4 style="margin-bottom: 10px;">Ajouter un mode de paiement</h4>
+<div class="grid-2">
+<div class="form-group">
+<label for="newPayName">Nom du mode de paiement (ex: M-Pesa, Airtel Money, Carte)</label>
+<input type="text" id="newPayName" placeholder="Ex: Airtel Money" />
+</div>
+<div class="form-group">
+<label for="newPayDetail">Numéro / Détail</label>
+<input type="text" id="newPayDetail" placeholder="Ex: +243 81 000 0000" />
+</div>
+</div>
+<div class="form-group">
+<label for="newPayUrl">URL du logo du mode de paiement</label>
+<div class="row-inline">
+<input type="url" id="newPayUrl" placeholder="https://i.ibb.co/..." />
+<button type="button" class="btn btn-outline" id="btnNewPayFile">📷 Choisir & Recadrer</button>
+</div>
+</div>
+<img id="newPayPreview" class="thumb" style="max-width: 140px; height: 90px;" alt="Aperçu logo paiement" />
+<button type="button" class="btn btn-yellow" id="btnAddPayment">➕ Ajouter ce mode de paiement</button>
+</div>
+</div>
+
+<div class="card" style="margin-bottom: 18px;">
+<h3>4. Publications</h3>
+<div class="form-group">
+<label for="pubTitle">Titre de la publication</label>
+<input type="text" id="pubTitle" placeholder="Titre de l'annonce..." />
+</div>
+<div class="form-group">
+<label for="pubBody">Contenu de la publication</label>
+<textarea id="pubBody" placeholder="Écrivez votre publication ici..."></textarea>
+</div>
+<div class="form-group">
+<label for="pubImgUrl">Image de la publication (URL ou Fichier recadré)</label>
+<div class="row-inline">
+<input type="url" id="pubImgUrl" placeholder="https://..." />
+<button type="button" class="btn btn-outline" id="btnPubFile">📷 Choisir & Recadrer</button>
+</div>
+</div>
+<img id="pubPreview" class="thumb" style="max-width: 220px; height: 120px;" alt="Aperçu publication" />
+<button type="button" class="btn btn-yellow" id="btnAddPub">📝 Publier maintenant</button>
+
+<div id="adminPubList" style="margin-top: 16px;"></div>
+</div>
+
+<div class="row-inline" style="justify-content: space-between;">
+<button type="button" class="btn btn-primary" style="padding: 12px 22px; font-size: 1rem;" id="btnSaveAll">
+💾 Enregistrer & Synchroniser pour tout le monde
 </button>
-<button type="button" id="menuAdminBtn" class="nav-item">
-<span id="menuAdminLabel">🔐 Espace Admin</span>
+<button type="button" class="btn btn-danger" id="btnResetDefaults">
+♻️ Réinitialiser par défaut
 </button>
 </div>
-</div>
-
-<div class="sidebar-footer">
-<button type="button" class="btn btn-sm" style="width:100%; margin-bottom:8px;" onclick="logoutToAccount()">🚪 Déconnexion</button>
-<div>Version 1.3.0 - Kinshasa</div>
-</div>
-</aside>
-
-<!-- Main Page Area -->
-<main class="main-content">
-<div class="page-container">
-
-<!-- 1. ACCUEIL -->
-<section id="view-home" class="view active">
-<div class="hero-banner">
-<div class="row-between" style="margin-bottom:8px;">
-<span class="hero-kicker">KINSHASA • RDC</span>
-<span id="homeRateBadge" class="badge">1$ = 2800 FC</span>
-</div>
-<img id="homeBannerImg" class="media-preview" style="display:none;" alt="Bannière Accueil CBK" />
-<h1 class="hero-title">Chico Business Kinshasa (CBK)</h1>
-<div class="hero-sub">La Maîtrise de vos Affaires & Services</div>
-<p class="hero-desc">
-Plateforme centralisée de <strong>Chico Business Production</strong> : création de compte, portefeuille double devise USD/FC, dons, assistance passeport, studio vidéo/photo/audio, marché et communauté artistique.
-</p>
-<div class="row-gap" style="margin-top:14px;">
-<button type="button" class="btn btn-lime" onclick="switchView('account')">Créer un compte / Connexion</button>
-<button type="button" class="btn" onclick="switchView('services')">Mes Services</button>
-<button type="button" class="btn" onclick="switchView('payments')">Paiements & Dons</button>
-</div>
-</div>
-
-<!-- Annonce du jour / Mot du PDG -->
-<div id="announcementCard" class="card" style="display:none; border-color:rgba(210,248,1,0.55);">
-<span class="badge">📢 ANNONCE CBK</span>
-<h3 id="announcementTitle" style="font-size:1rem; margin-top:4px;"></h3>
-<p id="announcementBody" class="muted small" style="margin-top:4px;"></p>
-</div>
-
-<div class="card card-lime">
-<div class="row-gap" style="align-items:flex-start;">
-<img id="pdgImg" class="pdg-photo" src="https://via.placeholder.com/150/1a1a1a/D2F801?text=PDG+CBK" alt="CHICO MOFONGA" />
-<div style="flex:1; min-width:220px;">
-<span class="badge">DIRECTION GÉNÉRALE</span>
-<h2 style="font-size:1.12rem; margin-top:4px;">PDG : CHICO MOFONGA</h2>
-<p class="muted small" style="margin-top:4px;">
-Accompagnement business, production studio, démarches et services rapides à Kinshasa.
-</p>
-<div class="row-gap" style="margin-top:10px;">
-<a class="btn btn-sm btn-lime link-btn" href="https://wa.me/message/2DFDG7JRKVQQL1" target="_blank" rel="noopener">WhatsApp Officiel</a>
-<a class="btn btn-sm link-btn" href="https://www.facebook.com/share/1CVrhKCMQ7/?mibextid=wwXIfr" target="_blank" rel="noopener">Facebook CBK</a>
-</div>
-</div>
-</div>
-</div>
-
-<div class="card">
-<h3 class="section-title">✉️ Messages privés de l'Admin</h3>
-<div id="clientPrivateMessages"></div>
-</div>
 </section>
-
-<!-- 2. CRÉER UN COMPTE / CONNEXION & KYC -->
-<section id="view-account" class="view">
-<div class="page-header">
-<h1 class="page-title">Créer un compte / Connexion</h1>
-<p class="page-desc">Inscription avec photo de profil, connexion, raccourcis portefeuille et vérification KYC.</p>
-</div>
-
-<div class="grid-2">
-<div class="card card-lime">
-<h3 class="section-title">📝 Créer un nouveau compte</h3>
-<form id="registerForm">
-<label>Nom</label>
-<input id="regNom" type="text" placeholder="Ex: Mofonga" required />
-<label>Post-nom</label>
-<input id="regPostNom" type="text" placeholder="Post-nom" />
-<label>Prénom</label>
-<input id="regPrenom" type="text" placeholder="Prénom" required />
-<label>Nom d'utilisateur (sans espace)</label>
-<input id="regUsername" type="text" placeholder="Ex: client_kinshasa" required />
-<label>Téléphone</label>
-<input id="regPhone" type="text" placeholder="08..." required />
-<label>E-mail</label>
-<input id="regEmail" type="email" placeholder="exemple@email.com" />
-<label>Photo de profil (galerie / PC)</label>
-<input id="regAvatarFile" type="file" accept="image/*" />
-<label>Mot de passe / Code personnel</label>
-<input id="regPassword" type="password" placeholder="Choisissez un code" required />
-<button type="submit" class="btn btn-lime" style="width:100%;">Créer mon compte</button>
-</form>
-</div>
-
-<div>
-<div class="card">
-<h3 class="section-title">🔑 Connexion & Compte actif</h3>
-<div id="accountProfileBox"></div>
-<div class="row-gap" style="margin-top:10px;">
-<button type="button" class="btn btn-sm btn-lime" onclick="switchView('payments')">💼 Mon Portefeuille & Dons</button>
-<label class="btn btn-sm" style="margin:0;">
-📷 Changer photo profil <input type="file" accept="image/*" style="display:none;" onchange="updateCurrentUserAvatar(event)" />
-</label>
-</div>
-<form id="loginSwitchForm" style="margin-top:12px;">
-<label>Connexion par nom d'utilisateur</label>
-<div class="row-gap">
-<input id="loginUsername" type="text" placeholder="Nom d'utilisateur" style="margin:0; flex:1;" required />
-<button type="submit" class="btn btn-sm btn-lime">Connexion</button>
-</div>
-</form>
-</div>
-
-<div class="card">
-<h3 class="section-title">🪪 Vérification d'identité (KYC)</h3>
-<form id="kycForm">
-<label>Pièce d'identité (Numéro ou référence document)</label>
-<input id="kycDoc" type="text" placeholder="Ex: Carte d'électeur / Passeport" required />
-<button type="submit" class="btn btn-sm btn-lime">Soumettre ma pièce KYC</button>
-</form>
-</div>
-</div>
-</div>
-</section>
-
-<!-- 3. MES SERVICES (PASSEPORT & STUDIO) -->
-<section id="view-services" class="view">
-<div class="page-header">
-<div class="row-between">
-<div>
-<h1 class="page-title">Mes Services</h1>
-<p class="page-desc">Assistance Passeport Rapide à Kinshasa et Studio Vidéo / Photo / Audio.</p>
-</div>
-<div class="row-gap">
-<button type="button" class="btn btn-sm btn-lime" onclick="filterServices('all')">Tous</button>
-<button type="button" class="btn btn-sm" onclick="filterServices('passport')">Passeport</button>
-<button type="button" class="btn btn-sm" onclick="filterServices('studio')">Studio</button>
-</div>
-</div>
-</div>
-
-<div class="grid-2">
-<div id="serviceCardPassport" class="card card-lime">
-<img id="srvPassportImg" class="media-preview" style="display:none;" alt="Service Passeport CBK" />
-<h3 class="section-title">🛂 Assistance Passeport Rapide</h3>
-<p class="muted small">Accompagnement, prise de rendez-vous et suivi de dossier.</p>
-<form id="passportForm" style="margin-top:10px;">
-<label>Nom complet du demandeur</label>
-<input id="passName" type="text" placeholder="Nom Post-nom Prénom" required />
-<label>Téléphone / WhatsApp</label>
-<input id="passPhone" type="text" placeholder="08..." required />
-<label>Détails / Date souhaitée</label>
-<textarea id="passNote" rows="2" placeholder="Précisez votre demande..."></textarea>
-<button type="submit" class="btn btn-lime">Envoyer la demande Passeport</button>
-</form>
-</div>
-
-<div id="serviceCardStudio" class="card">
-<img id="srvStudioImg" class="media-preview" style="display:none;" alt="Studio CBK" />
-<h3 class="section-title">🎬 Studio Vidéo / Photo / Audio</h3>
-<p class="muted small">Réservez une séance avec <strong>Chico Business Production</strong>.</p>
-<form id="studioForm" style="margin-top:10px;">
-<label>Type de prestation</label>
-<select id="studioType">
-<option value="Tournage Vidéo / Clip">Tournage Vidéo / Clip</option>
-<option value="Shooting Photo Professionnel">Shooting Photo Professionnel</option>
-<option value="Enregistrement Audio / Studio">Enregistrement Audio / Studio</option>
-<option value="Couverture Événement Kinshasa">Couverture Événement Kinshasa</option>
-</select>
-<label>Date & Heure souhaitées</label>
-<input id="studioDate" type="text" placeholder="Ex: Samedi 14h" required />
-<label>Notes du projet</label>
-<textarea id="studioNote" rows="2" placeholder="Décrivez votre besoin..."></textarea>
-<button type="submit" class="btn btn-lime">Réserver le Studio</button>
-</form>
-</div>
-</div>
-
-<div id="lastServiceReceipt" class="receipt-box" style="display:none;"></div>
-
-<div class="card">
-<h3 class="section-title">📌 Suivi de mes demandes</h3>
-<div id="myServiceRequests"></div>
-</div>
-</section>
-
-<!-- 4. MODE DE PAIEMENT, PORTEFEUILLE USD/FC & DONS -->
-<section id="view-payments" class="view">
-<div class="page-header">
-<h1 class="page-title">Mode de paiement & Dons</h1>
-<p class="page-desc">Réseaux mobiles officiels, convertisseur USD/FC, portefeuille double devise, transactions et dons.</p>
-</div>
-
-<div class="card">
-<img id="payBannerImg" class="media-preview" style="display:none;" alt="Paiements CBK" />
-<h3 class="section-title">📱 Modes de paiement disponibles</h3>
-<p class="muted small" style="margin-bottom:10px;">
-Copiez facilement nos numéros officiels à Kinshasa :
-</p>
-<div class="grid-3">
-<div class="pay-card">
-<div class="pay-tag">Airtel Money</div>
-<div style="font-weight:900; font-size:1rem; margin-bottom:8px;">0983 995 019</div>
-<button type="button" class="btn btn-sm" onclick="copyText('0983 995 019', 'Numéro Airtel Money copié !')">📋 Copier le numéro</button>
-</div>
-<div class="pay-card">
-<div class="pay-tag">Orange Money</div>
-<div style="font-weight:900; font-size:1rem; margin-bottom:8px;">0859312214</div>
-<button type="button" class="btn btn-sm" onclick="copyText('0859312214', 'Numéro Orange Money copié !')">📋 Copier le numéro</button>
-</div>
-<div class="pay-card">
-<div class="pay-tag">M-Pesa</div>
-<div style="font-weight:900; font-size:1rem; margin-bottom:8px;">0815897990</div>
-<button type="button" class="btn btn-sm" onclick="copyText('0815897990', 'Numéro M-Pesa copié !')">📋 Copier le numéro</button>
-</div>
-</div>
-</div>
-
-<!-- Convertisseur rapide USD <-> FC -->
-<div class="card">
-<div class="row-between">
-<h3 class="section-title" style="margin:0;">🔄 Convertisseur rapide USD ↔ FC</h3>
-<span id="exchangeRateBadge" class="badge">1 USD = 2800 FC</span>
-</div>
-<div class="grid-2" style="margin-top:10px;">
-<div>
-<label>Montant à convertir</label>
-<input id="convAmount" type="number" step="0.01" min="0" placeholder="Ex: 10 ou 28000" oninput="updateConverter()" />
-</div>
-<div>
-<label>Sens de conversion</label>
-<select id="convDirection" onchange="updateConverter()">
-<option value="USD_TO_FC">USD ($) → Francs congolais (FC)</option>
-<option value="FC_TO_USD">Francs congolais (FC) → USD ($)</option>
-</select>
-</div>
-</div>
-<div id="convResult" class="list-box" style="margin-top:4px;">
-<strong style="color:var(--lime);">Résultat :</strong> <span class="muted">Entrez un montant ci-dessus.</span>
-</div>
-</div>
-
-<div class="card card-lime">
-<h3 class="section-title">💼 Mon Portefeuille CBK</h3>
-<p id="walletAccountStatus" class="muted small"></p>
-<div class="grid-2" style="margin-top:12px;">
-<div class="wallet-box">
-<div class="muted small">Solde Dollar américain</div>
-<div id="balUsd" class="wallet-amount">$0.00</div>
-</div>
-<div class="wallet-box">
-<div class="muted small">Solde Franc congolais</div>
-<div id="balFc" class="wallet-amount">0 FC</div>
-</div>
-</div>
-</div>
-
-<div id="lastTxReceipt" class="receipt-box" style="display:none;"></div>
-
-<div class="grid-2">
-<div class="card">
-<h3 class="section-title">📲 Dépôt / Retrait / Transfert</h3>
-<form id="txForm">
-<label>Type d'opération</label>
-<select id="txType">
-<option value="depot">Dépôt (Recharge)</option>
-<option value="retrait">Retrait</option>
-<option value="transfert">Transfert interne (username)</option>
-</select>
-<label>Devise</label>
-<select id="txCurrency">
-<option value="USD">USD ($)</option>
-<option value="FC">FC</option>
-</select>
-<label>Montant</label>
-<input id="txAmount" type="number" step="0.01" min="0.01" required />
-<label>Réseau / Moyen</label>
-<select id="txMethod">
-<option value="M-Pesa (0815897990)">M-Pesa (0815897990)</option>
-<option value="Orange Money (0859312214)">Orange Money (0859312214)</option>
-<option value="Airtel Money (0983 995 019)">Airtel Money (0983 995 019)</option>
-<option value="Portefeuille CBK">Portefeuille CBK</option>
-</select>
-<div id="txTargetWrap" style="display:none;">
-<label>Nom d'utilisateur destinataire</label>
-<input id="txTargetUser" type="text" placeholder="Ex: client_kin" />
-</div>
-<label>Référence transaction / Note</label>
-<input id="txRef" type="text" placeholder="Ex: Réf paiement..." />
-<button type="submit" class="btn btn-lime">Soumettre la demande</button>
-</form>
-</div>
-
-<div class="card">
-<img id="donateBannerImg" class="media-preview" style="display:none;" alt="Dons CBK" />
-<div class="row-between">
-<h3 class="section-title" style="margin:0;">🎁 Dons & Donateurs</h3>
-<button type="button" class="btn btn-sm btn-lime" onclick="openModal('donateModal')">Faire un don</button>
-</div>
-<p class="muted small" style="margin-top:6px;">
-Soutenez CBK avec le nom du donateur, le montant en USD/FC et un message.
-</p>
-<div id="donorsList" style="margin-top:10px;"></div>
-</div>
-</div>
-
-<div class="card">
-<h3 class="section-title">📜 Historique de mes transactions</h3>
-<div id="myTransactionsList"></div>
-</div>
-</section>
-
-<!-- 5. MARCHÉ CBK -->
-<section id="view-market" class="view">
-<div class="page-header">
-<h1 class="page-title">Marché CBK</h1>
-<p class="page-desc">Articles et offres vérifiés disponibles à Kinshasa.</p>
-</div>
-
-<div class="card" style="padding:12px;">
-<div class="grid-2" style="gap:10px;">
-<div>
-<label>Rechercher un article</label>
-<input id="marketSearchInput" type="text" placeholder="Mot-clé..." style="margin-bottom:0;" oninput="renderAll()" />
-</div>
-<div>
-<label>Filtrer par devise</label>
-<select id="marketCurrencyFilter" style="margin-bottom:0;" onchange="renderAll()">
-<option value="ALL">Toutes devises (USD & FC)</option>
-<option value="USD">USD ($)</option>
-<option value="FC">FC</option>
-</select>
-</div>
-</div>
-</div>
-
-<div id="lastOrderReceipt" class="receipt-box" style="display:none;"></div>
-
-<div id="marketList" class="grid-2"></div>
-<div class="card" style="margin-top:16px;">
-<h3 class="section-title">📦 Mes commandes</h3>
-<div id="myOrdersList"></div>
-</div>
-</section>
-
-<!-- 6. ARTISTES & UTILISATEURS ACTIFS -->
-<section id="view-artists" class="view">
-<div class="page-header">
-<h1 class="page-title">Artistes & Actifs du mois</h1>
-<p class="page-desc">Commentez, cliquez sur un commentaire pour répondre et consultez les utilisateurs actifs du mois.</p>
-</div>
-
-<div class="card card-lime">
-<h3 class="section-title">🏆 Utilisateurs actifs du mois</h3>
-<div id="activeUsersList"></div>
-</div>
-
-<div id="artistsList" class="grid-2"></div>
-</section>
-
-<!-- 7. A PROPOS -->
-<section id="view-about" class="view">
-<div class="page-header">
-<h1 class="page-title">A Propos</h1>
-<p class="page-desc">Présentation de Chico Business Kinshasa (CBK) et de sa vision.</p>
-</div>
-
-<div class="card card-lime">
-<img id="aboutBannerImg" class="media-preview" style="display:none;" alt="À propos CBK" />
-<h3 class="section-title">Chico Business Kinshasa (CBK)</h3>
-<p class="muted" style="margin-bottom:10px;">
-<strong>CBK</strong> est une plateforme de services et de gestion d'activités basée à <strong>Kinshasa</strong>, dirigée par le PDG <strong>CHICO MOFONGA</strong> au sein de <strong>Chico Business Production</strong>.
-</p>
-<p class="muted">
-Elle réunit dans un seul espace la gestion de portefeuille (USD et FC), les dons communautaires, l'assistance passeport rapide, la réservation studio (vidéo, photo, audio), le marché d'articles vérifiés et la mise en valeur des artistes et utilisateurs actifs du mois.
-</p>
-</div>
-</section>
-
-<!-- 8. FAQ & ASSISTANT IA -->
-<section id="view-faq" class="view">
-<div class="page-header">
-<h1 class="page-title">FAQ & Assistant IA</h1>
-<p class="page-desc">Questions fréquentes, idées de business à Kinshasa et aide à la recherche entrepreneuriale.</p>
-</div>
-
-<!-- Assistant IA Business & Entrepreneuriat -->
-<div class="card card-lime">
-<h3 class="section-title">🤖 Assistant IA CBK — Business & Entrepreneuriat</h3>
-<p class="muted small">
-Posez vos questions pour obtenir des <strong>idées de business</strong> adaptées à Kinshasa ou un accompagnement pour vos <strong>recherches entrepreneuriales</strong>.
-</p>
-<div class="row-gap" style="margin-top:10px;">
-<button type="button" class="btn btn-sm btn-lime" onclick="askBusinessAi('Donne-moi des idées de business rentables à Kinshasa')">💡 Idées business Kinshasa</button>
-<button type="button" class="btn btn-sm" onclick="askBusinessAi('Comment faire ma recherche entrepreneuriale et structurer mon projet ?')">📊 Recherche entrepreneuriale</button>
-<button type="button" class="btn btn-sm" onclick="askBusinessAi('Idées business petit budget en USD ou FC')">💰 Petit budget</button>
-</div>
-<form id="aiAdvisorForm" style="margin-top:12px;">
-<label>Votre question ou idée de projet</label>
-<div class="row-gap">
-<input id="aiQuestionInput" type="text" placeholder="Ex: Idée de commerce avec 100$ ou comment étudier mon marché ?" style="margin:0; flex:1;" required />
-<button type="submit" class="btn btn-sm btn-lime">Demander à l'IA</button>
-</div>
-</form>
-<div id="aiAdvisorReply" class="list-box" style="margin-top:10px;">
-<div class="small"><strong>Conseiller CBK :</strong> Sélectionnez un bouton rapide ou écrivez votre besoin entrepreneurial pour démarrer.</div>
-</div>
-</div>
-
-<div class="card">
-<h3 class="section-title">❓ Questions fréquentes</h3>
-<div class="small" style="display:grid; gap:12px;">
-<div>
-<strong>Comment créer un compte ou me connecter ?</strong>
-<p class="muted">Ouvrez « Créer un compte / Connexion » dans le menu pour inscrire un nouveau compte avec photo de profil ou vous connecter.</p>
-</div>
-<div>
-<strong>Quels sont les numéros de paiement officiels ?</strong>
-<p class="muted">Airtel Money : <code>0983 995 019</code> • Orange Money : <code>0859312214</code> • M-Pesa : <code>0815897990</code>.</p>
-</div>
-<div>
-<strong>Comment faire un don avec le nom du donateur ?</strong>
-<p class="muted">Dans « Mode de paiement & Dons », cliquez sur « Faire un don », entrez le nom du donateur, le montant (USD ou FC) et son message.</p>
-</div>
-<div>
-<strong>Comment commenter et répondre sur les artistes ?</strong>
-<p class="muted">Dans « Artistes & Actifs », écrivez un commentaire puis cliquez directement dessus pour répondre.</p>
-</div>
-<div>
-<strong>Comment contacter l'équipe ?</strong>
-<p class="muted">Utilisez le bouton de chat flottant en bas à droite ou les liens WhatsApp et Facebook.</p>
-</div>
-</div>
-</div>
-</section>
-
-<!-- ESPACE ADMIN (Chico899) -->
-<section id="view-admin" class="view">
-<div class="page-header">
-<div class="row-between">
-<div>
-<h1 class="page-title">⚡ Espace PDG / Admin</h1>
-<p class="page-desc">Gestion du logo CBK, photos des sections, annonce du jour, taux USD/FC, soldes, validations et messages privés.</p>
-</div>
-<button type="button" class="btn btn-sm btn-danger" onclick="logoutAdmin()">Quitter Admin</button>
-</div>
-</div>
-
-<div class="grid-2">
-<div class="card card-lime">
-<form id="rateForm">
-<label>Taux du jour (1 USD en FC)</label>
-<div class="row-gap">
-<input id="adminRateInput" type="number" step="1" min="1" style="margin:0; flex:1;" required />
-<button type="submit" class="btn btn-lime">Mettre à jour</button>
-</div>
-</form>
-<div class="row-gap" style="margin-top:12px;">
-<button type="button" class="btn btn-sm" onclick="exportBackup()">Exporter JSON</button>
-<label class="btn btn-sm" style="margin:0;">
-Importer JSON <input type="file" accept=".json" style="display:none;" onchange="importBackup(event)" />
-</label>
-<button type="button" class="btn btn-sm btn-danger" onclick="resetDemoData()">Réinitialiser</button>
-</div>
-</div>
-
-<div class="card">
-<h3 class="section-title">📢 Annonce du jour / Mot du PDG</h3>
-<form id="adminAnnouncementForm">
-<label>Titre de l'annonce</label>
-<input id="annTitleInput" type="text" placeholder="Ex: Nouveau service CBK à Kinshasa" />
-<label>Message (laisser vide pour masquer)</label>
-<textarea id="annBodyInput" rows="2" placeholder="Votre annonce..."></textarea>
-<button type="submit" class="btn btn-sm btn-lime">Publier l'annonce</button>
-</form>
-</div>
-</div>
-
-<!-- Gestion Logo CBK & Photos des rubriques -->
-<div class="card">
-<h3 class="section-title">🖼️ Vrai Logo CBK & Photos des Rubriques</h3>
-<p class="muted small" style="margin-bottom:10px;">
-Ajoutez ou remplacez vos images depuis votre galerie / PC (ou via lien URL) pour l'Accueil, les Services, les Paiements/Dons et À Propos.
-</p>
-<div class="grid-2">
-<div class="list-box">
-<strong>1. Vrai Logo CBK (En-tête & Menu)</strong>
-<input type="file" accept="image/*" onchange="updateVisualSlot('logo', event)" />
-<div class="row-gap">
-<input id="url_logo" type="text" placeholder="URL logo (optionnel)" style="margin:0; flex:1;" />
-<button type="button" class="btn btn-sm" onclick="updateVisualSlotFromUrl('logo', 'url_logo')">OK</button>
-<button type="button" class="btn btn-sm btn-danger" onclick="clearVisualSlot('logo')">Badge CBK</button>
-</div>
-</div>
-
-<div class="list-box">
-<strong>2. Photo PDG (CHICO MOFONGA)</strong>
-<input type="file" accept="image/*" onchange="updateVisualSlot('pdgPhoto', event)" />
-<div class="row-gap">
-<input id="url_pdg" type="text" placeholder="URL photo PDG (optionnel)" style="margin:0; flex:1;" />
-<button type="button" class="btn btn-sm" onclick="updateVisualSlotFromUrl('pdgPhoto', 'url_pdg')">OK</button>
-</div>
-</div>
-
-<div class="list-box">
-<strong>3. Photo Bannière Accueil</strong>
-<input type="file" accept="image/*" onchange="updateVisualSlot('homeBanner', event)" />
-<div class="row-gap">
-<input id="url_home" type="text" placeholder="URL bannière Accueil" style="margin:0; flex:1;" />
-<button type="button" class="btn btn-sm" onclick="updateVisualSlotFromUrl('homeBanner', 'url_home')">OK</button>
-<button type="button" class="btn btn-sm btn-danger" onclick="clearVisualSlot('homeBanner')">Retirer</button>
-</div>
-</div>
-
-<div class="list-box">
-<strong>4. Photo Service Passeport</strong>
-<input type="file" accept="image/*" onchange="updateVisualSlot('passportImg', event)" />
-<div class="row-gap">
-<input id="url_passport" type="text" placeholder="URL photo Passeport" style="margin:0; flex:1;" />
-<button type="button" class="btn btn-sm" onclick="updateVisualSlotFromUrl('passportImg', 'url_passport')">OK</button>
-<button type="button" class="btn btn-sm btn-danger" onclick="clearVisualSlot('passportImg')">Retirer</button>
-</div>
-</div>
-
-<div class="list-box">
-<strong>5. Photo Studio Vidéo / Photo / Audio</strong>
-<input type="file" accept="image/*" onchange="updateVisualSlot('studioImg', event)" />
-<div class="row-gap">
-<input id="url_studio" type="text" placeholder="URL photo Studio" style="margin:0; flex:1;" />
-<button type="button" class="btn btn-sm" onclick="updateVisualSlotFromUrl('studioImg', 'url_studio')">OK</button>
-<button type="button" class="btn btn-sm btn-danger" onclick="clearVisualSlot('studioImg')">Retirer</button>
-</div>
-</div>
-
-<div class="list-box">
-<strong>6. Photos Paiements, Dons & À Propos</strong>
-<label class="small">Paiements :</label>
-<input type="file" accept="image/*" onchange="updateVisualSlot('paymentsImg', event)" />
-<label class="small">Dons :</label>
-<input type="file" accept="image/*" onchange="updateVisualSlot('donationsImg', event)" />
-<label class="small">À Propos :</label>
-<input type="file" accept="image/*" onchange="updateVisualSlot('aboutImg', event)" />
-</div>
-</div>
-</div>
-
-<div class="card">
-<h3 class="section-title">💳 Validation Dépôts, Retraits & Transferts</h3>
-<div id="adminTxList"></div>
-</div>
-
-<div class="grid-2">
-<div class="card">
-<h3 class="section-title">💰 Ajuster le solde d'un client</h3>
-<form id="adminBalanceForm">
-<label>Client</label>
-<select id="adminBalUser"></select>
-<label>Action</label>
-<select id="adminBalAction">
-<option value="add">Ajouter au solde</option>
-<option value="sub">Retirer du solde</option>
-</select>
-<label>Devise</label>
-<select id="adminBalCurrency">
-<option value="USD">USD ($)</option>
-<option value="FC">FC</option>
-</select>
-<label>Montant</label>
-<input id="adminBalAmount" type="number" step="0.01" min="0.01" required />
-<button type="submit" class="btn btn-lime">Appliquer le solde</button>
-</form>
-</div>
-
-<div class="card">
-<h3 class="section-title">✉️ Envoyer un message privé à un client</h3>
-<form id="adminPmForm">
-<label>Client destinataire</label>
-<select id="adminPmUser"></select>
-<label>Message privé</label>
-<textarea id="adminPmText" rows="3" placeholder="Votre message privé..." required></textarea>
-<button type="submit" class="btn btn-lime">Envoyer le message privé</button>
-</form>
-</div>
-</div>
-
-<div class="card">
-<h3 class="section-title">👥 Utilisateurs & Vérification KYC</h3>
-<div id="adminUsersList"></div>
-</div>
-
-<div class="card">
-<h3 class="section-title">🛒 Publier & Gérer les produits du Marché</h3>
-<form id="adminProductForm">
-<label>Nom du produit</label>
-<input id="prodName" type="text" placeholder="Ex: Pack Studio / Accessoire CBK" required />
-<div class="grid-2">
-<div>
-<label>Prix</label>
-<input id="prodPrice" type="number" step="0.01" min="0.01" required />
-</div>
-<div>
-<label>Devise</label>
-<select id="prodCurrency">
-<option value="USD">USD ($)</option>
-<option value="FC">FC</option>
-</select>
-</div>
-</div>
-<label>Badge</label>
-<input id="prodBadge" type="text" value="Vérifié CBK" />
-<label>Photo de l'article (depuis votre galerie / PC)</label>
-<input id="prodFile" type="file" accept="image/*" />
-<label>Ou lien URL de l'image (optionnel)</label>
-<input id="prodImg" type="text" placeholder="https://..." />
-<label>Description</label>
-<textarea id="prodDesc" rows="2"></textarea>
-<button type="submit" class="btn btn-lime">Publier le produit</button>
-</form>
-
-<div style="margin-top:14px;">
-<strong class="small">Produits publiés (changer photo ou supprimer) :</strong>
-<div id="adminProductsManageList"></div>
-</div>
-<div id="adminOrdersList" style="margin-top:14px;"></div>
-</div>
-
-<div class="grid-2">
-<div class="card">
-<h3 class="section-title">🎤 Publier un artiste</h3>
-<form id="adminArtistForm">
-<label>Nom de l'artiste</label>
-<input id="artName" type="text" required />
-<label>Style / Catégorie</label>
-<input id="artGenre" type="text" required />
-<label>Photo de l'artiste (galerie / PC)</label>
-<input id="artFile" type="file" accept="image/*" />
-<label>Ou lien URL image (optionnel)</label>
-<input id="artImg" type="text" placeholder="https://..." />
-<button type="submit" class="btn btn-lime">Publier l'artiste</button>
-</form>
-<div id="adminArtistsManageList" style="margin-top:10px;"></div>
-</div>
-
-<div class="card">
-<h3 class="section-title">🏆 Publier Utilisateurs Actifs du Mois</h3>
-<form id="adminActiveUsersForm">
-<label>Pseudos (séparés par des virgules)</label>
-<input id="activeUsersInput" type="text" placeholder="Ex: @membre1, @membre2" required />
-<button type="submit" class="btn btn-lime">Publier la liste du mois</button>
-</form>
-</div>
-</div>
-
-<div class="card">
-<h3 class="section-title">🎁 Gestion des Dons</h3>
-<div id="adminDonationsList"></div>
-</div>
-
-<div class="card">
-<h3 class="section-title">🛂🎬 Demandes Passeport & Studio</h3>
-<div id="adminServicesList"></div>
-</div>
-</section>
-
-</div>
 </main>
+
+<!-- MODAL RECADRAGE IMAGE -->
+<div id="cropModal" class="modal-backdrop" aria-hidden="true">
+<div class="modal-card">
+<h3>✂️ Recadrer l'image</h3>
+<p class="muted">Ajustez le zoom et la position pour choisir exactement la zone voulue.</p>
+
+<div class="crop-stage" id="cropStage">
+<img id="cropImage" alt="Image à recadrer" />
+<div class="crop-frame-guide"></div>
 </div>
 
-<!-- Floating Chat Button -->
-<button type="button" id="fabChat" class="fab-chat" title="Chat & Contact CBK">💬</button>
-
-<!-- MODAL ADMIN LOGIN (Chico899) -->
-<div id="adminAuthModal" class="modal-backdrop">
-<div class="modal-box">
-<div class="row-between">
-<h3 class="section-title" style="margin:0;">🔐 Accès PDG / Admin</h3>
-<button type="button" class="btn btn-sm" onclick="closeModal('adminAuthModal')">✕</button>
+<div class="form-group">
+<label for="cropZoom">Zoom : <span id="cropZoomVal">100%</span></label>
+<input type="range" id="cropZoom" min="50" max="250" value="100" />
 </div>
-<p class="muted small" style="margin-top:6px;">Entrez le code administrateur pour ouvrir l'espace Admin.</p>
-<form id="adminPinForm" style="margin-top:12px;">
-<label>Code Admin</label>
-<input id="adminPinInput" type="password" placeholder="Entrez le code" required />
-<button type="submit" class="btn btn-lime" style="width:100%;">Débloquer l'espace Admin</button>
-</form>
-</div>
-</div>
-
-<!-- MODAL DONATION -->
-<div id="donateModal" class="modal-backdrop">
-<div class="modal-box">
-<div class="row-between">
-<h3 class="section-title" style="margin:0;">🎁 Faire un don à CBK</h3>
-<button type="button" class="btn btn-sm" onclick="closeModal('donateModal')">✕</button>
-</div>
-<form id="donateForm" style="margin-top:10px;">
-<label>Nom du donateur</label>
-<input id="donorName" type="text" placeholder="Nom du donateur" required />
 <div class="grid-2">
-<div>
-<label>Montant</label>
-<input id="donorAmount" type="number" step="0.01" min="0.01" required />
+<div class="form-group">
+<label for="cropX">Déplacement horizontal</label>
+<input type="range" id="cropX" min="-150" max="150" value="0" />
 </div>
-<div>
-<label>Devise</label>
-<select id="donorCurrency">
-<option value="FC">FC</option>
-<option value="USD">USD ($)</option>
-</select>
-</div>
-</div>
-<label>Message du donateur</label>
-<input id="donorMessage" type="text" placeholder="Message du donateur..." />
-<label>Moyen utilisé</label>
-<select id="donorMethod">
-<option value="Airtel Money (0983 995 019)">Airtel Money (0983 995 019)</option>
-<option value="Orange Money (0859312214)">Orange Money (0859312214)</option>
-<option value="M-Pesa (0815897990)">M-Pesa (0815897990)</option>
-<option value="Solde Portefeuille CBK">Débiter mon portefeuille CBK</option>
-</select>
-<button type="submit" class="btn btn-lime" style="width:100%;">Valider et publier le don</button>
-</form>
+<div class="form-group">
+<label for="cropY">Déplacement vertical</label>
+<input type="range" id="cropY" min="-150" max="150" value="0" />
 </div>
 </div>
 
-<!-- MODAL CHAT -->
-<div id="chatModal" class="modal-backdrop">
-<div class="modal-box">
-<div class="row-between">
-<h3 class="section-title" style="margin:0;">💬 Assistance CBK — Kinshasa</h3>
-<button type="button" class="btn btn-sm" onclick="closeModal('chatModal')">✕</button>
-</div>
-<p class="muted small" style="margin-top:8px;">
-Contactez l'équipe de <strong>Chico Mofonga</strong> :
-</p>
-<div class="row-gap" style="margin-top:12px;">
-<a class="btn btn-lime link-btn" style="flex:1;" href="https://wa.me/message/2DFDG7JRKVQQL1" target="_blank" rel="noopener">WhatsApp Officiel</a>
-<a class="btn link-btn" style="flex:1;" href="https://www.facebook.com/share/1CVrhKCMQ7/?mibextid=wwXIfr" target="_blank" rel="noopener">Facebook CBK</a>
-</div>
-<div class="list-box" style="margin-top:14px;">
-<div class="small"><strong>Numéros officiels :</strong></div>
-<div class="muted small">• Airtel Money : <code>0983 995 019</code></div>
-<div class="muted small">• Orange Money : <code>0859312214</code></div>
-<div class="muted small">• M-Pesa : <code>0815897990</code></div>
+<div class="row-inline" style="justify-content: flex-end;">
+<button type="button" class="btn btn-outline" id="btnCancelCrop">Annuler</button>
+<button type="button" class="btn btn-primary" id="btnApplyCrop">✅ Valider le recadrage</button>
 </div>
 </div>
 </div>
 
-<!-- MODAL NOTIFICATIONS -->
-<div id="notifModal" class="modal-backdrop">
-<div class="modal-box">
-<div class="row-between">
-<h3 class="section-title" style="margin:0;">🔔 Notifications</h3>
-<div class="row-gap">
-<button type="button" class="btn btn-sm" onclick="markAllNotifsRead()">Tout lire</button>
-<button type="button" class="btn btn-sm" onclick="closeModal('notifModal')">✕</button>
-</div>
-</div>
-<div id="notifList" style="margin-top:10px;"></div>
-</div>
-</div>
+<input type="file" id="hiddenFileInput" accept="image/*" style="display: none;" />
 
 <script>
-const ADMIN_CODE = "Chico899";
-const STORAGE_KEY = "cbk_kinshasa_state_v6";
+// =========================================================================
+// 1. CONFIGURATION SUPABASE (Connecté au projet CBK Chico Business)
+// =========================================================================
+const SUPABASE_URL = "https://sluyxkduglypjvgunxxm.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_ku3bD0z7vYTU4lw8Z3b8RQ_FQ_AfsFD";
+const SUPABASE_TABLE = "cbk_platform_state";
+const SUPABASE_ROW_ID = "main";
+const LOCAL_STORAGE_KEY = "CBK_CHICO_BUSINESS_STATE_V1";
 
-const DEFAULT_STATE = {
-rateUsdToFc: 2800,
-isAdmin: false,
-currentUserId: "u_client_1",
-activeView: "home",
-visuals: {
-logo: "",
-pdgPhoto: "https://via.placeholder.com/150/1a1a1a/D2F801?text=PDG+CBK",
-homeBanner: "",
-passportImg: "",
-studioImg: "",
-paymentsImg: "",
-donationsImg: "",
-aboutImg: ""
+const FALLBACK_IMG =
+"data:image/svg+xml;utf8," +
+encodeURIComponent(
+`<svg xmlns="http://www.w3.org/2000/svg" width="600" height="360" viewBox="0 0 600 360">
+<rect width="600" height="360" fill="#e9eff5"/>
+<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#5c6675" font-family="sans-serif" font-size="22" font-weight="bold">CBK Chico Business</text>
+</svg>`
+);
+
+const MEDIA_SLOTS = [
+{ key: "logo", label: "1. Vrai Logo CBK", hasText: false },
+{ key: "pdg", label: "2. Photo PDG", hasText: false },
+{ key: "banner", label: "3. Photo Bannière Accueil", hasText: false },
+{ key: "passport", label: "4. Photo Service Passeport", hasText: true, textLabel: "Description Service Passeport" },
+{ key: "studio", label: "5. Photo Studio Vidéo / Photo / Audio", hasText: true, textLabel: "Description Studio" },
+{ key: "payInfo", label: "6a. Photo Paiements", hasText: true, textLabel: "Texte Paiements" },
+{ key: "donate", label: "6b. Photo Dons", hasText: true, textLabel: "Texte Dons" },
+{ key: "about", label: "6c. Photo À Propos", hasText: true, textLabel: "Texte À Propos" }
+];
+
+function createDefaultState() {
+return {
+businessName: "CBK Chico Business",
+welcomeText: "Bienvenue sur votre plateforme officielle CBK Chico Business.",
+rate: "1$ = 225 FC",
+pdgName: "Direction CBK",
+media: {
+logo: { url: FALLBACK_IMG, text: "" },
+pdg: { url: FALLBACK_IMG, text: "" },
+banner: { url: FALLBACK_IMG, text: "" },
+passport: { url: FALLBACK_IMG, text: "Accompagnement et assistance service passeport." },
+studio: { url: FALLBACK_IMG, text: "Production vidéo, photo professionnelle et audio." },
+payInfo: { url: FALLBACK_IMG, text: "Instructions et informations de paiement." },
+donate: { url: FALLBACK_IMG, text: "Soutenez nos projets et initiatives." },
+about: { url: FALLBACK_IMG, text: "À propos de CBK Chico Business." }
 },
-announcement: {
-title: "",
-body: ""
-},
-users: [
+payments: [
 {
-id: "u_client_1",
-username: "client_cbk",
-nom: "CBK",
-postNom: "",
-prenom: "Membre",
-fullName: "Membre CBK Kinshasa",
-phone: "0810000000",
-email: "",
-password: "",
-avatar: "",
-usd: 0,
-fc: 0,
-kycStatus: "Non vérifié",
-kycDoc: "",
-blocked: false
+id: "pay-1",
+name: "Mobile Money",
+detail: "Transfert rapide",
+logoUrl: FALLBACK_IMG
 }
 ],
-transactions: [],
-donations: [],
-products: [],
-orders: [],
-serviceRequests: [],
-activeUsersMonth: [],
-artists: [],
-privateMessages: [],
-notifications: []
+publications: []
 };
+}
 
-let state = loadState();
-let activeReplyTarget = null;
-let serviceFilterMode = "all";
+let appState = createDefaultState();
+let supabaseClient = null;
+let pendingNewPayLogo = FALLBACK_IMG;
+let pendingPubImg = "";
 
-function loadState() {
-try {
-const raw = localStorage.getItem(STORAGE_KEY);
-if (!raw) return structuredClone(DEFAULT_STATE);
-const parsed = JSON.parse(raw);
+// État du recadrage
+let cropTarget = null;
+let rawLoadedDataUrl = "";
+
+function showAlert(message, type = "ok") {
+const box = document.getElementById("globalAlert");
+box.textContent = message;
+box.className = `status-box show ${type === "ok" ? "status-ok" : "status-err"}`;
+clearTimeout(showAlert._t);
+showAlert._t = setTimeout(() => {
+box.className = "status-box";
+}, 4500);
+}
+
+function setSyncBadge(text) {
+document.getElementById("syncStatusBadge").textContent = text;
+}
+
+function safeImgSrc(url) {
+if (!url || typeof url !== "string") return FALLBACK_IMG;
+const trimmed = url.trim();
+if (
+trimmed.startsWith("https://") ||
+trimmed.startsWith("http://") ||
+trimmed.startsWith("data:image/")
+) {
+return trimmed;
+}
+return FALLBACK_IMG;
+}
+
+// =========================================================================
+// 2. CHARGEMENT & SAUVEGARDE (Supabase + LocalStorage)
+// =========================================================================
+function initSupabaseIfConfigured() {
+if (
+SUPABASE_URL &&
+SUPABASE_ANON_KEY &&
+window.supabase &&
+typeof window.supabase.createClient === "function"
+) {
+supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+}
+
+function mergeWithDefaults(incoming) {
+const base = createDefaultState();
+if (!incoming || typeof incoming !== "object") return base;
+
+const mergedMedia = { ...base.media };
+if (incoming.media && typeof incoming.media === "object") {
+Object.keys(base.media).forEach((k) => {
+if (incoming.media[k]) {
+mergedMedia[k] = {
+url: incoming.media[k].url || base.media[k].url,
+text: incoming.media[k].text ?? base.media[k].text
+};
+}
+});
+}
+
 return {
-...structuredClone(DEFAULT_STATE),
-...parsed,
-visuals: { ...structuredClone(DEFAULT_STATE.visuals), ...(parsed.visuals || {}) },
-announcement: { ...structuredClone(DEFAULT_STATE.announcement), ...(parsed.announcement || {}) }
+businessName: incoming.businessName || base.businessName,
+welcomeText: incoming.welcomeText ?? base.welcomeText,
+rate: incoming.rate || base.rate,
+pdgName: incoming.pdgName || base.pdgName,
+media: mergedMedia,
+payments: Array.isArray(incoming.payments) ? incoming.payments : base.payments,
+publications: Array.isArray(incoming.publications) ? incoming.publications : base.publications
 };
-} catch (e) {
-return structuredClone(DEFAULT_STATE);
-}
 }
 
-function saveState() {
+async function loadInitialState() {
 try {
-localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-} catch (e) {
-showToast("Espace de stockage plein. Supprimez d'anciennes images.");
+const localRaw = localStorage.getItem(LOCAL_STORAGE_KEY);
+if (localRaw) {
+appState = mergeWithDefaults(JSON.parse(localRaw));
 }
+} catch (_) {
+appState = createDefaultState();
+}
+
+if (supabaseClient) {
+setSyncBadge("🔄 Chargement cloud...");
+const { data, error } = await supabaseClient
+.from(SUPABASE_TABLE)
+.select("payload")
+.eq("id", SUPABASE_ROW_ID)
+.maybeSingle();
+
+if (!error && data && data.payload) {
+appState = mergeWithDefaults(data.payload);
+localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(appState));
+setSyncBadge("☁️ Synchronisé en direct");
+} else {
+setSyncBadge("💾 Mode local (Supabase prêt)");
+}
+} else {
+setSyncBadge("💾 Mode local (prêt)");
+}
+
 renderAll();
 }
 
-function readAndCompressImage(file) {
-return new Promise((resolve) => {
-if (!file) return resolve("");
-const reader = new FileReader();
-reader.onload = (ev) => {
-const img = new Image();
-img.onload = () => {
-const canvas = document.createElement("canvas");
-const maxW = 720;
-const scale = Math.min(1, maxW / img.width);
-canvas.width = Math.round(img.width * scale);
-canvas.height = Math.round(img.height * scale);
-const ctx = canvas.getContext("2d");
-ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-resolve(canvas.toDataURL("image/jpeg", 0.78));
-};
-img.onerror = () => resolve(ev.target.result || "");
-img.src = ev.target.result;
-};
-reader.onerror = () => resolve("");
-reader.readAsDataURL(file);
-});
-}
+async function persistState(customMessage = "✅ Enregistré et synchronisé pour tout le monde !") {
+localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(appState));
 
-function showToast(msg) {
-const t = document.getElementById("toast");
-t.textContent = msg;
-t.style.display = "block";
-clearTimeout(showToast._timer);
-showToast._timer = setTimeout(() => { t.style.display = "none"; }, 2600);
-}
+if (supabaseClient) {
+setSyncBadge("⏳ Synchronisation...");
+const { error } = await supabaseClient
+.from(SUPABASE_TABLE)
+.upsert({ id: SUPABASE_ROW_ID, payload: appState, updated_at: new Date().toISOString() });
 
-function copyText(text, msg) {
-if (navigator.clipboard) navigator.clipboard.writeText(text).catch(() => {});
-showToast(msg || "Copié !");
-}
-
-function pushNotif(text) {
-state.notifications.unshift({
-id: "n_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
-text,
-read: false,
-date: new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })
-});
-}
-
-function getCurrentUser() {
-return state.users.find(u => u.id === state.currentUserId) || state.users[0];
-}
-
-function formatMoney(amount, currency) {
-const num = Number(amount) || 0;
-return currency === "USD" ? `$${num.toFixed(2)}` : `${num.toLocaleString("fr-FR")} FC`;
-}
-
-function ensureNotBlocked(user) {
-if (user.blocked) {
-showToast("Compte bloqué par l'Admin. Contactez CBK.");
-return false;
-}
-return true;
-}
-
-/* Drawer Mobile */
-function toggleDrawer() {
-document.getElementById("sidebarMenu").classList.toggle("open");
-document.getElementById("drawerBackdrop").classList.toggle("open");
-}
-function closeDrawer() {
-document.getElementById("sidebarMenu").classList.remove("open");
-document.getElementById("drawerBackdrop").classList.remove("open");
-}
-
-/* View Switching */
-function switchView(viewName) {
-if (viewName === "admin" && !state.isAdmin) {
-openModal("adminAuthModal");
+if (error) {
+setSyncBadge("⚠️ Erreur cloud (sauvé local)");
+showAlert("Sauvegardé en local, mais vérifiez la table Supabase : " + error.message, "err");
+renderAll();
 return;
 }
-state.activeView = viewName;
-document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
-const target = document.getElementById("view-" + viewName);
-if (target) target.classList.add("active");
-
-document.querySelectorAll(".nav-item").forEach(b => {
-b.classList.toggle("active", b.dataset.view === viewName);
-});
-
-if (viewName === "home") {
-const user = getCurrentUser();
-state.privateMessages.forEach(pm => {
-if (pm.toUserId === user.id) pm.read = true;
-});
+setSyncBadge("☁️ Synchronisé pour tous");
 }
 
-closeDrawer();
-saveState();
+renderAll();
+showAlert(customMessage, "ok");
 }
 
-document.querySelectorAll(".nav-item[data-view]").forEach(btn => {
-btn.addEventListener("click", () => switchView(btn.dataset.view));
-});
-
-/* Modals & Floating Chat */
-function openModal(id) { document.getElementById(id).classList.add("open"); }
-function closeModal(id) { document.getElementById(id).classList.remove("open"); }
-document.getElementById("fabChat").addEventListener("click", () => openModal("chatModal"));
-
-function openNotifModal() {
-closeDrawer();
-renderNotifs();
-openModal("notifModal");
+function subscribeRealtime() {
+if (!supabaseClient) return;
+supabaseClient
+.channel("cbk-realtime-channel")
+.on(
+"postgres_changes",
+{
+event: "*",
+schema: "public",
+table: SUPABASE_TABLE,
+filter: `id=eq.${SUPABASE_ROW_ID}`
+},
+(payload) => {
+if (payload.new && payload.new.payload) {
+appState = mergeWithDefaults(payload.new.payload);
+localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(appState));
+renderAll();
+setSyncBadge("☁️ Mis à jour en direct");
 }
-document.getElementById("btnNotifDesktop").addEventListener("click", openNotifModal);
-document.getElementById("menuNotifBtn").addEventListener("click", openNotifModal);
-
-function handleAdminAccessClick() {
-closeDrawer();
-if (state.isAdmin) switchView("admin");
-else openModal("adminAuthModal");
 }
-document.getElementById("btnAdminDesktop").addEventListener("click", handleAdminAccessClick);
-document.getElementById("menuAdminBtn").addEventListener("click", handleAdminAccessClick);
+)
+.subscribe();
+}
 
-document.getElementById("adminPinForm").addEventListener("submit", (e) => {
-e.preventDefault();
-const pin = document.getElementById("adminPinInput").value.trim();
-if (pin === ADMIN_CODE) {
-state.isAdmin = true;
-document.getElementById("adminPinInput").value = "";
-closeModal("adminAuthModal");
-showToast("Mode Admin débloqué (Chico899)");
-switchView("admin");
+// =========================================================================
+// 3. RENDU VITRINE & ESPACE ADMIN
+// =========================================================================
+function renderVitrine() {
+document.getElementById("headerTitle").textContent = appState.businessName;
+document.getElementById("headerSubtitle").textContent = appState.rate;
+document.getElementById("headerLogo").src = safeImgSrc(appState.media.logo.url);
+
+document.getElementById("viewBusinessName").textContent = appState.businessName;
+document.getElementById("viewWelcomeText").textContent = appState.welcomeText;
+document.getElementById("viewRateBox").textContent = "Taux : " + appState.rate;
+
+document.getElementById("viewBanner").src = safeImgSrc(appState.media.banner.url);
+document.getElementById("viewPdgImg").src = safeImgSrc(appState.media.pdg.url);
+document.getElementById("viewPdgName").textContent = appState.pdgName;
+
+document.getElementById("viewPassportImg").src = safeImgSrc(appState.media.passport.url);
+document.getElementById("viewPassportText").textContent = appState.media.passport.text || "";
+
+document.getElementById("viewStudioImg").src = safeImgSrc(appState.media.studio.url);
+document.getElementById("viewStudioText").textContent = appState.media.studio.text || "";
+
+document.getElementById("viewPayInfoImg").src = safeImgSrc(appState.media.payInfo.url);
+document.getElementById("viewPayInfoText").textContent = appState.media.payInfo.text || "";
+
+document.getElementById("viewDonateImg").src = safeImgSrc(appState.media.donate.url);
+document.getElementById("viewDonateText").textContent = appState.media.donate.text || "";
+
+document.getElementById("viewAboutImg").src = safeImgSrc(appState.media.about.url);
+document.getElementById("viewAboutText").textContent = appState.media.about.text || "";
+
+// Modes de paiement
+const payContainer = document.getElementById("viewPaymentsList");
+payContainer.innerHTML = "";
+if (!appState.payments.length) {
+payContainer.innerHTML = `<p class="muted">Aucun mode de paiement configuré.</p>`;
 } else {
-showToast("Code Admin incorrect.");
-}
-});
-
-function logoutAdmin() {
-state.isAdmin = false;
-switchView("home");
-showToast("Mode Admin fermé.");
-}
-
-function logoutToAccount() {
-state.isAdmin = false;
-switchView("account");
-showToast("Ouverture de la page Compte / Connexion.");
-}
-
-/* Visual Slot Management */
-async function updateVisualSlot(slotKey, event) {
-const file = event.target.files[0];
-if (!file) return;
-const dataUrl = await readAndCompressImage(file);
-if (dataUrl) {
-state.visuals[slotKey] = dataUrl;
-showToast("Image mise à jour !");
-saveState();
-}
-}
-
-function updateVisualSlotFromUrl(slotKey, inputId) {
-const url = document.getElementById(inputId).value.trim();
-if (!url) return;
-state.visuals[slotKey] = url;
-document.getElementById(inputId).value = "";
-showToast("Image mise à jour !");
-saveState();
-}
-
-function clearVisualSlot(slotKey) {
-state.visuals[slotKey] = "";
-showToast("Image retirée.");
-saveState();
-}
-
-/* Converter USD <-> FC */
-function updateConverter() {
-const amt = parseFloat(document.getElementById("convAmount").value);
-const dir = document.getElementById("convDirection").value;
-const rate = Number(state.rateUsdToFc) || 2800;
-const resBox = document.getElementById("convResult");
-
-if (!amt || amt <= 0) {
-resBox.innerHTML = `<strong style="color:var(--lime);">Résultat :</strong> <span class="muted">Entrez un montant ci-dessus.</span>`;
-return;
-}
-
-if (dir === "USD_TO_FC") {
-const fcVal = Math.round(amt * rate);
-resBox.innerHTML = `<strong style="color:var(--lime);">Résultat :</strong> <strong>$${amt.toFixed(2)}</strong> = <strong style="color:var(--lime);">${fcVal.toLocaleString("fr-FR")} FC</strong> (taux ${rate} FC/$)`;
-} else {
-const usdVal = amt / rate;
-resBox.innerHTML = `<strong style="color:var(--lime);">Résultat :</strong> <strong>${amt.toLocaleString("fr-FR")} FC</strong> = <strong style="color:var(--lime);">$${usdVal.toFixed(2)}</strong> (taux ${rate} FC/$)`;
-}
-}
-
-/* Service Filter */
-function filterServices(mode) {
-serviceFilterMode = mode;
-document.getElementById("serviceCardPassport").style.display = (mode === "all" || mode === "passport") ? "block" : "none";
-document.getElementById("serviceCardStudio").style.display = (mode === "all" || mode === "studio") ? "block" : "none";
-}
-
-/* Assistant IA Business & Entrepreneuriat (FAQ) */
-function generateAiAdvice(promptText) {
-const q = promptText.toLowerCase();
-const rate = Number(state.rateUsdToFc) || 2800;
-
-if (q.includes("recherche") || q.includes("étudier") || q.includes("structurer") || q.includes("projet")) {
-return `
-<div class="small" style="display:grid; gap:6px;">
-<strong style="color:var(--lime);">📊 Guide de recherche entrepreneuriale (CBK Kinshasa) :</strong>
-<div>1. <strong>Problème & Client :</strong> Identifiez un besoin concret à Kinshasa (commune cible, habitudes d'achat, horaires).</div>
-<div>2. <strong>Étude rapide de la concurrence :</strong> Comparez les prix en USD et en FC (taux actuel : 1$ = ${rate} FC) et voyez ce qui manque chez les concurrents.</div>
-<div>3. <strong>Budget de démarrage :</strong> Listez le stock/matériel initial, la communication (WhatsApp, Facebook, studio photo/vidéo) et une réserve de sécurité.</div>
-<div>4. <strong>Test terrain :</strong> Lancez une petite offre pilote avant d'investir lourdement.</div>
-</div>
-`;
-}
-
-if (q.includes("petit budget") || q.includes("100") || q.includes("50") || q.includes("fc")) {
-return `
-<div class="small" style="display:grid; gap:6px;">
-<strong style="color:var(--lime);">💰 Idées business à budget maîtrisé (Kinshasa) :</strong>
-<div>• <strong>Revente ciblée & livraison :</strong> Articles utiles, accessoires ou produits alimentaires conditionnés avec commande par WhatsApp.</div>
-<div>• <strong>Création de contenu & promotion locale :</strong> Réaliser des visuels et vidéos courtes (avec l'appui du Studio CBK) pour des commerçants.</div>
-<div>• <strong>Point de service ou intermediation :</strong> Accompagnement administratif / mise en relation fiable avec suivi sérieux.</div>
-</div>
-`;
-}
-
-return `
-<div class="small" style="display:grid; gap:6px;">
-<strong style="color:var(--lime);">💡 Idées de business & pistes d'action (${promptText}) :</strong>
-<div>• <strong>Commerce & Marché :</strong> Vendre des produits à forte rotation avec un affichage clair en USD et FC (1$ = ${rate} FC).</div>
-<div>• <strong>Services & Production :</strong> Valoriser votre image avec des photos/vidéos soignées via le <strong>Studio CBK</strong> et l'assistance démarches.</div>
-<div>• <strong>Prochaine étape :</strong> Définissez votre budget exact et votre commune à Kinshasa pour affiner votre plan.</div>
-</div>
-`;
-}
-
-function askBusinessAi(presetQuestion) {
-document.getElementById("aiQuestionInput").value = presetQuestion;
-document.getElementById("aiAdvisorReply").innerHTML = generateAiAdvice(presetQuestion);
-}
-
-document.getElementById("aiAdvisorForm").addEventListener("submit", (e) => {
-e.preventDefault();
-const q = document.getElementById("aiQuestionInput").value.trim();
-if (!q) return;
-document.getElementById("aiAdvisorReply").innerHTML = generateAiAdvice(q);
-});
-
-/* Registration & Account Switch */
-document.getElementById("registerForm").addEventListener("submit", async (e) => {
-e.preventDefault();
-const nom = document.getElementById("regNom").value.trim();
-const postNom = document.getElementById("regPostNom").value.trim();
-const prenom = document.getElementById("regPrenom").value.trim();
-const username = document.getElementById("regUsername").value.trim().replace(/^@/, "");
-const phone = document.getElementById("regPhone").value.trim();
-const email = document.getElementById("regEmail").value.trim();
-const password = document.getElementById("regPassword").value;
-const avatarFile = document.getElementById("regAvatarFile").files[0];
-const avatarData = avatarFile ? await readAndCompressImage(avatarFile) : "";
-
-const fullName = [nom, postNom, prenom].filter(Boolean).join(" ");
-let existing = state.users.find(u => u.username.toLowerCase() === username.toLowerCase());
-if (!existing) {
-existing = {
-id: "u_" + Date.now(),
-username,
-nom,
-postNom,
-prenom,
-fullName,
-phone,
-email,
-password,
-avatar: avatarData,
-usd: 0,
-fc: 0,
-kycStatus: "Non vérifié",
-kycDoc: "",
-blocked: false
-};
-state.users.push(existing);
-} else if (avatarData) {
-existing.avatar = avatarData;
-}
-
-state.currentUserId = existing.id;
-e.target.reset();
-showToast(`Compte créé et activé : @${existing.username}`);
-saveState();
-});
-
-async function updateCurrentUserAvatar(event) {
-const file = event.target.files[0];
-if (!file) return;
-const user = getCurrentUser();
-user.avatar = await readAndCompressImage(file);
-showToast("Photo de profil mise à jour !");
-saveState();
-}
-
-document.getElementById("loginSwitchForm").addEventListener("submit", (e) => {
-e.preventDefault();
-const uname = document.getElementById("loginUsername").value.trim().replace(/^@/, "");
-const found = state.users.find(u => u.username.toLowerCase() === uname.toLowerCase());
-if (!found) return showToast("Aucun compte trouvé avec ce nom d'utilisateur.");
-state.currentUserId = found.id;
-e.target.reset();
-showToast(`Connecté sur @${found.username}`);
-saveState();
-});
-
-/* Donations */
-document.getElementById("donateForm").addEventListener("submit", (e) => {
-e.preventDefault();
-const user = getCurrentUser();
-if (!ensureNotBlocked(user)) return;
-
-const donorName = document.getElementById("donorName").value.trim();
-const amount = parseFloat(document.getElementById("donorAmount").value);
-const currency = document.getElementById("donorCurrency").value;
-const message = document.getElementById("donorMessage").value.trim();
-const method = document.getElementById("donorMethod").value;
-
-if (method === "Solde Portefeuille CBK") {
-if (currency === "USD" && user.usd < amount) return showToast("Solde USD insuffisant.");
-if (currency === "FC" && user.fc < amount) return showToast("Solde FC insuffisant.");
-if (currency === "USD") user.usd -= amount;
-else user.fc -= amount;
-}
-
-state.donations.unshift({
-id: "don_" + Date.now(),
-donorName,
-amount,
-currency,
-message,
-method,
-date: new Date().toLocaleDateString("fr-FR")
-});
-pushNotif(`🎁 Don de ${donorName} (${formatMoney(amount, currency)}) ${message}`);
-e.target.reset();
-closeModal("donateModal");
-showToast("Don enregistré !");
-saveState();
-});
-
-/* Wallet Transactions + Receipt */
-document.getElementById("txType").addEventListener("change", (e) => {
-document.getElementById("txTargetWrap").style.display = e.target.value === "transfert" ? "block" : "none";
-});
-
-document.getElementById("txForm").addEventListener("submit", (e) => {
-e.preventDefault();
-const user = getCurrentUser();
-if (!ensureNotBlocked(user)) return;
-
-const type = document.getElementById("txType").value;
-const currency = document.getElementById("txCurrency").value;
-const amount = parseFloat(document.getElementById("txAmount").value);
-const method = document.getElementById("txMethod").value;
-const targetUsername = document.getElementById("txTargetUser").value.trim().replace(/^@/, "");
-const ref = document.getElementById("txRef").value.trim();
-
-if ((type === "retrait" || type === "transfert")) {
-const bal = currency === "USD" ? user.usd : user.fc;
-if (bal < amount) return showToast("Solde insuffisant.");
-}
-
-const txId = "tx_" + Date.now();
-state.transactions.unshift({
-id: txId,
-userId: user.id,
-username: user.username,
-type,
-currency,
-amount,
-method,
-targetUsername,
-ref,
-status: "En attente",
-date: new Date().toLocaleString("fr-FR")
-});
-
-const recBox = document.getElementById("lastTxReceipt");
-recBox.style.display = "block";
-recBox.innerHTML = `
-<div class="row-between">
-<strong>🧾 Reçu d'opération CBK</strong>
-<span class="status-pending">En attente</span>
-</div>
-<div class="small" style="margin-top:4px;">
-Réf : <code>${txId}</code> • <strong>${type.toUpperCase()}</strong> de <strong>${formatMoney(amount, currency)}</strong> via ${method}
-${targetUsername ? ` → @${targetUsername}` : ""}
-</div>
-`;
-
-e.target.reset();
-document.getElementById("txTargetWrap").style.display = "none";
-showToast("Demande envoyée à l'Admin.");
-saveState();
-});
-
-/* Market Actions + Order Receipt */
-function orderProduct(prodId) {
-const user = getCurrentUser();
-if (!ensureNotBlocked(user)) return;
-const prod = state.products.find(p => p.id === prodId);
-if (!prod) return;
-
-const bal = prod.currency === "USD" ? user.usd : user.fc;
-if (bal < prod.price) return showToast(`Solde ${prod.currency} insuffisant.`);
-if (prod.currency === "USD") user.usd -= prod.price;
-else user.fc -= prod.price;
-
-const ordId = "ord_" + Date.now();
-state.orders.unshift({
-id: ordId,
-userId: user.id,
-username: user.username,
-productName: prod.name,
-price: prod.price,
-currency: prod.currency,
-status: "En attente",
-date: new Date().toLocaleDateString("fr-FR")
-});
-
-const recBox = document.getElementById("lastOrderReceipt");
-recBox.style.display = "block";
-recBox.innerHTML = `
-<div class="row-between">
-<strong>🧾 Reçu de commande Marché CBK</strong>
-<span class="status-pending">En attente</span>
-</div>
-<div class="small" style="margin-top:4px;">
-Commande <code>${ordId}</code> : <strong>${prod.name}</strong> — <strong>${formatMoney(prod.price, prod.currency)}</strong>
-</div>
-`;
-
-showToast("Commande enregistrée !");
-saveState();
-}
-
-function likeProduct(prodId) {
-const prod = state.products.find(p => p.id === prodId);
-if (!prod) return;
-prod.likes = (prod.likes || 0) + 1;
-saveState();
-}
-
-function shareProduct(prod) {
-const text = `${prod.name} — ${formatMoney(prod.price, prod.currency)} sur CBK Kinshasa`;
-copyText(text, "Infos de l'article copiées !");
-}
-
-/* Passport & Studio + Service Receipt */
-function showServiceReceipt(srvId, serviceLabel, detailText) {
-const recBox = document.getElementById("lastServiceReceipt");
-recBox.style.display = "block";
-recBox.innerHTML = `
-<div class="row-between">
-<strong>🧾 Reçu de demande Service CBK</strong>
-<span class="status-pending">En attente</span>
-</div>
-<div class="small" style="margin-top:4px;">
-Dossier <code>${srvId}</code> : <strong>${serviceLabel}</strong> — ${detailText}
-</div>
-`;
-}
-
-document.getElementById("passportForm").addEventListener("submit", (e) => {
-e.preventDefault();
-const user = getCurrentUser();
-if (!ensureNotBlocked(user)) return;
-const srvId = "srv_" + Date.now();
-const detail = `${document.getElementById("passName").value.trim()} (${document.getElementById("passPhone").value.trim()}) — ${document.getElementById("passNote").value.trim()}`;
-state.serviceRequests.unshift({
-id: srvId,
-userId: user.id,
-username: user.username,
-service: "Assistance Passeport Rapide",
-detail,
-status: "En attente",
-date: new Date().toLocaleDateString("fr-FR")
-});
-showServiceReceipt(srvId, "Assistance Passeport Rapide", detail);
-e.target.reset();
-showToast("Demande Passeport envoyée !");
-saveState();
-});
-
-document.getElementById("studioForm").addEventListener("submit", (e) => {
-e.preventDefault();
-const user = getCurrentUser();
-if (!ensureNotBlocked(user)) return;
-const srvId = "srv_" + Date.now();
-const serviceLabel = "Studio — " + document.getElementById("studioType").value;
-const detail = `Date: ${document.getElementById("studioDate").value.trim()} — ${document.getElementById("studioNote").value.trim()}`;
-state.serviceRequests.unshift({
-id: srvId,
-userId: user.id,
-username: user.username,
-service: serviceLabel,
-detail,
-status: "En attente",
-date: new Date().toLocaleDateString("fr-FR")
-});
-showServiceReceipt(srvId, serviceLabel, detail);
-e.target.reset();
-showToast("Réservation Studio envoyée !");
-saveState();
-});
-
-/* Artists Comments & Clickable Replies */
-function addArtistComment(e, artistId) {
-e.preventDefault();
-const user = getCurrentUser();
-if (!ensureNotBlocked(user)) return;
-const input = document.getElementById("commentInput_" + artistId);
-const text = input.value.trim();
-if (!text) return;
-
-const artist = state.artists.find(a => a.id === artistId);
-artist.comments.push({
-id: "c_" + Date.now(),
-author: user.username,
-text,
-replies: []
-});
-input.value = "";
-saveState();
-}
-
-function selectCommentToReply(artistId, commentId, authorName) {
-activeReplyTarget = { artistId, commentId };
-renderArtists();
-const replyInput = document.getElementById(`replyInput_${artistId}_${commentId}`);
-if (replyInput) replyInput.focus();
-showToast(`Réponse à @${authorName}`);
-}
-
-function addReplyToComment(e, artistId, commentId) {
-e.preventDefault();
-const user = getCurrentUser();
-if (!ensureNotBlocked(user)) return;
-const input = document.getElementById(`replyInput_${artistId}_${commentId}`);
-const text = input.value.trim();
-if (!text) return;
-
-const artist = state.artists.find(a => a.id === artistId);
-const comment = artist.comments.find(c => c.id === commentId);
-comment.replies.push({
-id: "r_" + Date.now(),
-author: state.isAdmin ? "PDG Chico Mofonga" : user.username,
-text
-});
-activeReplyTarget = null;
-saveState();
-}
-
-/* KYC */
-document.getElementById("kycForm").addEventListener("submit", (e) => {
-e.preventDefault();
-const user = getCurrentUser();
-if (!ensureNotBlocked(user)) return;
-user.kycDoc = document.getElementById("kycDoc").value.trim();
-user.kycStatus = "En attente de validation";
-document.getElementById("kycDoc").value = "";
-showToast("Pièce d'identité soumise.");
-saveState();
-});
-
-/* Admin Actions */
-document.getElementById("rateForm").addEventListener("submit", (e) => {
-e.preventDefault();
-state.rateUsdToFc = parseFloat(document.getElementById("adminRateInput").value);
-pushNotif(`💱 Nouveau taux CBK : 1 USD = ${state.rateUsdToFc} FC`);
-showToast("Taux USD/FC mis à jour.");
-saveState();
-});
-
-document.getElementById("adminAnnouncementForm").addEventListener("submit", (e) => {
-e.preventDefault();
-state.announcement = {
-title: document.getElementById("annTitleInput").value.trim(),
-body: document.getElementById("annBodyInput").value.trim()
-};
-if (state.announcement.title || state.announcement.body) {
-pushNotif(`📢 Annonce CBK : ${state.announcement.title || state.announcement.body}`);
-showToast("Annonce publiée sur l'Accueil !");
-} else {
-showToast("Annonce masquée.");
-}
-saveState();
-});
-
-function processTx(txId, approve) {
-const tx = state.transactions.find(t => t.id === txId);
-if (!tx || tx.status !== "En attente") return;
-const sender = state.users.find(u => u.id === tx.userId);
-if (!sender) return;
-
-if (!approve) {
-tx.status = "Refusé";
-saveState();
-return showToast("Transaction refusée.");
-}
-
-if (tx.type === "depot") {
-if (tx.currency === "USD") sender.usd += tx.amount;
-else sender.fc += tx.amount;
-} else if (tx.type === "retrait") {
-const bal = tx.currency === "USD" ? sender.usd : sender.fc;
-if (bal < tx.amount) return showToast("Solde client insuffisant.");
-if (tx.currency === "USD") sender.usd -= tx.amount;
-else sender.fc -= tx.amount;
-} else if (tx.type === "transfert") {
-const bal = tx.currency === "USD" ? sender.usd : sender.fc;
-const receiver = state.users.find(u => u.username.toLowerCase() === tx.targetUsername.toLowerCase());
-if (bal < tx.amount) return showToast("Solde expéditeur insuffisant.");
-if (!receiver) return showToast("Destinataire introuvable.");
-if (tx.currency === "USD") { sender.usd -= tx.amount; receiver.usd += tx.amount; }
-else { sender.fc -= tx.amount; receiver.fc += tx.amount; }
-}
-
-tx.status = "Validé";
-showToast("Transaction validée !");
-saveState();
-}
-
-document.getElementById("adminBalanceForm").addEventListener("submit", (e) => {
-e.preventDefault();
-const user = state.users.find(u => u.id === document.getElementById("adminBalUser").value);
-const action = document.getElementById("adminBalAction").value;
-const currency = document.getElementById("adminBalCurrency").value;
-const amount = parseFloat(document.getElementById("adminBalAmount").value);
-if (!user) return;
-
-if (action === "add") {
-if (currency === "USD") user.usd += amount;
-else user.fc += amount;
-} else {
-if (currency === "USD") user.usd = Math.max(0, user.usd - amount);
-else user.fc = Math.max(0, user.fc - amount);
-}
-e.target.reset();
-showToast(`Solde ${currency} mis à jour pour @${user.username}`);
-saveState();
-});
-
-document.getElementById("adminPmForm").addEventListener("submit", (e) => {
-e.preventDefault();
-const toUserId = document.getElementById("adminPmUser").value;
-const text = document.getElementById("adminPmText").value.trim();
-const target = state.users.find(u => u.id === toUserId);
-state.privateMessages.unshift({
-id: "pm_" + Date.now(),
-toUserId,
-toUsername: target ? target.username : "",
-from: "PDG Chico Mofonga (Admin)",
-text,
-read: false,
-date: new Date().toLocaleString("fr-FR")
-});
-if (toUserId === state.currentUserId) {
-pushNotif(`✉️ Nouveau message privé de l'Admin : "${text}"`);
-}
-e.target.reset();
-showToast("Message privé envoyé !");
-saveState();
-});
-
-function verifyKyc(userId, status) {
-const u = state.users.find(x => x.id === userId);
-if (!u) return;
-u.kycStatus = status;
-showToast(`KYC @${u.username} : ${status}`);
-saveState();
-}
-
-function toggleBlockUser(userId) {
-const u = state.users.find(x => x.id === userId);
-if (!u) return;
-u.blocked = !u.blocked;
-showToast(u.blocked ? `@${u.username} bloqué.` : `@${u.username} débloqué.`);
-saveState();
-}
-
-function deleteUser(userId) {
-if (state.users.length <= 1) return showToast("Impossible de supprimer le dernier utilisateur.");
-state.users = state.users.filter(x => x.id !== userId);
-if (state.currentUserId === userId) state.currentUserId = state.users[0].id;
-showToast("Utilisateur supprimé.");
-saveState();
-}
-
-document.getElementById("adminProductForm").addEventListener("submit", async (e) => {
-e.preventDefault();
-const fileInput = document.getElementById("prodFile");
-let imgSrc = document.getElementById("prodImg").value.trim();
-if (fileInput.files && fileInput.files[0]) {
-imgSrc = await readAndCompressImage(fileInput.files[0]);
-}
-
-const prod = {
-id: "p_" + Date.now(),
-name: document.getElementById("prodName").value.trim(),
-price: parseFloat(document.getElementById("prodPrice").value),
-currency: document.getElementById("prodCurrency").value,
-badge: document.getElementById("prodBadge").value.trim() || "Vérifié CBK",
-img: imgSrc,
-desc: document.getElementById("prodDesc").value.trim(),
-likes: 0
-};
-state.products.unshift(prod);
-pushNotif(`🛒 Nouveau produit au Marché : ${prod.name} (${formatMoney(prod.price, prod.currency)})`);
-e.target.reset();
-showToast("Produit et photo publiés !");
-saveState();
-});
-
-async function changeProductPhoto(prodId, event) {
-const file = event.target.files[0];
-if (!file) return;
-const prod = state.products.find(p => p.id === prodId);
-if (!prod) return;
-prod.img = await readAndCompressImage(file);
-showToast("Photo de l'article mise à jour !");
-saveState();
-}
-
-function deleteProduct(prodId) {
-state.products = state.products.filter(p => p.id !== prodId);
-showToast("Article retiré.");
-saveState();
-}
-
-function updateOrderStatus(orderId, status) {
-const ord = state.orders.find(o => o.id === orderId);
-if (!ord) return;
-ord.status = status;
-showToast("Statut commande mis à jour.");
-saveState();
-}
-
-document.getElementById("adminArtistForm").addEventListener("submit", async (e) => {
-e.preventDefault();
-const fileInput = document.getElementById("artFile");
-let imgSrc = document.getElementById("artImg").value.trim();
-if (fileInput.files && fileInput.files[0]) {
-imgSrc = await readAndCompressImage(fileInput.files[0]);
-}
-
-const art = {
-id: "art_" + Date.now(),
-name: document.getElementById("artName").value.trim(),
-genre: document.getElementById("artGenre").value.trim(),
-img: imgSrc,
-comments: []
-};
-state.artists.unshift(art);
-pushNotif(`🎤 Nouvel artiste publié : ${art.name}`);
-e.target.reset();
-showToast("Artiste publié !");
-saveState();
-});
-
-async function changeArtistPhoto(artId, event) {
-const file = event.target.files[0];
-if (!file) return;
-const art = state.artists.find(a => a.id === artId);
-if (!art) return;
-art.img = await readAndCompressImage(file);
-showToast("Photo de l'artiste mise à jour !");
-saveState();
-}
-
-function deleteArtist(artId) {
-state.artists = state.artists.filter(a => a.id !== artId);
-showToast("Artiste retiré.");
-saveState();
-}
-
-document.getElementById("adminActiveUsersForm").addEventListener("submit", (e) => {
-e.preventDefault();
-const list = document.getElementById("activeUsersInput").value
-.split(",")
-.map(s => s.trim().replace(/^@/, ""))
-.filter(Boolean);
-state.activeUsersMonth = list;
-pushNotif(`🏆 Utilisateurs actifs du mois mis à jour !`);
-e.target.reset();
-showToast("Liste des actifs du mois publiée !");
-saveState();
-});
-
-function deleteDonation(donId) {
-state.donations = state.donations.filter(d => d.id !== donId);
-saveState();
-}
-
-function updateServiceStatus(srvId, status) {
-const srv = state.serviceRequests.find(s => s.id === srvId);
-if (!srv) return;
-srv.status = status;
-saveState();
-}
-
-/* Notifications & Backup */
-function renderNotifs() {
-const box = document.getElementById("notifList");
-if (!state.notifications.length) {
-box.innerHTML = `<p class="muted small">Aucune notification.</p>`;
-return;
-}
-box.innerHTML = state.notifications.map(n => `
-<div class="list-box" style="${n.read ? 'opacity:0.65;' : ''}">
-<div class="small"><strong>${n.text}</strong></div>
-<div class="muted small">${n.date}</div>
-</div>
-`).join("");
-}
-
-function markAllNotifsRead() {
-state.notifications.forEach(n => n.read = true);
-saveState();
-renderNotifs();
-}
-
-function exportBackup() {
-const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
-const url = URL.createObjectURL(blob);
-const a = document.createElement("a");
-a.href = url;
-a.download = "cbk-kinshasa-sauvegarde.json";
-a.click();
-URL.revokeObjectURL(url);
-showToast("Sauvegarde JSON exportée.");
-}
-
-function importBackup(event) {
-const file = event.target.files[0];
-if (!file) return;
-const reader = new FileReader();
-reader.onload = () => {
-try {
-const parsed = JSON.parse(reader.result);
-state = {
-...structuredClone(DEFAULT_STATE),
-...parsed,
-visuals: { ...structuredClone(DEFAULT_STATE.visuals), ...(parsed.visuals || {}) },
-announcement: { ...structuredClone(DEFAULT_STATE.announcement), ...(parsed.announcement || {}) }
-};
-saveState();
-showToast("Sauvegarde importée.");
-} catch (err) {
-showToast("Fichier JSON invalide.");
-}
-};
-reader.readAsText(file);
-}
-
-function resetDemoData() {
-state = structuredClone(DEFAULT_STATE);
-state.isAdmin = true;
-saveState();
-showToast("Données réinitialisées.");
-}
-
-function applyOptionalImg(imgEl, src) {
-if (src) {
-imgEl.src = src;
-imgEl.style.display = "block";
-} else {
-imgEl.removeAttribute("src");
-imgEl.style.display = "none";
-}
-}
-
-/* Render All */
-function renderAll() {
-const user = getCurrentUser();
-const unreadCount = state.notifications.filter(n => !n.read).length;
-
-// Logo CBK
-const logoSrc = state.visuals.logo;
-["headerLogoImg", "sidebarLogoImg"].forEach(id => {
-const el = document.getElementById(id);
-if (logoSrc) {
-el.src = logoSrc;
-el.style.display = "block";
-} else {
-el.removeAttribute("src");
-el.style.display = "none";
-}
-});
-document.getElementById("headerLogoText").style.display = logoSrc ? "none" : "inline-flex";
-
-// Section images
-document.getElementById("pdgImg").src = state.visuals.pdgPhoto || DEFAULT_STATE.visuals.pdgPhoto;
-applyOptionalImg(document.getElementById("homeBannerImg"), state.visuals.homeBanner);
-applyOptionalImg(document.getElementById("srvPassportImg"), state.visuals.passportImg);
-applyOptionalImg(document.getElementById("srvStudioImg"), state.visuals.studioImg);
-applyOptionalImg(document.getElementById("payBannerImg"), state.visuals.paymentsImg);
-applyOptionalImg(document.getElementById("donateBannerImg"), state.visuals.donationsImg);
-applyOptionalImg(document.getElementById("aboutBannerImg"), state.visuals.aboutImg);
-
-// Announcement
-const annCard = document.getElementById("announcementCard");
-if (state.announcement.title || state.announcement.body) {
-annCard.style.display = "block";
-document.getElementById("announcementTitle").textContent = state.announcement.title || "Information CBK";
-document.getElementById("announcementBody").textContent = state.announcement.body || "";
-} else {
-annCard.style.display = "none";
-}
-
-// Rates & Header / Sidebar
-document.getElementById("headerSessionInfo").textContent =
-`Taux 1$ = ${state.rateUsdToFc} FC • @${user.username}`;
-document.getElementById("homeRateBadge").textContent = `1$ = ${state.rateUsdToFc} FC`;
-document.getElementById("exchangeRateBadge").textContent = `1 USD = ${state.rateUsdToFc} FC`;
-document.getElementById("sidebarUserLabel").textContent =
-`@${user.username} • Kinshasa`;
-
-document.getElementById("notifCountDesktop").textContent = unreadCount;
-document.getElementById("notifCountMenu").textContent = unreadCount;
-
-document.getElementById("btnAdminDesktop").textContent = state.isAdmin ? "Admin ACTIF" : "Admin";
-document.getElementById("menuAdminLabel").textContent = state.isAdmin ? "⚡ Espace Admin (Actif)" : "🔐 Espace Admin";
-document.getElementById("menuAdminBtn").classList.toggle("active", state.activeView === "admin");
-
-updateConverter();
-
-// Wallet
-document.getElementById("balUsd").textContent = formatMoney(user.usd, "USD");
-document.getElementById("balFc").textContent = formatMoney(user.fc, "FC");
-document.getElementById("walletAccountStatus").innerHTML = user.blocked
-? `<span class="status-bad">Compte BLOQUÉ par l'administration.</span>`
-: `Compte <strong>@${user.username}</strong> • KYC : <span class="${user.kycStatus === 'Vérifié' ? 'status-ok' : 'status-pending'}">${user.kycStatus}</span>`;
-
-// Donations
-document.getElementById("donorsList").innerHTML = state.donations.length
-? state.donations.map(d => `
-<div class="list-box">
-<strong>${d.donorName}</strong> <span class="badge">${formatMoney(d.amount, d.currency)}</span> <span>${d.message || ""}</span>
-<div class="muted small">${d.date} • ${d.method}</div>
-</div>
-`).join("")
-: `<p class="muted small">Aucun don enregistré pour le moment.</p>`;
-
-// Private Messages with Read Status
-const myPms = state.privateMessages.filter(pm => pm.toUserId === user.id);
-document.getElementById("clientPrivateMessages").innerHTML = myPms.length
-? myPms.map(pm => `
-<div class="list-box" style="border-color:rgba(210,248,1,0.4);">
-<div class="row-between">
-<div class="small"><strong>${pm.from}</strong> • <span class="muted">${pm.date}</span></div>
-<span class="badge">${pm.read ? "✓ Lu" : "Nouveau"}</span>
-</div>
-<div style="margin-top:4px;">${pm.text}</div>
-</div>
-`).join("")
-: `<p class="muted small">Aucun message privé reçu.</p>`;
-
-// My Transactions
-const myTxs = state.transactions.filter(t => t.userId === user.id);
-document.getElementById("myTransactionsList").innerHTML = myTxs.length
-? myTxs.map(t => {
-const cls = t.status === "Validé" ? "status-ok" : t.status === "Refusé" ? "status-bad" : "status-pending";
-return `
-<div class="list-box">
-<div class="row-between">
-<strong>${t.type.toUpperCase()} — ${formatMoney(t.amount, t.currency)}</strong>
-<span class="${cls}">${t.status}</span>
-</div>
-<div class="muted small">${t.method} ${t.targetUsername ? "→ @" + t.targetUsername : ""} • ${t.date}</div>
-</div>
-`;
-}).join("")
-: `<p class="muted small">Aucune transaction enregistrée.</p>`;
-
-// Market with Search & Currency Filter
-const searchQ = (document.getElementById("marketSearchInput")?.value || "").trim().toLowerCase();
-const currFilter = document.getElementById("marketCurrencyFilter")?.value || "ALL";
-const filteredProds = state.products.filter(p => {
-const matchCurr = currFilter === "ALL" || p.currency === currFilter;
-const matchQ = !searchQ || p.name.toLowerCase().includes(searchQ) || (p.desc || "").toLowerCase().includes(searchQ);
-return matchCurr && matchQ;
-});
-
-document.getElementById("marketList").innerHTML = filteredProds.length
-? filteredProds.map(p => `
-<div class="card" style="margin-bottom:0;">
-${p.img ? `<img class="media-preview" src="${p.img}" alt="${p.name}" />` : ""}
-<div class="row-between">
+appState.payments.forEach((p) => {
+const div = document.createElement("div");
+div.className = "pay-item";
+div.innerHTML = `
+<img class="pay-logo" src="${safeImgSrc(p.logoUrl)}" alt="${escapeHtml(p.name)}" />
 <div>
-<span class="badge">${p.badge}</span>
-<h4 style="font-size:1rem; margin-top:4px;">${p.name}</h4>
-</div>
-<div style="font-weight:900; color:var(--lime); font-size:1.05rem;">${formatMoney(p.price, p.currency)}</div>
-</div>
-<p class="muted small" style="margin-top:6px;">${p.desc || ""}</p>
-<div class="row-gap" style="margin-top:10px;">
-<button type="button" class="btn btn-sm btn-lime" onclick="orderProduct('${p.id}')">Commander</button>
-<button type="button" class="btn btn-sm" onclick="likeProduct('${p.id}')">👍 Aimer (${p.likes || 0})</button>
-<button type="button" class="btn btn-sm" onclick='shareProduct(${JSON.stringify({ name: p.name, price: p.price, currency: p.currency }).replace(/'/g, "&apos;")})'>🔗 Partager</button>
-</div>
-</div>
-`).join("")
-: `<div class="card"><p class="muted small">Aucun produit trouvé pour ce filtre.</p></div>`;
-
-const myOrders = state.orders.filter(o => o.userId === user.id);
-document.getElementById("myOrdersList").innerHTML = myOrders.length
-? myOrders.map(o => `
-<div class="list-box">
-<div class="row-between">
-<strong>${o.productName}</strong>
-<span class="status-pending">${o.status}</span>
-</div>
-<div class="muted small">${formatMoney(o.price, o.currency)} • ${o.date}</div>
-</div>
-`).join("")
-: `<p class="muted small">Aucune commande passée.</p>`;
-
-// Service Requests
-const mySrvs = state.serviceRequests.filter(s => s.userId === user.id);
-document.getElementById("myServiceRequests").innerHTML = mySrvs.length
-? mySrvs.map(s => `
-<div class="list-box">
-<div class="row-between">
-<strong>${s.service}</strong>
-<span class="status-pending">${s.status}</span>
-</div>
-<div class="muted small">${s.detail} • ${s.date}</div>
-</div>
-`).join("")
-: `<p class="muted small">Aucune demande envoyée.</p>`;
-
-// Active Users Month
-document.getElementById("activeUsersList").innerHTML = state.activeUsersMonth.length
-? state.activeUsersMonth.map((u, idx) => `<span class="badge">#${idx + 1} @${u}</span>`).join("")
-: `<p class="muted small">Aucun utilisateur actif publié pour le moment.</p>`;
-
-// Artists
-renderArtists();
-
-// Account Box with Client Profile Photo
-document.getElementById("accountProfileBox").innerHTML = `
-<div class="row-gap">
-<img class="avatar-photo" src="${user.avatar || 'https://via.placeholder.com/80/1a1a1a/D2F801?text=CBK'}" alt="Profil @${user.username}" />
-<div>
-<div><strong>${user.fullName}</strong></div>
-<div class="small"><strong>Pseudo :</strong> @${user.username}</div>
-<div class="small muted">Téléphone : ${user.phone} ${user.email ? "• " + user.email : ""}</div>
-</div>
-</div>
-<div class="small" style="margin-top:8px;">Statut KYC : <strong>${user.kycStatus}</strong> ${user.kycDoc ? "(" + user.kycDoc + ")" : ""}</div>
-<div class="small">Statut compte : <strong class="${user.blocked ? 'status-bad' : 'status-ok'}">${user.blocked ? "Bloqué" : "Actif"}</strong></div>
-`;
-
-if (state.isAdmin) renderAdmin();
-}
-
-function renderArtists() {
-const box = document.getElementById("artistsList");
-if (!state.artists.length) {
-box.innerHTML = `<div class="card"><p class="muted small">Aucun artiste publié pour le moment.</p></div>`;
-return;
-}
-box.innerHTML = state.artists.map(art => `
-<div class="card" style="margin-bottom:0;">
-${art.img ? `<img class="media-preview" src="${art.img}" alt="${art.name}" />` : ""}
-<div class="row-between">
-<div>
-<h4 style="font-size:1rem;">${art.name}</h4>
-<div class="muted small">${art.genre}</div>
-</div>
-<span class="badge">ARTISTE CBK</span>
-</div>
-
-<form onsubmit="addArtistComment(event, '${art.id}')" style="margin-top:10px;">
-<div class="row-gap">
-<input id="commentInput_${art.id}" type="text" placeholder="Écrire un commentaire..." style="margin:0; flex:1;" required />
-<button type="submit" class="btn btn-sm btn-lime">Commenter</button>
-</div>
-</form>
-
-<div style="margin-top:8px;">
-${art.comments.map(c => {
-const isReplyingHere = activeReplyTarget && activeReplyTarget.artistId === art.id && activeReplyTarget.commentId === c.id;
-return `
-<div class="comment-item" onclick="selectCommentToReply('${art.id}', '${c.id}', '${c.author}')">
-<div class="row-between">
-<strong class="small">@${c.author}</strong>
-<span class="muted small">Cliquer pour répondre</span>
-</div>
-<div class="small" style="margin-top:3px;">${c.text}</div>
-
-${(c.replies && c.replies.length) ? `
-<div class="reply-list">
-${c.replies.map(r => `
-<div class="small" style="margin-bottom:4px;">
-<strong style="color:var(--lime);">${r.author} :</strong> ${r.text}
-</div>
-`).join("")}
-</div>
-` : ""}
-
-${isReplyingHere ? `
-<form onclick="event.stopPropagation()" onsubmit="addReplyToComment(event, '${art.id}', '${c.id}')" style="margin-top:8px;">
-<div class="row-gap">
-<input id="replyInput_${art.id}_${c.id}" type="text" placeholder="Répondre à @${c.author}..." style="margin:0; flex:1;" required />
-<button type="submit" class="btn btn-sm btn-lime">Répondre</button>
-</div>
-</form>
-` : ""}
+<div style="font-weight: 800;">${escapeHtml(p.name)}</div>
+<div class="muted">${escapeHtml(p.detail || "")}</div>
 </div>
 `;
-}).join("")}
-</div>
-</div>
-`).join("");
+payContainer.appendChild(div);
+});
+}
+
+// Publications
+const pubContainer = document.getElementById("viewPublications");
+pubContainer.innerHTML = "";
+if (!appState.publications.length) {
+pubContainer.innerHTML = `<p class="muted">Aucune publication pour le moment.</p>`;
+} else {
+appState.publications.forEach((pub) => {
+const div = document.createElement("div");
+div.className = "pub-card";
+const imgHtml = pub.imageUrl
+? `<img src="${safeImgSrc(pub.imageUrl)}" alt="${escapeHtml(pub.title)}" />`
+: "";
+div.innerHTML = `
+<div style="font-weight: 800; font-size: 1.05rem;">${escapeHtml(pub.title)}</div>
+<p style="margin-top: 6px;">${escapeHtml(pub.body)}</p>
+${imgHtml}
+`;
+pubContainer.appendChild(div);
+});
+}
 }
 
 function renderAdmin() {
-document.getElementById("adminRateInput").value = state.rateUsdToFc;
-document.getElementById("annTitleInput").value = state.announcement.title || "";
-document.getElementById("annBodyInput").value = state.announcement.body || "";
+document.getElementById("inpBusinessName").value = appState.businessName;
+document.getElementById("inpRate").value = appState.rate;
+document.getElementById("inpPdgName").value = appState.pdgName;
+document.getElementById("inpWelcomeText").value = appState.welcomeText;
 
-const userOptions = state.users.map(u => `<option value="${u.id}">@${u.username} (${formatMoney(u.usd, "USD")} | ${formatMoney(u.fc, "FC")})</option>`).join("");
-document.getElementById("adminBalUser").innerHTML = userOptions;
-document.getElementById("adminPmUser").innerHTML = userOptions;
+// Rubriques médias (Fichier + Recadrage + URL + OK + Retirer)
+const slotsWrap = document.getElementById("adminMediaSlots");
+slotsWrap.innerHTML = "";
 
-document.getElementById("adminTxList").innerHTML = state.transactions.length
-? state.transactions.map(t => `
-<div class="list-box">
-<div class="row-between">
-<div>
-<strong>@${t.username}</strong> • ${t.type.toUpperCase()} <strong>${formatMoney(t.amount, t.currency)}</strong>
-<div class="muted small">${t.method} ${t.targetUsername ? "→ @" + t.targetUsername : ""} ${t.ref ? "• Réf: " + t.ref : ""}</div>
-</div>
-<div class="row-gap">
-${t.status === "En attente"
-? `<button type="button" class="btn btn-sm btn-lime" onclick="processTx('${t.id}', true)">Valider</button>
-<button type="button" class="btn btn-sm btn-danger" onclick="processTx('${t.id}', false)">Refuser</button>`
-: `<span class="${t.status === 'Validé' ? 'status-ok' : 'status-bad'}">${t.status}</span>`}
-</div>
+MEDIA_SLOTS.forEach((slot) => {
+const item = appState.media[slot.key] || { url: FALLBACK_IMG, text: "" };
+const card = document.createElement("div");
+card.className = "card";
+card.innerHTML = `
+<h3>${slot.label}</h3>
+<img class="thumb" id="preview-${slot.key}" src="${safeImgSrc(item.url)}" alt="${slot.label}" />
+<div class="form-group">
+<label>URL de l'image</label>
+<div class="row-inline">
+<input type="url" id="url-${slot.key}" value="${escapeAttr(item.url)}" placeholder="https://..." />
+<button type="button" class="btn btn-primary" data-ok-slot="${slot.key}">OK</button>
 </div>
 </div>
-`).join("")
-: `<p class="muted small">Aucune transaction.</p>`;
+<div class="row-inline" style="margin-bottom: 10px;">
+<button type="button" class="btn btn-outline" data-crop-slot="${slot.key}">✂️ Fichier & Recadrer</button>
+<button type="button" class="btn btn-danger" data-remove-slot="${slot.key}">Retirer</button>
+</div>
+${
+slot.hasText
+? `<div class="form-group">
+<label>${slot.textLabel}</label>
+<textarea id="text-${slot.key}">${escapeHtml(item.text || "")}</textarea>
+</div>`
+: ""
+}
+`;
+slotsWrap.appendChild(card);
+});
 
-document.getElementById("adminUsersList").innerHTML = state.users.map(u => `
-<div class="list-box">
-<div class="row-between">
-<div>
-<strong>@${u.username}</strong> (${u.fullName}) • <span class="badge">${formatMoney(u.usd, "USD")}</span> <span class="badge">${formatMoney(u.fc, "FC")}</span>
-<div class="muted small">KYC: <strong>${u.kycStatus}</strong> ${u.kycDoc ? "• Doc: " + u.kycDoc : ""} • ${u.blocked ? "<span class='status-bad'>BLOQUÉ</span>" : "<span class='status-ok'>ACTIF</span>"}</div>
+// Modes de paiement dans Admin
+const adminPayWrap = document.getElementById("adminPaymentsList");
+adminPayWrap.innerHTML = "";
+appState.payments.forEach((p, idx) => {
+const row = document.createElement("div");
+row.className = "pub-card";
+row.innerHTML = `
+<div class="row-inline" style="justify-content: space-between; margin-bottom: 8px;">
+<strong>Mode #${idx + 1} : ${escapeHtml(p.name)}</strong>
+<button type="button" class="btn btn-danger" data-del-pay="${idx}">Supprimer</button>
 </div>
-<div class="row-gap">
-<button type="button" class="btn btn-sm btn-lime" onclick="verifyKyc('${u.id}', 'Vérifié')">Valider KYC</button>
-<button type="button" class="btn btn-sm" onclick="toggleBlockUser('${u.id}')">${u.blocked ? "Débloquer" : "Bloquer"}</button>
-<button type="button" class="btn btn-sm btn-danger" onclick="deleteUser('${u.id}')">Supprimer</button>
+<div class="grid-2">
+<div class="form-group">
+<label>Nom</label>
+<input type="text" data-pay-name="${idx}" value="${escapeAttr(p.name)}" />
+</div>
+<div class="form-group">
+<label>Détail / Numéro</label>
+<input type="text" data-pay-detail="${idx}" value="${escapeAttr(p.detail || "")}" />
 </div>
 </div>
+<div class="form-group">
+<label>Logo du mode de paiement (URL ou Fichier recadré)</label>
+<div class="row-inline">
+<input type="url" data-pay-url="${idx}" value="${escapeAttr(p.logoUrl || "")}" placeholder="https://..." />
+<button type="button" class="btn btn-outline" data-crop-pay="${idx}">✂️ Recadrer</button>
 </div>
-`).join("");
+</div>
+<img class="pay-logo" src="${safeImgSrc(p.logoUrl)}" alt="${escapeAttr(p.name)}" />
+`;
+adminPayWrap.appendChild(row);
+});
 
-document.getElementById("adminProductsManageList").innerHTML = state.products.length
-? state.products.map(p => `
-<div class="list-box">
-<div class="row-between">
-<div><strong>${p.name}</strong> — ${formatMoney(p.price, p.currency)}</div>
-<div class="row-gap">
-<label class="btn btn-sm" style="margin:0;">
-📷 Photo <input type="file" accept="image/*" style="display:none;" onchange="changeProductPhoto('${p.id}', event)" />
-</label>
-<button type="button" class="btn btn-sm btn-danger" onclick="deleteProduct('${p.id}')">Supprimer</button>
-</div>
-</div>
-</div>
-`).join("")
-: `<p class="muted small">Aucun produit publié.</p>`;
+document.getElementById("newPayPreview").src = safeImgSrc(pendingNewPayLogo);
+document.getElementById("pubPreview").src = safeImgSrc(pendingPubImg || FALLBACK_IMG);
 
-document.getElementById("adminArtistsManageList").innerHTML = state.artists.length
-? state.artists.map(a => `
-<div class="list-box">
-<div class="row-between">
-<div><strong>${a.name}</strong> (${a.genre})</div>
-<div class="row-gap">
-<label class="btn btn-sm" style="margin:0;">
-📷 Photo <input type="file" accept="image/*" style="display:none;" onchange="changeArtistPhoto('${a.id}', event)" />
-</label>
-<button type="button" class="btn btn-sm btn-danger" onclick="deleteArtist('${a.id}')">Supprimer</button>
+// Publications dans Admin
+const adminPubWrap = document.getElementById("adminPubList");
+adminPubWrap.innerHTML = "";
+appState.publications.forEach((pub, idx) => {
+const div = document.createElement("div");
+div.className = "pub-card";
+div.innerHTML = `
+<div class="row-inline" style="justify-content: space-between;">
+<strong>${escapeHtml(pub.title)}</strong>
+<button type="button" class="btn btn-danger" data-del-pub="${idx}">Supprimer</button>
 </div>
-</div>
-</div>
-`).join("")
-: "";
-
-document.getElementById("adminOrdersList").innerHTML = state.orders.length
-? state.orders.map(o => `
-<div class="list-box">
-<div class="row-between">
-<div><strong>@${o.username}</strong> — ${o.productName} (${formatMoney(o.price, o.currency)})</div>
-<select style="width:auto; margin:0;" onchange="updateOrderStatus('${o.id}', this.value)">
-<option ${o.status === "En attente" ? "selected" : ""}>En attente</option>
-<option ${o.status === "Confirmée" ? "selected" : ""}>Confirmée</option>
-<option ${o.status === "En livraison" ? "selected" : ""}>En livraison</option>
-<option ${o.status === "Livré" ? "selected" : ""}>Livré</option>
-</select>
-</div>
-</div>
-`).join("")
-: `<p class="muted small">Aucune commande client.</p>`;
-
-document.getElementById("adminDonationsList").innerHTML = state.donations.length
-? state.donations.map(d => `
-<div class="list-box">
-<div class="row-between">
-<div><strong>${d.donorName}</strong> — ${formatMoney(d.amount, d.currency)} — ${d.message || ""}</div>
-<button type="button" class="btn btn-sm btn-danger" onclick="deleteDonation('${d.id}')">Retirer</button>
-</div>
-</div>
-`).join("")
-: `<p class="muted small">Aucun don.</p>`;
-
-document.getElementById("adminServicesList").innerHTML = state.serviceRequests.length
-? state.serviceRequests.map(s => `
-<div class="list-box">
-<div class="row-between">
-<div><strong>@${s.username}</strong> • ${s.service}<div class="muted small">${s.detail}</div></div>
-<select style="width:auto; margin:0;" onchange="updateServiceStatus('${s.id}', this.value)">
-<option ${s.status === "En attente" ? "selected" : ""}>En attente</option>
-<option ${s.status === "En cours" ? "selected" : ""}>En cours</option>
-<option ${s.status === "Terminé" ? "selected" : ""}>Terminé</option>
-</select>
-</div>
-</div>
-`).join("")
-: `<p class="muted small">Aucune demande Passeport ou Studio.</p>`;
+<p class="muted" style="margin-top: 6px;">${escapeHtml(pub.body)}</p>
+`;
+adminPubWrap.appendChild(div);
+});
 }
 
-switchView(state.activeView || "home");
-renderAll();
+function renderAll() {
+renderVitrine();
+renderAdmin();
+}
+
+function collectFormIntoState() {
+appState.businessName =
+document.getElementById("inpBusinessName").value.trim() || "CBK Chico Business";
+appState.rate = document.getElementById("inpRate").value.trim() || "1$ = 225 FC";
+appState.pdgName = document.getElementById("inpPdgName").value.trim() || "Direction CBK";
+appState.welcomeText = document.getElementById("inpWelcomeText").value.trim();
+
+MEDIA_SLOTS.forEach((slot) => {
+const urlInp = document.getElementById(`url-${slot.key}`);
+if (urlInp && urlInp.value.trim()) {
+appState.media[slot.key].url = urlInp.value.trim();
+}
+if (slot.hasText) {
+const txtInp = document.getElementById(`text-${slot.key}`);
+if (txtInp) {
+appState.media[slot.key].text = txtInp.value;
+}
+}
+});
+
+appState.payments.forEach((p, idx) => {
+const nameEl = document.querySelector(`[data-pay-name="${idx}"]`);
+const detailEl = document.querySelector(`[data-pay-detail="${idx}"]`);
+const urlEl = document.querySelector(`[data-pay-url="${idx}"]`);
+if (nameEl) p.name = nameEl.value.trim() || p.name;
+if (detailEl) p.detail = detailEl.value.trim();
+if (urlEl && urlEl.value.trim()) p.logoUrl = urlEl.value.trim();
+});
+}
+
+// =========================================================================
+// 4. RECADRAGE & COMPRESSION LÉGÈRE
+// =========================================================================
+function openFilePickerForCrop(targetObj) {
+cropTarget = targetObj;
+const fileInput = document.getElementById("hiddenFileInput");
+fileInput.value = "";
+fileInput.click();
+}
+
+document.getElementById("hiddenFileInput").addEventListener("change", (e) => {
+const file = e.target.files && e.target.files[0];
+if (!file || !cropTarget) return;
+
+const reader = new FileReader();
+reader.onload = () => {
+rawLoadedDataUrl = String(reader.result || "");
+const cropImg = document.getElementById("cropImage");
+cropImg.src = rawLoadedDataUrl;
+document.getElementById("cropZoom").value = 100;
+document.getElementById("cropX").value = 0;
+document.getElementById("cropY").value = 0;
+document.getElementById("cropZoomVal").textContent = "100%";
+updateCropTransform();
+document.getElementById("cropModal").classList.add("open");
+};
+reader.readAsDataURL(file);
+});
+
+function updateCropTransform() {
+const zoom = Number(document.getElementById("cropZoom").value) / 100;
+const x = Number(document.getElementById("cropX").value);
+const y = Number(document.getElementById("cropY").value);
+document.getElementById("cropZoomVal").textContent = `${Math.round(zoom * 100)}%`;
+document.getElementById("cropImage").style.transform = `translate(${x}px, ${y}px) scale(${zoom})`;
+}
+
+["cropZoom", "cropX", "cropY"].forEach((id) => {
+document.getElementById(id).addEventListener("input", updateCropTransform);
+});
+
+document.getElementById("btnCancelCrop").addEventListener("click", () => {
+document.getElementById("cropModal").classList.remove("open");
+cropTarget = null;
+});
+
+document.getElementById("btnApplyCrop").addEventListener("click", () => {
+const imgEl = document.getElementById("cropImage");
+if (!imgEl.src || !cropTarget) return;
+
+const canvas = document.createElement("canvas");
+const outW = 640;
+const outH = 400;
+canvas.width = outW;
+canvas.height = outH;
+
+const ctx = canvas.getContext("2d");
+ctx.fillStyle = "#ffffff";
+ctx.fillRect(0, 0, outW, outH);
+
+const zoom = Number(document.getElementById("cropZoom").value) / 100;
+const offsetX = Number(document.getElementById("cropX").value) * 1.8;
+const offsetY = Number(document.getElementById("cropY").value) * 1.8;
+
+const natW = imgEl.naturalWidth || outW;
+const natH = imgEl.naturalHeight || outH;
+const scaleCover = Math.max(outW / natW, outH / natH) * zoom;
+const drawW = natW * scaleCover;
+const drawH = natH * scaleCover;
+const dx = (outW - drawW) / 2 + offsetX;
+const dy = (outH - drawH) / 2 + offsetY;
+
+ctx.drawImage(imgEl, dx, dy, drawW, drawH);
+const croppedDataUrl = canvas.toDataURL("image/jpeg", 0.82);
+
+if (cropTarget.kind === "slot") {
+const key = cropTarget.key;
+appState.media[key].url = croppedDataUrl;
+const urlInp = document.getElementById(`url-${key}`);
+if (urlInp) urlInp.value = croppedDataUrl;
+const prevEl = document.getElementById(`preview-${key}`);
+if (prevEl) prevEl.src = croppedDataUrl;
+} else if (cropTarget.kind === "newPayment") {
+pendingNewPayLogo = croppedDataUrl;
+document.getElementById("newPayUrl").value = croppedDataUrl;
+document.getElementById("newPayPreview").src = croppedDataUrl;
+} else if (cropTarget.kind === "editPayment") {
+const idx = cropTarget.index;
+if (appState.payments[idx]) {
+appState.payments[idx].logoUrl = croppedDataUrl;
+renderAdmin();
+}
+} else if (cropTarget.kind === "pub") {
+pendingPubImg = croppedDataUrl;
+document.getElementById("pubImgUrl").value = croppedDataUrl;
+document.getElementById("pubPreview").src = croppedDataUrl;
+}
+
+document.getElementById("cropModal").classList.remove("open");
+cropTarget = null;
+showAlert("✂️ Image recadrée et prête ! Cliquez sur Enregistrer pour synchroniser.", "ok");
+});
+
+// =========================================================================
+// 5. ÉVÉNEMENTS (ONGLETS, BOUTONS, PUBLICATIONS, PAIEMENTS)
+// =========================================================================
+document.querySelectorAll(".tab-btn").forEach((btn) => {
+btn.addEventListener("click", () => {
+document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+document.querySelectorAll(".panel").forEach((p) => p.classList.remove("active"));
+btn.classList.add("active");
+document.getElementById(`tab-${btn.dataset.tab}`).classList.add("active");
+});
+});
+
+document.getElementById("adminMediaSlots").addEventListener("click", (e) => {
+const okKey = e.target.dataset.okSlot;
+const cropKey = e.target.dataset.cropSlot;
+const remKey = e.target.dataset.removeSlot;
+
+if (okKey) {
+const val = document.getElementById(`url-${okKey}`).value.trim();
+appState.media[okKey].url = val || FALLBACK_IMG;
+document.getElementById(`preview-${okKey}`).src = safeImgSrc(appState.media[okKey].url);
+showAlert(`URL appliquée pour "${okKey}". Pensez à Enregistrer pour tous.`, "ok");
+} else if (cropKey) {
+openFilePickerForCrop({ kind: "slot", key: cropKey });
+} else if (remKey) {
+appState.media[remKey].url = FALLBACK_IMG;
+renderAdmin();
+showAlert("Image retirée (retour par défaut).", "ok");
+}
+});
+
+document.getElementById("btnNewPayFile").addEventListener("click", () => {
+openFilePickerForCrop({ kind: "newPayment" });
+});
+
+document.getElementById("btnAddPayment").addEventListener("click", () => {
+const name = document.getElementById("newPayName").value.trim();
+const detail = document.getElementById("newPayDetail").value.trim();
+const urlVal = document.getElementById("newPayUrl").value.trim();
+
+if (!name) {
+showAlert("Veuillez saisir le nom du mode de paiement.", "err");
+return;
+}
+
+appState.payments.push({
+id: "pay-" + Date.now(),
+name,
+detail,
+logoUrl: urlVal || pendingNewPayLogo || FALLBACK_IMG
+});
+
+document.getElementById("newPayName").value = "";
+document.getElementById("newPayDetail").value = "";
+document.getElementById("newPayUrl").value = "";
+pendingNewPayLogo = FALLBACK_IMG;
+renderAdmin();
+showAlert("Mode de paiement ajouté. Cliquez sur Enregistrer pour tout le monde.", "ok");
+});
+
+document.getElementById("adminPaymentsList").addEventListener("click", (e) => {
+const delIdx = e.target.dataset.delPay;
+const cropIdx = e.target.dataset.cropPay;
+
+if (delIdx !== undefined) {
+appState.payments.splice(Number(delIdx), 1);
+renderAdmin();
+} else if (cropIdx !== undefined) {
+openFilePickerForCrop({ kind: "editPayment", index: Number(cropIdx) });
+}
+});
+
+document.getElementById("btnPubFile").addEventListener("click", () => {
+openFilePickerForCrop({ kind: "pub" });
+});
+
+document.getElementById("btnAddPub").addEventListener("click", () => {
+const title = document.getElementById("pubTitle").value.trim();
+const body = document.getElementById("pubBody").value.trim();
+const imgUrl = document.getElementById("pubImgUrl").value.trim() || pendingPubImg;
+
+if (!title && !body) {
+showAlert("Ajoutez au moins un titre ou un texte pour la publication.", "err");
+return;
+}
+
+appState.publications.unshift({
+id: "pub-" + Date.now(),
+title: title || "Publication CBK",
+body,
+imageUrl: imgUrl
+});
+
+document.getElementById("pubTitle").value = "";
+document.getElementById("pubBody").value = "";
+document.getElementById("pubImgUrl").value = "";
+pendingPubImg = "";
+renderAdmin();
+showAlert("Publication ajoutée ! Cliquez sur Enregistrer pour la diffuser à tous.", "ok");
+});
+
+document.getElementById("adminPubList").addEventListener("click", (e) => {
+const delIdx = e.target.dataset.delPub;
+if (delIdx !== undefined) {
+appState.publications.splice(Number(delIdx), 1);
+renderAdmin();
+}
+});
+
+document.getElementById("btnSaveAll").addEventListener("click", async () => {
+collectFormIntoState();
+await persistState("✅ Tout a été enregistré et synchronisé pour tous les visiteurs !");
+});
+
+document.getElementById("btnResetDefaults").addEventListener("click", async () => {
+appState = createDefaultState();
+await persistState("♻️ Réinitialisation effectuée pour tout le monde.");
+});
+
+function escapeHtml(str) {
+return String(str || "")
+.replace(/&/g, "&amp;")
+.replace(/</g, "&lt;")
+.replace(/>/g, "&gt;")
+.replace(/"/g, "&quot;");
+}
+
+function escapeAttr(str) {
+return escapeHtml(str).replace(/'/g, "&#39;");
+}
+
+// Démarrage propre
+initSupabaseIfConfigured();
+loadInitialState();
+subscribeRealtime();
 </script>
 </body>
 </html>
+
