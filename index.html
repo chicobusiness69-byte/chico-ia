@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chico Business - IA</title>
+<style>
+body{font-family:sans-serif;background:#0f172a;color:white;text-align:center;padding:40px 20px;margin:0}
+h1{font-size:32px}
+p{color:#cbd5e1;font-size:18px}
+.box{background:white;color:#0f172a;padding:20px;border-radius:16px;max-width:400px;margin:30px auto}
+input{width:90%;padding:12px;border-radius:10px;border:1px solid #ddd;margin:10px 0}
+button{background:#22c55e;color:white;border:0;padding:13px 20px;border-radius:10px;font-size:16px;width:95%}
+#reponse{margin-top:15px;font-weight:bold}
+</style>
+</head>
+<body>
+<h1>🤖 Chico Business IA</h1>
+<p>Ton assistant business à Kinshasa</p>
+<div class="box">
+<h3>Pose ta question business</h3>
+<input id="q" placeholder="Ex: Comment vendre plus ?">
+<button onclick="repondre()">Demander à Chico</button>
+<p id="reponse"></p>
+</div>
+<script>
+function repondre(){
+let q=document.getElementById('q').value;
+let r=document.getElementById('reponse');
+if(!q){r.innerText="Écris d'abord ta question.";return}
+r.innerText="Chico IA : Pour réussir, commence petit, vends tous les jours, et utilise WhatsApp + TikTok pour trouver des clients à Kinshasa.";
+}
+</script>
+</body>
+</html>
