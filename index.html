@@ -1,254 +1,120 @@
 <!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>CBK - Chico Business Kinshasa</title>
 <style>
-*{box-sizing:border-box;font-family:Arial,sans-serif}
-body{margin:0;background:#EEF2F7;padding-bottom:90px}
-header{background:#0B3D91;color:white;padding:15px;text-align:center;position:sticky;top:0;z-index:10}
-header h1{margin:0;font-size:32px;letter-spacing:2px;cursor:pointer}
-header p{margin:2px 0 0;font-size:13px;opacity:.9}
-.wallet{background:white;margin:12px;border-radius:15px;padding:15px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,.1)}
-.wallet b{font-size:18px}
-.btn-blue{background:#0B3D91;color:white;border:none;padding:10px 14px;border-radius:10px;font-weight:bold}
-.hero{background:#0B3D91;color:white;margin:0 12px;border-radius:15px;padding:18px}
-.hero h2{margin:0 0 5px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px}
-.card{background:white;border-radius:15px;padding:15px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.08);cursor:pointer}
-.card span{font-size:32px}
-.card h3{margin:8px 0 4px;font-size:16px}
-.card p{margin:0;font-size:12px;color:#666}
-.big{margin:0 12px;border-radius:15px;padding:18px;color:white;cursor:pointer}
-.big h3{margin:0}
-.big p{margin:6px 0 0;font-size:13px}
-.big button{border:none;padding:10px 15px;border-radius:10px;font-weight:bold;margin-top:10px}
-nav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;padding:10px 0;border-top:1px solid #ddd}
-nav button{border:none;background:none;font-size:12px;text-align:center}
-.section{padding:0 12px;display:none}
-.section.active{display:block}
-input,select{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:10px}
-</style>
-</head>
+*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#F3F4F6}
+.top{background:#111827;color:white;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+.logo{font-weight:900;font-size:19px}.logo span{color:#FACC15}
+.btn{border:0;padding:13px;border-radius:12px;font-weight:800;width:100%;margin-top:10px;cursor:pointer}
+.btn-yellow{background:#FACC15}.btn-dark{background:#111827;color:white}
+.card{background:white;border-radius:16px;padding:16px;margin:14px;box-shadow:0 4px 15px #0001}
+input{width:100%;padding:12px;border:1px solid #ddd;border-radius:12px;margin-top:4px;margin-bottom:10px}
+label{font-weight:700;font-size:14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.service{background:#F9FAFB;border-radius:14px;padding:14px;text-align:center;cursor:pointer}
+.hidden{display:none}
+.menu{position:fixed;top:0;left:0;width:260px;height:100%;background:white;z-index:99;padding:20px;box-shadow:5px 0 20px #0003;transform:translateX(-110%);transition:.3s}
+.menu.open{transform:none}.menu a{display:block;padding:13px;border-radius:10px;text-decoration:none;color:#111;font-weight:700}
+.menu a:hover{background:#FEF3C7}
+.pay{display:flex;gap:10px;align-items:center;background:#F9FAFB;padding:12px;border-radius:12px;margin-top:8px}
+.badge{padding:9px 10px;border-radius:10px;color:white;font-weight:900;min-width:75px;text-align:center}
+.logo-img{width:75px;height:75px;border-radius:18px;object-fit:cover}
+</style></head>
 <body>
 
-<header>
-<h1 id="logoCBK">CBK</h1>
-<p>Chico Business Kinshasa - Ton Business, Version Pro</p>
-</header>
-
-<div class="wallet">
-<div><div>👋 Bonjour, <b id="nomUser">Invité</b></div><div style="font-size:13px;color:#666">Ton Wallet</div></div>
-<div><b id="walletTxt">0$ | 0 Points</b><br><button class="btn-blue" onclick="creerCompte()">Créer Compte</button></div>
+<!-- MENU ☰ -->
+<div id="menu" class="menu">
+<div style="display:flex;gap:10px;align-items:center">
+<img src="logo.png" onerror="this.style.display='none'" style="width:45px;height:45px;border-radius:12px">
+<b>CBK Chico<br>Business</b>
+</div><hr>
+<a href="#" onclick="go('accueil')">🏠 1. Accueil</a>
+<a href="#" onclick="go('services')">🛠 2. Mes Services</a>
+<a href="#" onclick="go('paiements')">💰 3. Mes Paiements</a>
+<a href="#" onclick="go('faq')">❓ 4. FAQ</a>
+<a href="#" onclick="logout()">🚪 Déconnexion</a>
+<p style="font-size:11px;color:#888">Version 1.2.4 - Kinshasa</p>
 </div>
 
-<!-- ACCUEIL -->
-<div id="pageAccueil" class="section active">
-<div class="hero">
-<h2>Ton Business, Version Pro à Kinshasa</h2>
-<p>💰 Wallet • Boutique • Emploi • Passeport • Studio • Marché • Femmes</p>
+<div class="top"><span onclick="toggleMenu()" style="font-size:24px;cursor:pointer">☰</span><div class="logo">CBK<span>.</span></div><span>🔔</span></div>
+
+<!-- PAGE 1 : CREER COMPTE - COMME SUR LA PHOTO -->
+<div id="page-auth">
+<div class="card" style="text-align:center">
+<img src="logo.png" onerror="this.outerHTML='<div style=\'font-size:50px\'>🛡️</div>'" class="logo-img">
+<h1 style="margin:8px 0 4px">CBK Chico Business<br>Kinshasa</h1>
+<p style="font-size:13px;color:#666;margin:0 0 14px">Créer votre compte pour commencer</p>
+<div style="text-align:left">
+<label>Nom complet</label>
+<input id="nom" placeholder="Ex: Jean Mputu">
+<label>Email / Mail</label>
+<input id="mail" type="email" placeholder="exemple@email.com">
+<label>Numéro WhatsApp</label>
+<input id="phone" placeholder="+243 8XX XXX XXX">
+<label>Mot de passe</label>
+<input id="pass" type="password" placeholder="••••••••">
+</div>
+<button class="btn btn-yellow" onclick="creerCompte()">Créer un compte</button>
+<button class="btn btn-dark" onclick="entrer()" style="background:white;color:black;border:1px solid #111">Se connecter</button>
+<p style="font-size:11px;color:#888">En créant un compte, vous acceptez les Conditions d'utilisation et la Politique de confidentialité</p>
+</div>
 </div>
 
-<div class="grid">
-<div class="card" onclick="showPage('boutique')"><span>🛍️</span><h3>Boutique</h3><p>Achete & Vends à Kinshasa</p></div>
-<div class="card" onclick="showPage('femmes')"><span>👩‍💼</span><h3>Femmes</h3><p>Business Femmes CBK</p></div>
-<div class="card" onclick="showPage('emploi')"><span>💼</span><h3>Emploi</h3><p>Trouve un travail</p></div>
-<div class="card" onclick="showPage('marche')"><span>🛒</span><h3>Marché</h3><p>Prix du marché à Kinshasa</p></div>
-<div class="card" onclick="showPage('ia')">🤖<br><b>Assistance IA</b><br><small>Pose ta question</small></div></div>
-
-<!-- NOUVEAU PASSEPORT -->
-<div class="big" style="background:#0B3D91;" onclick="ouvrirPasseport()">
-<h3>🛂 ASSISTANTE PASSEPORT RAPIDE</h3>
-<p>Passeport vite à Kinshasa ? On t'aide de A à Z. Formulaire, rendez-vous, suivi.</p>
-<button style="background:white;color:#0B3D91;">Demander mon Passeport →</button>
+<!-- PAGE 2 : TABLEAU DE BORD -->
+<div id="page-app" class="hidden">
+<div id="sec-accueil">
+<div class="card"><small>Bonjour 👋</small><h2 id="hello" style="margin:4px 0">Bonjour, Jean</h2>
+<div style="background:#111827;color:white;border-radius:14px;padding:16px"><small>Total Payé</small><h2 style="margin:5px 0">1 250 000 CDF</h2><small>↑ +12% vs septembre</small></div>
+</div>
+<div class="card"><h3>Accès rapides</h3><div class="grid">
+<div class="service" onclick="go('services')" style="background:#FACC15">🗂<br><b>Services</b></div>
+<div class="service" onclick="go('paiements')" style="background:#22C55E;color:white">💰<br><b>Payer</b></div>
+<div class="service" onclick="go('faq')">❓<br><b>FAQ</b></div>
+<div class="service" onclick="openWA()" style="background:#22C55E;color:white">💬<br><b>WhatsApp</b></div>
+</div></div>
 </div>
 
-<div style="height:12px"></div>
+<div id="sec-services" class="hidden"><div class="card"><h2>Mes Services</h2>
+<div class="service" style="text-align:left">📦 <b>Livraison Rapide</b><br><small>Kinshasa - 5 000 CDF</small></div><br>
+<div class="service" style="text-align:left">💻 <b>Service Digital</b><br><small>Création, Design, Aide</small></div><br>
+<div class="service" style="text-align:left">🛒 <b>Commande</b><br><small>Sur WhatsApp</small></div>
+</div></div>
 
-<!-- NOUVEAU STUDIO -->
-<div class="big" style="background:#FF6B00;" onclick="ouvrirStudio()">
-<h3>🎥 STUDIO ENREGISTREMENT VIDÉO / PHOTO</h3>
-<p>Vidéo Pro, Photo Pro, Clip, Anniversaire, Mariage. Réserve ton studio !</p>
-<button style="background:white;color:#FF6B00;">Réserver le Studio →</button>
-</div>
+<div id="sec-paiements" class="hidden"><div class="card"><h2>Mes Paiements</h2>
+<div class="pay"><span class="badge" style="background:#4CAF50">M-PESA</span><div><b>M-Pesa</b><br>+243 815 897 990</div></div>
+<div class="pay"><span class="badge" style="background:#E40000">airtel</span><div><b>Airtel Money</b><br>+243 983 995 019</div></div>
+<div class="pay"><span class="badge" style="background:#FF7900">Orange</span><div><b>Orange Money</b><br>0859312214</div></div>
+<button class="btn" style="background:#22C55E;color:white" onclick="openWA()">J'ai payé - Confirmer sur WhatsApp</button>
+</div></div>
 
-<div style="height:12px"></div>
-
-<div class="big" style="background:#00A651;" onclick="alert('Wallet : Recharge via Airtel Money / Orange Money bientôt !')">
-<h3>💰 MON WALLET</h3>
-<p>Recharge, gagne des points, paie dans l'app.</p>
-<button style="background:white;color:#00A651;">Voir mon Wallet →</button>
+<div id="sec-faq" class="hidden"><div class="card"><h2>FAQ</h2>
+<b>Comment payer ?</b><p>Choisis M-Pesa / Airtel / Orange, envoie l'argent, clique "J'ai payé".</p>
+<b>Combien de temps ?</b><p>Quelques minutes après confirmation WhatsApp.</p>
+<b>Où êtes-vous ?</b><p>Kinshasa, RDC.</p>
+</div></div>
 </div>
-
-<!-- FORMULAIRE PASSEPORT CACHÉ -->
-<div id="formPasseport" style="display:none;background:white;margin:12px 0;padding:15px;border-radius:15px;">
-<h3>🛂 Demande Passeport Rapide</h3>
-<input id="pNom" placeholder="Nom complet">
-<input id="pWa" placeholder="Numéro WhatsApp +243...">
-<select id="pType"><option>Passeport Ordinaire</option><option>Passeport Urgent</option><option>Renouvellement</option></select>
-<button class="btn-blue" style="width:100%" onclick="envoyerPasseport()">Envoyer ma demande</button>
-</div>
-
-<!-- FORMULAIRE STUDIO CACHÉ -->
-<div id="formStudio" style="display:none;background:white;margin:12px 0;padding:15px;border-radius:15px;">
-<h3>🎥 Réserver Studio</h3>
-<select id="sType"><option>Vidéo Clip</option><option>Photo Pro</option><option>Vidéo Anniversaire</option><option>Vidéo Mariage</option><option>Photo + Vidéo</option></select>
-<input id="sJour" placeholder="Quel jour ? Ex: Samedi 22 Nov">
-<input id="sWa" placeholder="Ton WhatsApp">
-<button class="btn-blue" style="width:100%;background:#FF6B00" onclick="envoyerStudio()">Réserver Studio</button>
-</div>
-
-</div>
-<!-- PAIEMENTS + FAQ + AIDE -->
-<div class="big" style="background:#00A651;">
-<h3>💳 MOYENS DE PAIEMENT</h3>
-<p>Paie facile à Kinshasa, choisis ton réseau :</p>
-</div>
-<div style="height:12px"></div>
-<div class="grid">
-<div style="background:#FFFBEB;padding:15px;border-radius:15px;border:2px solid #F59E0B;text-align:left">
-<h3 style="margin:0;text-align:center">💰 Moyen de Paiement</h3><br>
-
-<label><b>Choisis comment tu payes :</b></label><br>
-<select id="payMethode" style="width:100%;padding:11px;border-radius:12px;margin:8px 0">
-<option>M-Pesa - +243 815 897 990</option>
-<option>Airtel Money - +243 983 995 019</option>
-<option>Orange Money - 0859312214</option>
-</select>
-
-<div style="background:white;padding:12px;border-radius:12px;text-align:center">
-<b>📱 Payez ici :</b><br>
-M-Pesa : <b>+243 815 897 990</b><br>
-Airtel Money : <b>+243 983 995 019</b><br>
-🟠 Orange Money : <b>0859312214</b><br><br>
-<small>1. Envoie l'argent sur le numéro<br>
-2. Clique sur WhatsApp pour confirmer</small>
-</div>
-
-<a href="https://wa.me/243815897990?text=Bonjour%20CBK%20j'ai%20payé,%20voici%20la%20preuve" style="display:block;background:#22C55E;color:white;text-align:center;padding:12px;border-radius:12px;font-weight:800;text-decoration:none;margin-top:10px">💬 J'ai payé - Confirmer sur WhatsApp</a>
-</div>
-</div>
-<div class="big" style="background:#0B3D91;">
-<h3>❓ FAQ - QUESTIONS FRÉQUENTES</h3>
-<p>Clique sur une question pour voir la réponse</p>
-</div>
-<div style="background:white;margin:12px 0;padding:15px;border-radius:15px;">
-<p onclick="alert('Tu cliques sur Créer Compte en haut, tu mets ton nom, c est gratuit !')"><b>1. Comment créer un compte ? →</b></p>
-<p onclick="alert('Tu choisis Airtel Money, Orange Money, M-Pesa ou Cash.')"><b>2. Comment payer ? →</b></p>
-<p onclick="alert('Passeport : tu remplis le formulaire Passeport Rapide, on te rappelle.')"><b>3. Comment demander un Passeport ? →</b></p>
-<p onclick="alert('Studio : tu choisis Vidéo ou Photo, tu choisis le jour.')"><b>4. Comment réserver le Studio ? →</b></p>
-</div>
-<div class="big" style="background:#FF6B00;" onclick="aideWhatsApp()">
-<h3>🆘 AIDE & CONTACT</h3>
-<p>Besoin d'aide ? Parle directement à Chico !</p>
-<button style="background:white;color:#FF6B00;">Parler sur WhatsApp →</button>
-</div>
-<div style="height:12px"></div>
-<!-- AUTRES PAGES SIMPLES -->
-<div id="pageBoutique" class="section"><h2>🛍️ Boutique</h2><p>Produits de Kinshasa bientôt ici.</p><button class="btn-blue" onclick="showPage('accueil')">← Retour</button></div>
-<div id="pageFemmes" class="section"><h2>👩‍💼 Femmes</h2><p>Espace Femmes Entrepreneures CBK.</p><button class="btn-blue" onclick="showPage('accueil')">← Retour</button></div>
-<div id="pageEmploi" class="section"><h2>💼 Emploi</h2><p>Offres d'emploi à Kinshasa.</p><button class="btn-blue" onclick="showPage('accueil')">← Retour</button></div>
-<div id="pageMarche" class="section"><h2>🛒 Marché</h2><p>Prix du marché : Riz, Huile, etc.</p><button class="btn-blue" onclick="showPage('accueil')">← Retour</button></div>
-
-<!-- ADMIN CACHÉ -->
-<div id="pageAdmin" class="section">
-<h2>🔐 Admin - Chico Seulement</h2>
-<p>Utilisateurs : <b id="nbUsers">1</b> | Demandes Passeport : <b id="nbPass">0</b> | Réservations Studio : <b id="nbStudio">0</b></p>
-<div id="listeDemandes" style="background:white;padding:12px;border-radius:12px">Aucune demande pour le moment.</div>
-<button class="btn-blue" onclick="showPage('accueil')">← Retour Accueil</button>
-</div>
-
-<nav>
-<button onclick="showPage('accueil')">🏠<br>Accueil</button>
-<button onclick="showPage('boutique')">🛍️<br>Boutique</button>
-<button onclick="ouvrirPasseport()">🛂<br>Passeport</button>
-<button onclick="ouvrirStudio()">🎥<br>Studio</button>
-<button id="btnAdmin" style="display:none;" onclick="ouvrirAdmin()">🔐<br>Admin</button>
-</nav>
 
 <script>
-let demandes = [];
-function showPage(p){
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  if(p==='accueil') document.getElementById('pageAccueil').classList.add('active');
-  if(p==='boutique') document.getElementById('pageBoutique').classList.add('active');
-  if(p==='femmes') document.getElementById('pageFemmes').classList.add('active');
-  if(p==='emploi') document.getElementById('pageEmploi').classList.add('active');
-  if(p==='marche') document.getElementById('pageMarche').classList.add('active');
-  if(p==='admin') document.getElementById('pageAdmin').classList.add('active');
-  window.scrollTo(0,0);
+function toggleMenu(){document.getElementById('menu').classList.toggle('open')}
+function go(sec){
+ document.getElementById('menu').classList.remove('open');
+ document.getElementById('page-auth').classList.add('hidden');
+ document.getElementById('page-app').classList.remove('hidden');
+ ['accueil','services','paiements','faq'].forEach(s=>document.getElementById('sec-'+s).classList.add('hidden'));
+ document.getElementById('sec-'+sec).classList.remove('hidden');
+ window.scrollTo(0,0);
 }
 function creerCompte(){
-  let nom = prompt("Ton nom complet ?");
-  if(!nom) return;
-  document.getElementById('nomUser').innerText = nom;
-  alert("Bienvenue " + nom + " ! Ton compte CBK est créé. Wallet : 0$ | 0 Points");
+ let n=document.getElementById('nom').value;
+ let m=document.getElementById('mail').value;
+ if(!n) return alert('Mets ton nom');
+ if(!m) return alert('Mets ton Email / Mail');
+ localStorage.setItem('cbk_nom',n);
+ localStorage.setItem('cbk_mail',m);
+ document.getElementById('hello').innerText='Bonjour, '+n;
+ go('accueil');
 }
-function ouvrirPasseport(){
-  showPage('accueil');
-  document.getElementById('formPasseport').style.display='block';
-  document.getElementById('formStudio').style.display='none';
-  document.getElementById('formPasseport').scrollIntoView({behavior:'smooth'});
-}
-function ouvrirStudio(){
-  showPage('accueil');
-  document.getElementById('formStudio').style.display='block';
-  document.getElementById('formPasseport').style.display='none';
-  document.getElementById('formStudio').scrollIntoView({behavior:'smooth'});
-}
-function envoyerPasseport(){
-  let nom=document.getElementById('pNom').value;
-  let wa=document.getElementById('pWa').value;
-  let type=document.getElementById('pType').value;
-  if(!nom||!wa){alert("Remplis Nom + WhatsApp");return;}
-  demandes.push("🛂 PASSEPORT: "+nom+" | "+wa+" | "+type);
-  document.getElementById('nbPass').innerText = demandes.filter(d=>d.includes('PASSEPORT')).length;
-  document.getElementById('listeDemandes').innerHTML = demandes.join('<br><br>');
-  alert("Merci "+nom+" ! Demande Passeport "+type+" envoyée. On te contacte sur "+wa);
-  document.getElementById('formPasseport').style.display='none';
-}
-function envoyerStudio(){
-  let type=document.getElementById('sType').value;
-  let jour=document.getElementById('sJour').value;
-  let wa=document.getElementById('sWa').value;
-  if(!jour||!wa){alert("Remplis Jour + WhatsApp");return;}
-  demandes.push("🎥 STUDIO: "+type+" | Jour: "+jour+" | "+wa);
-  document.getElementById('nbStudio').innerText = demandes.filter(d=>d.includes('STUDIO')).length;
-  document.getElementById('listeDemandes').innerHTML = demandes.join('<br><br>');
-  alert("Super ! Studio "+type+" réservé pour "+jour+". On te contacte sur "+wa);
-  document.getElementById('formStudio').style.display='none';
-}
-function ouvrirAdmin(){
-  let code = prompt("Mot de passe Admin ?");
-  if(code==="1234"){ showPage('admin'); } else { alert("Mauvais mot de passe"); }
-}
-// SECRET : 3 clics sur CBK = Admin apparaît
-let clicLogo=0;
-document.getElementById('logoCBK').addEventListener('click', function(){
-  clicLogo++;
-  if(clicLogo===3){
-    document.getElementById('btnAdmin').style.display='block';
-    alert('Mode Admin débloqué ! Clique sur Admin en bas.');
-    clicLogo=0;
-  }
-  setTimeout(()=>{clicLogo=0},2000);
-});
-</script>
-  <!-- CHAT SUPPORT + FACEBOOK -->
-<div style="text-align:center;background:#111;padding:20px;border-radius:20px;margin-top:20px;">
-<h3 style="color:white;">💬 BESOIN D'AIDE ?</h3>
-<p style="color:white;">Discute avec notre équipe de support !</p>
-<a href="https://wa.me/message/2DFDG7JRKVQQL1" style="display:block;background:#25D366;color:white;padding:15px;border-radius:15px;text-decoration:none;font-weight:bold;margin:10px 0;">💬 CHAT WHATSAPP - Parler à l'Équipe →</a>
-<a href="https://www.facebook.com/share/1Hq8dKfLPb/?mibextid=wwXIfr" style="display:block;background:#1877F2;color:white;padding:15px;border-radius:15px;text-decoration:none;font-weight:bold;margin:10px 0;">🔵 SUIVEZ-NOUS SUR FACEBOOK →</a>
-<p style="color:#aaa;font-size:13px;">Chico Mofonga - Kinshasa</p>
-</div>
-
-<a href="https://wa.me/message/2DFDG7JRKVQQL1" style="position:fixed;bottom:80px;right:15px;background:#25D366;color:white;width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;text-decoration:none;z-index:999;box-shadow:0 4px 15px rgba(0,0,0,0.3);">💬</a>
-
-<script>
-function aideWhatsApp(){ window.open('https://wa.me/message/2DFDG7JRKVQQL1','_blank'); }
-function payer(m){ window.open('https://wa.me/message/2DFDG7JRKVQQL1?text=Bonjour, je veux payer avec '+m,'_blank'); }
-</script>
-</body>
-</html>
+function entrer(){let n=localStorage.getItem('cbk_nom')||'Bienvenue'; document.getElementById('hello').innerText='Bonjour, '+n; go('accueil');}
+function logout(){localStorage.removeItem('cbk_nom'); location.reload();}
+function openWA(){window.open('https://wa.me/243815897990?text=Bonjour%20CBK%20je%20veux%20payer','_blank')}
+</script></body></html>
