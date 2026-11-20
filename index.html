@@ -1,1768 +1,1910 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CBK — Chico Business Kinshasa</title>
-  <style>
-    :root {
-      --lime: #D2F801;
-      --lime-soft: rgba(210, 248, 1, 0.14);
-      --bg: #0e0e0e;
-      --card: #171717;
-      --card-2: #202020;
-      --text: #f7f7f7;
-      --muted: #a6a6a6;
-      --border: #2c2c2c;
-      --danger: #ff4d4d;
-      --ok: #38e54d;
-      --warn: #ffbe0b;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CBK — Chico Business Kinshasa</title>
+<style>
+:root {
+--lime: #D2F801;
+--lime-soft: rgba(210, 248, 1, 0.14);
+--bg: #0e0e0e;
+--card: #171717;
+--card-2: #212121;
+--sidebar-bg: #131313;
+--text: #f7f7f7;
+--muted: #ababab;
+--border: #2c2c2c;
+--danger: #ff4d4d;
+--ok: #38e54d;
+--warn: #ffbe0b;
+}
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      padding-bottom: 96px;
-      line-height: 1.45;
-    }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+background: var(--bg);
+color: var(--text);
+font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+line-height: 1.5;
+min-height: 100vh;
+}
 
-    /* Top Bar & History Nav */
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 40;
-      background: rgba(14, 14, 14, 0.95);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid var(--border);
-      padding: 10px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-    .brand-box { display: flex; align-items: center; gap: 10px; min-width: 0; }
-    .logo-badge {
-      background: var(--lime);
-      color: #0e0e0e;
-      font-weight: 900;
-      padding: 6px 10px;
-      border-radius: 10px;
-      font-size: 0.92rem;
-      letter-spacing: 0.5px;
-      flex-shrink: 0;
-    }
-    .brand-title { font-weight: 800; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .brand-sub { font-size: 0.72rem; color: var(--muted); }
+/* Top Bar */
+.topbar {
+position: sticky;
+top: 0;
+z-index: 40;
+background: rgba(14, 14, 14, 0.96);
+backdrop-filter: blur(8px);
+border-bottom: 1px solid var(--border);
+padding: 10px 16px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 10px;
+}
+.brand-box { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.logo-badge {
+background: var(--lime);
+color: #0e0e0e;
+font-weight: 900;
+padding: 6px 10px;
+border-radius: 10px;
+font-size: 0.92rem;
+flex-shrink: 0;
+}
+.brand-title { font-weight: 800; font-size: 0.98rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brand-sub { font-size: 0.73rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    .top-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-    .icon-btn {
-      background: var(--card-2);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 7px 10px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .icon-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-    .icon-btn.lime { background: var(--lime); color: #0e0e0e; border-color: var(--lime); }
+.top-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.icon-btn {
+background: var(--card-2);
+color: var(--text);
+border: 1px solid var(--border);
+border-radius: 10px;
+padding: 7px 10px;
+font-size: 0.85rem;
+font-weight: 700;
+cursor: pointer;
+}
+.icon-btn.lime { background: var(--lime); color: #0e0e0e; border-color: var(--lime); }
 
-    /* Main Tabs */
-    .tabs {
-      display: flex;
-      overflow-x: auto;
-      gap: 6px;
-      padding: 10px 14px;
-      border-bottom: 1px solid var(--border);
-      background: #121212;
-      scrollbar-width: none;
-    }
-    .tabs::-webkit-scrollbar { display: none; }
-    .tab-btn {
-      background: var(--card);
-      color: var(--muted);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 7px 13px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      white-space: nowrap;
-      cursor: pointer;
-    }
-    .tab-btn.active {
-      background: var(--lime);
-      color: #0e0e0e;
-      border-color: var(--lime);
-    }
+/* App Shell: Responsive Drawer + Desktop Sidebar */
+.app-shell { display: flex; min-height: calc(100vh - 58px); }
+.sidebar {
+width: 255px;
+flex-shrink: 0;
+background: var(--sidebar-bg);
+border-right: 1px solid var(--border);
+padding: 14px;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+}
+.nav-list { display: flex; flex-direction: column; gap: 6px; }
+.nav-item {
+width: 100%;
+text-align: left;
+background: transparent;
+color: var(--text);
+border: 1px solid transparent;
+border-radius: 12px;
+padding: 10px 12px;
+font-size: 0.88rem;
+font-weight: 700;
+display: flex;
+align-items: center;
+gap: 8px;
+cursor: pointer;
+}
+.nav-item:hover { background: var(--card-2); border-color: var(--border); }
+.nav-item.active { background: var(--lime); color: #0e0e0e; border-color: var(--lime); }
 
-    /* Container & Cards */
-    .container { max-width: 780px; margin: 0 auto; padding: 14px; }
-    .view { display: none; }
-    .view.active { display: block; }
+.sidebar-footer {
+border-top: 1px solid var(--border);
+padding-top: 12px;
+margin-top: 16px;
+font-size: 0.76rem;
+color: var(--muted);
+}
 
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 14px;
-      margin-bottom: 14px;
-    }
-    .card-lime { border-color: rgba(210, 248, 1, 0.45); background: linear-gradient(180deg, rgba(210,248,1,0.08), var(--card)); }
-    .section-title { font-size: 1.05rem; font-weight: 800; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .muted { color: var(--muted); font-size: 0.85rem; }
-    .small { font-size: 0.78rem; }
+.drawer-backdrop {
+display: none;
+position: fixed;
+inset: 0;
+background: rgba(0, 0, 0, 0.72);
+z-index: 50;
+}
+.drawer-backdrop.open { display: block; }
 
-    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
-    .wallet-box {
-      background: var(--card-2);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 12px;
-    }
-    .wallet-amount { font-size: 1.45rem; font-weight: 900; color: var(--lime); margin: 4px 0; }
+.menu-toggle-btn { display: none; }
+@media (max-width: 860px) {
+.menu-toggle-btn { display: inline-flex; }
+.sidebar {
+position: fixed;
+top: 0;
+left: -275px;
+bottom: 0;
+width: 268px;
+z-index: 55;
+transition: left 0.22s ease;
+min-height: 100vh;
+}
+.sidebar.open { left: 0; }
+}
 
-    /* Buttons & Inputs */
-    button, .link-btn {
-      font-family: inherit;
-      cursor: pointer;
-    }
-    .btn {
-      background: var(--card-2);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 11px;
-      padding: 9px 13px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      text-decoration: none;
-    }
-    .btn:hover { border-color: var(--lime); }
-    .btn-lime { background: var(--lime); color: #0e0e0e; border-color: var(--lime); }
-    .btn-danger { background: rgba(255, 77, 77, 0.16); color: #ff8585; border-color: rgba(255, 77, 77, 0.45); }
-    .btn-sm { padding: 6px 10px; font-size: 0.78rem; border-radius: 9px; }
+/* Main Content */
+.main-content { flex: 1; min-width: 0; padding: 18px 16px 104px; }
+.page-container { max-width: 980px; margin: 0 auto; }
+.view { display: none; }
+.view.active { display: block; }
 
-    input, select, textarea {
-      width: 100%;
-      background: #101010;
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 9px 11px;
-      font-size: 0.88rem;
-      margin-top: 5px;
-      margin-bottom: 10px;
-    }
-    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--lime); }
-    label { font-size: 0.8rem; font-weight: 700; color: #dcdcdc; }
+/* Hero Banner */
+.hero-banner {
+background: linear-gradient(135deg, rgba(210, 248, 1, 0.16), rgba(23, 23, 23, 0.96));
+border: 1px solid rgba(210, 248, 1, 0.45);
+border-radius: 18px;
+padding: 22px 18px;
+margin-bottom: 18px;
+}
+.hero-kicker {
+display: inline-block;
+background: var(--lime);
+color: #0e0e0e;
+font-weight: 900;
+font-size: 0.74rem;
+padding: 4px 10px;
+border-radius: 999px;
+margin-bottom: 8px;
+}
+.hero-title { font-size: 1.55rem; font-weight: 900; line-height: 1.2; }
+.hero-sub { font-size: 1rem; font-weight: 700; color: var(--lime); margin-top: 4px; }
+.hero-desc { color: var(--muted); font-size: 0.9rem; margin-top: 8px; max-width: 640px; }
 
-    /* Badges & Lists */
-    .badge {
-      display: inline-block;
-      padding: 3px 8px;
-      border-radius: 999px;
-      font-size: 0.72rem;
-      font-weight: 800;
-      background: var(--lime-soft);
-      color: var(--lime);
-      border: 1px solid rgba(210, 248, 1, 0.35);
-      margin-right: 5px;
-      margin-bottom: 4px;
-    }
-    .status-pending { color: var(--warn); font-weight: 700; }
-    .status-ok { color: var(--ok); font-weight: 700; }
-    .status-bad { color: var(--danger); font-weight: 700; }
+.page-header {
+margin-bottom: 16px;
+padding-bottom: 10px;
+border-bottom: 1px solid var(--border);
+}
+.page-title { font-size: 1.25rem; font-weight: 900; }
+.page-desc { font-size: 0.84rem; color: var(--muted); margin-top: 3px; }
 
-    .media-preview {
-      width: 100%;
-      max-height: 220px;
-      object-fit: cover;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      margin-bottom: 10px;
-      background: #111;
-    }
-    .pdg-photo {
-      width: 78px;
-      height: 78px;
-      border-radius: 14px;
-      object-fit: cover;
-      border: 2px solid var(--lime);
-      flex-shrink: 0;
-    }
-    .comment-item {
-      background: var(--card-2);
-      border: 1px solid var(--border);
-      border-radius: 11px;
-      padding: 9px 11px;
-      margin-top: 8px;
-      cursor: pointer;
-    }
-    .comment-item:hover { border-color: var(--lime); }
-    .reply-list { margin-left: 14px; margin-top: 7px; padding-left: 10px; border-left: 2px solid var(--lime); }
+/* Cards & Grids */
+.card {
+background: var(--card);
+border: 1px solid var(--border);
+border-radius: 16px;
+padding: 16px;
+margin-bottom: 16px;
+}
+.card-lime {
+border-color: rgba(210, 248, 1, 0.45);
+background: linear-gradient(180deg, rgba(210, 248, 1, 0.08), var(--card));
+}
+.section-title {
+font-size: 1.05rem;
+font-weight: 800;
+margin-bottom: 8px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 8px;
+}
+.muted { color: var(--muted); font-size: 0.85rem; }
+.small { font-size: 0.78rem; }
 
-    /* Floating Chat Button */
-    .fab-chat {
-      position: fixed;
-      right: 16px;
-      bottom: 18px;
-      z-index: 50;
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: var(--lime);
-      color: #0e0e0e;
-      border: 2px solid #0e0e0e;
-      font-weight: 900;
-      font-size: 1.15rem;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65);
-    }
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+.wallet-box {
+background: var(--card-2);
+border: 1px solid var(--border);
+border-radius: 14px;
+padding: 14px;
+}
+.wallet-amount { font-size: 1.5rem; font-weight: 900; color: var(--lime); margin: 4px 0; }
 
-    /* Modal / Drawer */
-    .modal-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.78);
-      z-index: 60;
-      align-items: center;
-      justify-content: center;
-      padding: 14px;
-    }
-    .modal-backdrop.open { display: flex; }
-    .modal-box {
-      width: 100%;
-      max-width: 500px;
-      max-height: 88vh;
-      overflow-y: auto;
-      background: var(--card);
-      border: 1px solid var(--lime);
-      border-radius: 16px;
-      padding: 16px;
-    }
-    .toast {
-      position: fixed;
-      top: 66px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--lime);
-      color: #0e0e0e;
-      font-weight: 800;
-      padding: 9px 16px;
-      border-radius: 999px;
-      z-index: 80;
-      display: none;
-      font-size: 0.85rem;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
-    }
-    .row-between { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
-    .row-gap { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-  </style>
+.pay-card {
+background: var(--card-2);
+border: 1px solid var(--border);
+border-radius: 14px;
+padding: 14px;
+text-align: center;
+}
+.pay-tag {
+display: inline-block;
+background: var(--lime);
+color: #0e0e0e;
+font-weight: 900;
+font-size: 0.82rem;
+padding: 4px 10px;
+border-radius: 999px;
+margin-bottom: 8px;
+}
+
+/* Controls */
+button, .link-btn { font-family: inherit; cursor: pointer; }
+.btn {
+background: var(--card-2);
+color: var(--text);
+border: 1px solid var(--border);
+border-radius: 11px;
+padding: 9px 14px;
+font-size: 0.85rem;
+font-weight: 700;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 6px;
+text-decoration: none;
+}
+.btn:hover { border-color: var(--lime); }
+.btn-lime { background: var(--lime); color: #0e0e0e; border-color: var(--lime); }
+.btn-danger { background: rgba(255, 77, 77, 0.16); color: #ff8585; border-color: rgba(255, 77, 77, 0.45); }
+.btn-sm { padding: 6px 10px; font-size: 0.78rem; border-radius: 9px; }
+
+input, select, textarea {
+width: 100%;
+background: #101010;
+color: var(--text);
+border: 1px solid var(--border);
+border-radius: 10px;
+padding: 9px 11px;
+font-size: 0.88rem;
+margin-top: 5px;
+margin-bottom: 10px;
+}
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--lime); }
+label { font-size: 0.8rem; font-weight: 700; color: #dcdcdc; }
+
+/* Badges & Lists */
+.badge {
+display: inline-block;
+padding: 3px 8px;
+border-radius: 999px;
+font-size: 0.72rem;
+font-weight: 800;
+background: var(--lime-soft);
+color: var(--lime);
+border: 1px solid rgba(210, 248, 1, 0.35);
+margin-right: 5px;
+margin-bottom: 4px;
+}
+.status-pending { color: var(--warn); font-weight: 700; }
+.status-ok { color: var(--ok); font-weight: 700; }
+.status-bad { color: var(--danger); font-weight: 700; }
+
+.media-preview {
+width: 100%;
+max-height: 230px;
+object-fit: cover;
+border-radius: 12px;
+border: 1px solid var(--border);
+margin-bottom: 10px;
+background: #111;
+}
+.pdg-photo {
+width: 84px;
+height: 84px;
+border-radius: 14px;
+object-fit: cover;
+border: 2px solid var(--lime);
+flex-shrink: 0;
+}
+.list-box {
+background: var(--card-2);
+border: 1px solid var(--border);
+border-radius: 11px;
+padding: 10px 12px;
+margin-top: 8px;
+}
+.comment-item {
+background: var(--card-2);
+border: 1px solid var(--border);
+border-radius: 11px;
+padding: 9px 11px;
+margin-top: 8px;
+cursor: pointer;
+}
+.comment-item:hover { border-color: var(--lime); }
+.reply-list {
+margin-left: 14px;
+margin-top: 7px;
+padding-left: 10px;
+border-left: 2px solid var(--lime);
+}
+
+/* Floating Chat Button */
+.fab-chat {
+position: fixed;
+right: 18px;
+bottom: 20px;
+z-index: 45;
+width: 56px;
+height: 56px;
+border-radius: 50%;
+background: var(--lime);
+color: #0e0e0e;
+border: 2px solid #0e0e0e;
+font-weight: 900;
+font-size: 1.15rem;
+box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65);
+}
+
+/* Modals & Toast */
+.modal-backdrop {
+display: none;
+position: fixed;
+inset: 0;
+background: rgba(0, 0, 0, 0.78);
+z-index: 70;
+align-items: center;
+justify-content: center;
+padding: 14px;
+}
+.modal-backdrop.open { display: flex; }
+.modal-box {
+width: 100%;
+max-width: 500px;
+max-height: 88vh;
+overflow-y: auto;
+background: var(--card);
+border: 1px solid var(--lime);
+border-radius: 16px;
+padding: 16px;
+}
+.toast {
+position: fixed;
+top: 66px;
+left: 50%;
+transform: translateX(-50%);
+background: var(--lime);
+color: #0e0e0e;
+font-weight: 800;
+padding: 9px 16px;
+border-radius: 999px;
+z-index: 85;
+display: none;
+font-size: 0.85rem;
+box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+.row-between { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.row-gap { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+</style>
 </head>
 <body>
 
-  <div id="toast" class="toast"></div>
-
-  <!-- Top Bar -->
-  <header class="topbar">
-    <div class="brand-box">
-      <div class="logo-badge">CBK</div>
-      <div>
-        <div class="brand-title">Chico Business Kinshasa</div>
-        <div id="headerSessionInfo" class="brand-sub">Ton Business, Version Pro • Taux 1$ = 2800 FC</div>
-      </div>
-    </div>
-    <div class="top-actions">
-      <button id="btnBack" class="icon-btn" title="Retour">⏪</button>
-      <button id="btnForward" class="icon-btn" title="Avant">⏩</button>
-      <button id="btnNotif" class="icon-btn" title="Notifications">🔔 <span id="notifCount">0</span></button>
-      <button id="btnAdminToggle" class="icon-btn lime">Admin</button>
-    </div>
-  </header>
-
-  <!-- Navigation Tabs -->
-  <nav id="mainTabs" class="tabs">
-    <button class="tab-btn active" data-view="home">Accueil & Dons</button>
-    <button class="tab-btn" data-view="wallet">Portefeuille</button>
-    <button class="tab-btn" data-view="market">Marché</button>
-    <button class="tab-btn" data-view="services">Passeport & Studio</button>
-    <button class="tab-btn" data-view="artists">Artistes & Actifs</button>
-    <button class="tab-btn" data-view="account">Compte & FAQ</button>
-    <button id="adminTabBtn" class="tab-btn" data-view="admin" style="display:none;">⚡ Espace Admin</button>
-  </nav>
-
-  <main class="container">
-
-    <!-- VIEW 1: ACCUEIL, PDG & DONS -->
-    <section id="view-home" class="view active">
-      <div class="card card-lime">
-        <div class="row-gap" style="align-items:flex-start;">
-          <img id="pdgImg" class="pdg-photo" src="https://via.placeholder.com/150/1a1a1a/D2F801?text=PDG+CBK" alt="CHICO MOFONGA" />
-          <div style="flex:1; min-width:200px;">
-            <span class="badge">KINSHASA • RDC</span>
-            <span class="badge">CHICO BUSINESS PRODUCTION</span>
-            <h2 style="font-size:1.15rem; margin-top:4px;">PDG : CHICO MOFONGA</h2>
-            <p class="muted small" style="margin-top:4px;">
-              Bienvenue sur <strong>Chico Business Kinshasa (CBK)</strong> : portefeuille USD/FC, marché vérifié, assistance passeport rapide, studio vidéo/photo/audio, artistes et communauté active.
-            </p>
-            <div class="row-gap" style="margin-top:10px;">
-              <a class="btn btn-sm btn-lime link-btn" href="https://wa.me/message/2DFDG7JRKVQQL1" target="_blank" rel="noopener">WhatsApp Officiel</a>
-              <a class="btn btn-sm link-btn" href="https://www.facebook.com/share/1CVrhKCMQ7/?mibextid=wwXIfr" target="_blank" rel="noopener">Facebook CBK</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Faire un don & Mur des donateurs -->
-      <div class="card">
-        <div class="row-between">
-          <h3 class="section-title" style="margin:0;">🎁 Faire un don à l'entreprise</h3>
-          <button class="btn btn-sm btn-lime" onclick="openModal('donateModal')">Faire un don</button>
-        </div>
-        <p class="muted small" style="margin-top:6px;">
-          Soutenez <strong>Chico Business Kinshasa</strong> en USD ou FC via M-Pesa (<code>0815897990</code>), Orange Money (<code>0859312214</code>) ou Airtel Money (<code>0983 995 019</code>).
-        </p>
-        <div id="donorsList" style="margin-top:10px;"></div>
-      </div>
-
-      <!-- Messages privés reçus par le client -->
-      <div class="card">
-        <h3 class="section-title">✉️ Messages privés de l'Admin</h3>
-        <div id="clientPrivateMessages"></div>
-      </div>
-    </section>
-
-    <!-- VIEW 2: PORTEFEUILLE USD / FC -->
-    <section id="view-wallet" class="view">
-      <div class="card card-lime">
-        <div class="row-between">
-          <h3 class="section-title" style="margin:0;">💼 Mon Portefeuille CBK</h3>
-          <span id="exchangeRateBadge" class="badge">1 USD = 2800 FC</span>
-        </div>
-        <p id="walletAccountStatus" class="muted small" style="margin-top:4px;"></p>
-        <div class="grid-2" style="margin-top:12px;">
-          <div class="wallet-box">
-            <div class="muted small">Solde Dollar américain</div>
-            <div id="balUsd" class="wallet-amount">$0.00</div>
-          </div>
-          <div class="wallet-box">
-            <div class="muted small">Solde Franc congolais</div>
-            <div id="balFc" class="wallet-amount">0 FC</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3 class="section-title">📲 Dépôt / Retrait / Transfert</h3>
-        <p class="muted small">
-          Numéros officiels : <strong>M-Pesa</strong> <code>0815897990</code> • <strong>Orange Money</strong> <code>0859312214</code> • <strong>Airtel Money</strong> <code>0983 995 019</code>.
-        </p>
-        <form id="txForm" style="margin-top:10px;">
-          <div class="grid-2">
-            <div>
-              <label>Type d'opération</label>
-              <select id="txType">
-                <option value="depot">Dépôt (Recharge)</option>
-                <option value="retrait">Retrait</option>
-                <option value="transfert">Transfert interne (username)</option>
-              </select>
-            </div>
-            <div>
-              <label>Devise</label>
-              <select id="txCurrency">
-                <option value="USD">USD ($)</option>
-                <option value="FC">FC</option>
-              </select>
-            </div>
-          </div>
-          <div class="grid-2">
-            <div>
-              <label>Montant</label>
-              <input id="txAmount" type="number" step="0.01" min="0.01" placeholder="Ex: 10 ou 5000" required />
-            </div>
-            <div>
-              <label>Réseau / Moyen</label>
-              <select id="txMethod">
-                <option value="M-Pesa (0815897990)">M-Pesa (0815897990)</option>
-                <option value="Orange Money (0859312214)">Orange Money (0859312214)</option>
-                <option value="Airtel Money (0983 995 019)">Airtel Money (0983 995 019)</option>
-                <option value="Portefeuille CBK">Portefeuille CBK</option>
-              </select>
-            </div>
-          </div>
-          <div id="txTargetWrap" style="display:none;">
-            <label>Nom d'utilisateur destinataire</label>
-            <input id="txTargetUser" type="text" placeholder="Ex: client_kin" />
-          </div>
-          <div>
-            <label>Référence transaction / Note</label>
-            <input id="txRef" type="text" placeholder="Ex: Réf MP261120..." />
-          </div>
-          <button type="submit" class="btn btn-lime">Soumettre la demande</button>
-        </form>
-      </div>
-
-      <div class="card">
-        <h3 class="section-title">📜 Historique de mes transactions</h3>
-        <div id="myTransactionsList"></div>
-      </div>
-    </section>
-
-    <!-- VIEW 3: MARCHÉ CBK -->
-    <section id="view-market" class="view">
-      <div class="card">
-        <div class="row-between">
-          <h3 class="section-title" style="margin:0;">🛒 Marché CBK</h3>
-          <span class="badge">KINSHASA</span>
-        </div>
-        <p class="muted small" style="margin-top:4px;">Commandez directement avec votre solde USD ou FC, aimez et partagez les articles.</p>
-      </div>
-      <div id="marketList"></div>
-      <div class="card">
-        <h3 class="section-title">📦 Mes commandes</h3>
-        <div id="myOrdersList"></div>
-      </div>
-    </section>
-
-    <!-- VIEW 4: ASSISTANCE PASSEPORT & STUDIO -->
-    <section id="view-services" class="view">
-      <div class="card card-lime">
-        <h3 class="section-title">🛂 Assistance Passeport Rapide</h3>
-        <p class="muted small">Accompagnement, informations, prise de rendez-vous et suivi de dossier à Kinshasa.</p>
-        <form id="passportForm" style="margin-top:10px;">
-          <label>Nom complet du demandeur</label>
-          <input id="passName" type="text" placeholder="Nom Post-nom Prénom" required />
-          <label>Téléphone / WhatsApp</label>
-          <input id="passPhone" type="text" placeholder="08..." required />
-          <label>Détails / Date souhaitée</label>
-          <textarea id="passNote" rows="2" placeholder="Précisez le type de demande ou vos disponibilités..."></textarea>
-          <button type="submit" class="btn btn-lime">Envoyer la demande Passeport</button>
-        </form>
-      </div>
-
-      <div class="card">
-        <h3 class="section-title">🎬 Studio Vidéo / Photo / Audio</h3>
-        <p class="muted small">Réservez une séance avec <strong>Chico Business Production</strong> (clips, photos pro, événements, enregistrements).</p>
-        <form id="studioForm" style="margin-top:10px;">
-          <label>Type de prestation</label>
-          <select id="studioType">
-            <option value="Tournage Vidéo / Clip">Tournage Vidéo / Clip</option>
-            <option value="Shooting Photo Professionnel">Shooting Photo Professionnel</option>
-            <option value="Enregistrement Audio / Studio">Enregistrement Audio / Studio</option>
-            <option value="Couverture Événement Kinshasa">Couverture Événement Kinshasa</option>
-          </select>
-          <label>Date & Heure souhaitées</label>
-          <input id="studioDate" type="text" placeholder="Ex: Samedi 14h" required />
-          <label>Notes du projet</label>
-          <textarea id="studioNote" rows="2" placeholder="Décrivez votre besoin..."></textarea>
-          <button type="submit" class="btn btn-lime">Réserver le Studio</button>
-        </form>
-      </div>
-
-      <div class="card">
-        <h3 class="section-title">📌 Mes demandes Passeport & Studio</h3>
-        <div id="myServiceRequests"></div>
-      </div>
-    </section>
-
-    <!-- VIEW 5: ARTISTES & UTILISATEURS ACTIFS DU MOIS -->
-    <section id="view-artists" class="view">
-      <div class="card card-lime">
-        <h3 class="section-title">🏆 Utilisateurs actifs du mois</h3>
-        <p class="muted small">Membres mis en avant pour leur activité et leur soutien sur CBK.</p>
-        <div id="activeUsersList" style="margin-top:10px;"></div>
-      </div>
-
-      <div class="card">
-        <h3 class="section-title">🎤 Espace Artistes</h3>
-        <p class="muted small">Commentez les artistes et <strong>cliquez sur un commentaire pour y répondre</strong>.</p>
-      </div>
-      <div id="artistsList"></div>
-    </section>
-
-    <!-- VIEW 6: COMPTE, KYC & FAQ / AIDE -->
-    <section id="view-account" class="view">
-      <div class="card card-lime">
-        <h3 class="section-title">👤 Mon Compte & Vérification (KYC)</h3>
-        <div id="accountProfileBox"></div>
-        <hr style="border:0; border-top:1px solid var(--border); margin:12px 0;" />
-        <form id="kycForm">
-          <label>Pièce d'identité (Numéro ou lien/référence document KYC)</label>
-          <input id="kycDoc" type="text" placeholder="Ex: Carte d'électeur / Passeport / Photo document" required />
-          <button type="submit" class="btn btn-sm btn-lime">Soumettre ma vérification KYC</button>
-        </form>
-        <div class="row-gap" style="margin-top:12px;">
-          <button type="button" class="btn btn-sm" onclick="openModal('authModal')">Changer / Créer un compte</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3 class="section-title">❓ FAQ & Aide — Chico Business Kinshasa</h3>
-        <div class="small" style="display:grid; gap:10px; margin-top:8px;">
-          <div>
-            <strong>Comment recharger mon portefeuille (dépôt) ?</strong>
-            <p class="muted">Choisissez USD ou FC, envoyez sur M-Pesa (<code>0815897990</code>), Orange Money (<code>0859312214</code>) ou Airtel Money (<code>0983 995 019</code>), puis soumettez la demande avec votre référence pour validation par l'Admin.</p>
-          </div>
-          <div>
-            <strong>Pourquoi les dépôts et retraits sont validés par l'Admin ?</strong>
-            <p class="muted">La vérification manuelle sécurise les soldes et évite les erreurs ou fraudes sur les transactions.</p>
-          </div>
-          <div>
-            <strong>Comment commenter et répondre sur les artistes ?</strong>
-            <p class="muted">Écrivez un commentaire sur la fiche d'un artiste, puis cliquez sur n'importe quel commentaire pour ouvrir le champ de réponse directe.</p>
-          </div>
-          <div>
-            <strong>Comment faire un don et voir les donateurs ?</strong>
-            <p class="muted">Cliquez sur « Faire un don » pour envoyer en USD ou FC avec un message (ex. : « Chico lotôa 100 fc félicitations 🎊 ») visible dans l'espace dédié.</p>
-          </div>
-          <div>
-            <strong>Comment contacter l'équipe ou le PDG Chico Mofonga ?</strong>
-            <p class="muted">Utilisez le bouton de chat flottant en bas à droite ou les boutons officiels WhatsApp et Facebook.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- VIEW 7: ESPACE ADMIN (PROTÉGÉ PAR Chico899) -->
-    <section id="view-admin" class="view">
-      <div class="card card-lime">
-        <div class="row-between">
-          <h3 class="section-title" style="margin:0;">⚡ Tableau de bord PDG / Admin</h3>
-          <button type="button" class="btn btn-sm btn-danger" onclick="logoutAdmin()">Quitter Admin</button>
-        </div>
-        <p class="muted small" style="margin-top:4px;">Contrôle direct des soldes, validations, taux USD/FC, produits, artistes, actifs du mois, dons, utilisateurs et messages privés.</p>
-
-        <form id="rateForm" style="margin-top:12px;">
-          <label>Taux du jour (1 USD en FC)</label>
-          <div class="row-gap">
-            <input id="adminRateInput" type="number" step="1" min="1" style="margin:0; flex:1;" required />
-            <button type="submit" class="btn btn-lime">Mettre à jour le taux</button>
-          </div>
-        </form>
-
-        <div class="row-gap" style="margin-top:10px;">
-          <button type="button" class="btn btn-sm" onclick="exportBackup()">Exporter sauvegarde JSON</button>
-          <label class="btn btn-sm" style="margin:0;">
-            Importer JSON <input type="file" accept=".json" style="display:none;" onchange="importBackup(event)" />
-          </label>
-          <button type="button" class="btn btn-sm btn-danger" onclick="resetDemoData()">Réinitialiser données</button>
-        </div>
-      </div>
-
-      <!-- Validation Transactions -->
-      <div class="card">
-        <h3 class="section-title">💳 Validation Dépôts, Retraits & Transferts</h3>
-        <div id="adminTxList"></div>
-      </div>
-
-      <!-- Ajustement manuel solde & Message privé -->
-      <div class="grid-2">
-        <div class="card">
-          <h3 class="section-title">💰 Ajuster le solde d'un client</h3>
-          <form id="adminBalanceForm">
-            <label>Client</label>
-            <select id="adminBalUser"></select>
-            <label>Action</label>
-            <select id="adminBalAction">
-              <option value="add">Ajouter au solde</option>
-              <option value="sub">Retirer du solde</option>
-            </select>
-            <label>Devise</label>
-            <select id="adminBalCurrency">
-              <option value="USD">USD ($)</option>
-              <option value="FC">FC</option>
-            </select>
-            <label>Montant</label>
-            <input id="adminBalAmount" type="number" step="0.01" min="0.01" required />
-            <button type="submit" class="btn btn-lime">Appliquer le solde</button>
-          </form>
-        </div>
-
-        <div class="card">
-          <h3 class="section-title">✉️ Envoyer un message privé à un client</h3>
-          <form id="adminPmForm">
-            <label>Client destinataire</label>
-            <select id="adminPmUser"></select>
-            <label>Votre message privé</label>
-            <textarea id="adminPmText" rows="3" placeholder="Écrivez votre message direct au client..." required></textarea>
-            <button type="submit" class="btn btn-lime">Envoyer le message privé</button>
-          </form>
-        </div>
-      </div>
-
-      <!-- Gestion Utilisateurs & KYC -->
-      <div class="card">
-        <h3 class="section-title">👥 Utilisateurs & Vérification KYC</h3>
-        <div id="adminUsersList"></div>
-      </div>
-
-      <!-- Ajouter Produit Marché & Gérer Commandes -->
-      <div class="card">
-        <h3 class="section-title">🛒 Ajouter un produit au Marché</h3>
-        <form id="adminProductForm">
-          <label>Nom du produit</label>
-          <input id="prodName" type="text" placeholder="Ex: Pack Studio / Accessoire CBK" required />
-          <div class="grid-2">
-            <div>
-              <label>Prix</label>
-              <input id="prodPrice" type="number" step="0.01" min="0.01" required />
-            </div>
-            <div>
-              <label>Devise</label>
-              <select id="prodCurrency">
-                <option value="USD">USD ($)</option>
-                <option value="FC">FC</option>
-              </select>
-            </div>
-          </div>
-          <label>Badge (ex: Vérifié CBK, Livraison rapide Kinshasa)</label>
-          <input id="prodBadge" type="text" value="Vérifié CBK" />
-          <label>Image (URL ou photo locale)</label>
-          <input id="prodImg" type="text" placeholder="https://... ou vide" />
-          <label>Description</label>
-          <textarea id="prodDesc" rows="2" placeholder="Description courte..."></textarea>
-          <button type="submit" class="btn btn-lime">Publier le produit</button>
-        </form>
-        <div id="adminOrdersList" style="margin-top:14px;"></div>
-      </div>
-
-      <!-- Ajouter Artiste & Actifs du Mois -->
-      <div class="grid-2">
-        <div class="card">
-          <h3 class="section-title">🎤 Publier un artiste</h3>
-          <form id="adminArtistForm">
-            <label>Nom de l'artiste</label>
-            <input id="artName" type="text" placeholder="Nom de l'artiste" required />
-            <label>Style / Catégorie</label>
-            <input id="artGenre" type="text" placeholder="Rumba / Afro / Rap Kinshasa" required />
-            <label>Photo (URL optionnelle)</label>
-            <input id="artImg" type="text" placeholder="https://..." />
-            <button type="submit" class="btn btn-lime">Publier l'artiste</button>
-          </form>
-        </div>
-
-        <div class="card">
-          <h3 class="section-title">🏆 Publier Utilisateurs Actifs du Mois</h3>
-          <form id="adminActiveUsersForm">
-            <label>Noms / Pseudos (séparés par des virgules)</label>
-            <input id="activeUsersInput" type="text" placeholder="Ex: @chico_lotowa, @diva_kin, @marc_cbk" required />
-            <button type="submit" class="btn btn-lime">Publier la liste du mois</button>
-          </form>
-        </div>
-      </div>
-
-      <!-- Dons & Demandes Services -->
-      <div class="card">
-        <h3 class="section-title">🎁 Gestion des Dons</h3>
-        <div id="adminDonationsList"></div>
-      </div>
-
-      <div class="card">
-        <h3 class="section-title">🛂🎬 Demandes Passeport & Studio</h3>
-        <div id="adminServicesList"></div>
-      </div>
-    </section>
-  </main>
-
-  <!-- Floating Chat Button -->
-  <button id="fabChat" class="fab-chat" title="Chat & Contact CBK">💬</button>
-
-  <!-- MODAL 1: ADMIN LOGIN (Chico899) -->
-  <div id="adminAuthModal" class="modal-backdrop">
-    <div class="modal-box">
-      <div class="row-between">
-        <h3 class="section-title" style="margin:0;">🔐 Accès PDG / Admin</h3>
-        <button type="button" class="btn btn-sm" onclick="closeModal('adminAuthModal')">✕</button>
-      </div>
-      <p class="muted small" style="margin-top:6px;">Entrez le code administrateur pour débloquer le panneau de contrôle CBK.</p>
-      <form id="adminPinForm" style="margin-top:12px;">
-        <label>Code Admin</label>
-        <input id="adminPinInput" type="password" placeholder="Entrez le code" required />
-        <button type="submit" class="btn btn-lime" style="width:100%;">Débloquer l'espace Admin</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- MODAL 2: DONATION -->
-  <div id="donateModal" class="modal-backdrop">
-    <div class="modal-box">
-      <div class="row-between">
-        <h3 class="section-title" style="margin:0;">🎁 Faire un don à CBK</h3>
-        <button type="button" class="btn btn-sm" onclick="closeModal('donateModal')">✕</button>
-      </div>
-      <form id="donateForm" style="margin-top:10px;">
-        <label>Nom du donateur (affiché publiquement)</label>
-        <input id="donorName" type="text" placeholder="Ex: Chico lotôa" required />
-        <div class="grid-2">
-          <div>
-            <label>Montant</label>
-            <input id="donorAmount" type="number" step="0.01" min="0.01" placeholder="Ex: 100" required />
-          </div>
-          <div>
-            <label>Devise</label>
-            <select id="donorCurrency">
-              <option value="FC">FC</option>
-              <option value="USD">USD ($)</option>
-            </select>
-          </div>
-        </div>
-        <label>Message public (félicitations / soutien)</label>
-        <input id="donorMessage" type="text" placeholder="Ex: félicitations 🎊" value="félicitations 🎊" />
-        <label>Moyen utilisé</label>
-        <select id="donorMethod">
-          <option value="M-Pesa (0815897990)">M-Pesa (0815897990)</option>
-          <option value="Orange Money (0859312214)">Orange Money (0859312214)</option>
-          <option value="Airtel Money (0983 995 019)">Airtel Money (0983 995 019)</option>
-          <option value="Solde Portefeuille CBK">Débiter mon portefeuille CBK</option>
-        </select>
-        <button type="submit" class="btn btn-lime" style="width:100%;">Valider et publier mon don</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- MODAL 3: CHAT & CONTACT -->
-  <div id="chatModal" class="modal-backdrop">
-    <div class="modal-box">
-      <div class="row-between">
-        <h3 class="section-title" style="margin:0;">💬 Assistance CBK — Kinshasa</h3>
-        <button type="button" class="btn btn-sm" onclick="closeModal('chatModal')">✕</button>
-      </div>
-      <p class="muted small" style="margin-top:8px;">
-        Besoin d'aide rapide sur un dépôt, un passeport, le studio ou une commande ? Contactez directement l'équipe de <strong>Chico Mofonga</strong> :
-      </p>
-      <div class="row-gap" style="margin-top:12px;">
-        <a class="btn btn-lime link-btn" style="flex:1;" href="https://wa.me/message/2DFDG7JRKVQQL1" target="_blank" rel="noopener">Discuter sur WhatsApp</a>
-        <a class="btn link-btn" style="flex:1;" href="https://www.facebook.com/share/1CVrhKCMQ7/?mibextid=wwXIfr" target="_blank" rel="noopener">Page Facebook</a>
-      </div>
-      <div class="card" style="margin-top:14px; margin-bottom:0;">
-        <div class="small"><strong>Numéros officiels :</strong></div>
-        <div class="muted small">• M-Pesa : <code>0815897990</code></div>
-        <div class="muted small">• Orange Money : <code>0859312214</code></div>
-        <div class="muted small">• Airtel Money : <code>0983 995 019</code></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL 4: NOTIFICATIONS -->
-  <div id="notifModal" class="modal-backdrop">
-    <div class="modal-box">
-      <div class="row-between">
-        <h3 class="section-title" style="margin:0;">🔔 Notifications</h3>
-        <div class="row-gap">
-          <button type="button" class="btn btn-sm" onclick="markAllNotifsRead()">Tout lire</button>
-          <button type="button" class="btn btn-sm" onclick="closeModal('notifModal')">✕</button>
-        </div>
-      </div>
-      <div id="notifList" style="margin-top:10px;"></div>
-    </div>
-  </div>
-
-  <!-- MODAL 5: ACCOUNT SWITCH / CREATE -->
-  <div id="authModal" class="modal-backdrop">
-    <div class="modal-box">
-      <div class="row-between">
-        <h3 class="section-title" style="margin:0;">👤 Créer ou changer de compte client</h3>
-        <button type="button" class="btn btn-sm" onclick="closeModal('authModal')">✕</button>
-      </div>
-      <form id="createUserForm" style="margin-top:10px;">
-        <label>Nom d'utilisateur (sans espace)</label>
-        <input id="newUsername" type="text" placeholder="Ex: client_kinshasa" required />
-        <label>Nom complet</label>
-        <input id="newFullName" type="text" placeholder="Nom Post-nom Prénom" required />
-        <label>Téléphone</label>
-        <input id="newPhone" type="text" placeholder="08..." required />
-        <button type="submit" class="btn btn-lime" style="width:100%;">Activer ce compte</button>
-      </form>
-    </div>
-  </div>
-
-  <script>
-    const ADMIN_CODE = "Chico899";
-    const STORAGE_KEY = "cbk_kinshasa_state_v1";
-
-    const DEFAULT_STATE = {
-      rateUsdToFc: 2800,
-      isAdmin: false,
-      currentUserId: "u_client_1",
-      history: ["home"],
-      historyIndex: 0,
-      users: [
-        {
-          id: "u_client_1",
-          username: "client_cbk",
-          fullName: "Membre CBK Kinshasa",
-          phone: "0810000000",
-          usd: 25,
-          fc: 50000,
-          kycStatus: "Non vérifié",
-          kycDoc: "",
-          blocked: false
-        },
-        {
-          id: "u_client_2",
-          username: "chico_lotowa",
-          fullName: "Chico Lotôa",
-          phone: "0850000000",
-          usd: 10,
-          fc: 25000,
-          kycStatus: "Vérifié",
-          kycDoc: "ID-KIN-002",
-          blocked: false
-        }
-      ],
-      transactions: [],
-      donations: [
-        {
-          id: "don_1",
-          donorName: "Chico lotôa",
-          amount: 100,
-          currency: "FC",
-          message: "félicitations 🎊",
-          method: "M-Pesa (0815897990)",
-          date: new Date().toLocaleDateString("fr-FR")
-        }
-      ],
-      products: [
-        {
-          id: "p_1",
-          name: "Pack Promo Studio CBK",
-          price: 35,
-          currency: "USD",
-          badge: "Vérifié CBK",
-          desc: "Séance photo + montage vidéo promo à Kinshasa.",
-          img: "",
-          likes: 4
-        },
-        {
-          id: "p_2",
-          name: "Accompagnement Dossier Express",
-          price: 45000,
-          currency: "FC",
-          badge: "Livraison rapide Kinshasa",
-          desc: "Assistance complète et suivi de démarche.",
-          img: "",
-          likes: 2
-        }
-      ],
-      orders: [],
-      serviceRequests: [],
-      activeUsersMonth: ["chico_lotowa", "client_cbk"],
-      artists: [
-        {
-          id: "art_1",
-          name: "Artiste Vedette CBK",
-          genre: "Rumba & Afro Kinshasa",
-          img: "",
-          comments: [
-            {
-              id: "c_1",
-              author: "chico_lotowa",
-              text: "Très bon son, force à toute l'équipe de Chico Business Production !",
-              replies: [
-                { id: "r_1", author: "PDG Chico Mofonga", text: "Merci beaucoup pour le soutien !" }
-              ]
-            }
-          ]
-        }
-      ],
-      privateMessages: [],
-      notifications: [
-        {
-          id: "n_1",
-          text: "Bienvenue sur Chico Business Kinshasa (CBK) !",
-          read: false,
-          date: new Date().toLocaleDateString("fr-FR")
-        }
-      ]
-    };
-
-    let state = loadState();
-    let activeReplyTarget = null;
-
-    function loadState() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return structuredClone(DEFAULT_STATE);
-        return { ...structuredClone(DEFAULT_STATE), ...JSON.parse(raw) };
-      } catch (e) {
-        return structuredClone(DEFAULT_STATE);
-      }
-    }
-
-    function saveState() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      renderAll();
-    }
-
-    function showToast(msg) {
-      const t = document.getElementById("toast");
-      t.textContent = msg;
-      t.style.display = "block";
-      clearTimeout(showToast._timer);
-      showToast._timer = setTimeout(() => { t.style.display = "none"; }, 2600);
-    }
-
-    function pushNotif(text) {
-      state.notifications.unshift({
-        id: "n_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
-        text,
-        read: false,
-        date: new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })
-      });
-    }
-
-    function getCurrentUser() {
-      return state.users.find(u => u.id === state.currentUserId) || state.users[0];
-    }
-
-    function formatMoney(amount, currency) {
-      const num = Number(amount) || 0;
-      return currency === "USD" ? `$${num.toFixed(2)}` : `${num.toLocaleString("fr-FR")} FC`;
-    }
-
-    function ensureNotBlocked(user) {
-      if (user.blocked) {
-        showToast("Compte bloqué par l'Admin. Contactez CBK.");
-        return false;
-      }
-      return true;
-    }
-
-    /* Navigation & History (⏪ / ⏩) */
-    function switchView(viewName, recordHistory = true) {
-      if (viewName === "admin" && !state.isAdmin) {
-        openModal("adminAuthModal");
-        return;
-      }
-      document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
-      const target = document.getElementById("view-" + viewName);
-      if (target) target.classList.add("active");
-
-      document.querySelectorAll(".tab-btn").forEach(b => {
-        b.classList.toggle("active", b.dataset.view === viewName);
-      });
-
-      if (recordHistory) {
-        state.history = state.history.slice(0, state.historyIndex + 1);
-        if (state.history[state.history.length - 1] !== viewName) {
-          state.history.push(viewName);
-          state.historyIndex = state.history.length - 1;
-        }
-        saveState();
-      } else {
-        updateNavButtons();
-      }
-    }
-
-    function updateNavButtons() {
-      document.getElementById("btnBack").disabled = state.historyIndex <= 0;
-      document.getElementById("btnForward").disabled = state.historyIndex >= state.history.length - 1;
-    }
-
-    document.getElementById("btnBack").addEventListener("click", () => {
-      if (state.historyIndex > 0) {
-        state.historyIndex--;
-        switchView(state.history[state.historyIndex], false);
-        saveState();
-      }
-    });
-
-    document.getElementById("btnForward").addEventListener("click", () => {
-      if (state.historyIndex < state.history.length - 1) {
-        state.historyIndex++;
-        switchView(state.history[state.historyIndex], false);
-        saveState();
-      }
-    });
-
-    document.querySelectorAll(".tab-btn").forEach(btn => {
-      btn.addEventListener("click", () => switchView(btn.dataset.view, true));
-    });
-
-    /* Modals & Floating Chat */
-    function openModal(id) { document.getElementById(id).classList.add("open"); }
-    function closeModal(id) { document.getElementById(id).classList.remove("open"); }
-    document.getElementById("fabChat").addEventListener("click", () => openModal("chatModal"));
-    document.getElementById("btnNotif").addEventListener("click", () => { renderNotifs(); openModal("notifModal"); });
-
-    /* Admin Auth */
-    document.getElementById("btnAdminToggle").addEventListener("click", () => {
-      if (state.isAdmin) switchView("admin", true);
-      else openModal("adminAuthModal");
-    });
-
-    document.getElementById("adminPinForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const pin = document.getElementById("adminPinInput").value.trim();
-      if (pin === ADMIN_CODE) {
-        state.isAdmin = true;
-        document.getElementById("adminPinInput").value = "";
-        closeModal("adminAuthModal");
-        showToast("Mode Admin débloqué (Chico899)");
-        switchView("admin", true);
-        saveState();
-      } else {
-        showToast("Code Admin incorrect.");
-      }
-    });
-
-    function logoutAdmin() {
-      state.isAdmin = false;
-      switchView("home", true);
-      showToast("Mode Admin fermé.");
-      saveState();
-    }
-
-    /* Donations */
-    document.getElementById("donateForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const user = getCurrentUser();
-      if (!ensureNotBlocked(user)) return;
-
-      const donorName = document.getElementById("donorName").value.trim();
-      const amount = parseFloat(document.getElementById("donorAmount").value);
-      const currency = document.getElementById("donorCurrency").value;
-      const message = document.getElementById("donorMessage").value.trim();
-      const method = document.getElementById("donorMethod").value;
-
-      if (method === "Solde Portefeuille CBK") {
-        if (currency === "USD" && user.usd < amount) return showToast("Solde USD insuffisant.");
-        if (currency === "FC" && user.fc < amount) return showToast("Solde FC insuffisant.");
-        if (currency === "USD") user.usd -= amount;
-        else user.fc -= amount;
-      }
-
-      state.donations.unshift({
-        id: "don_" + Date.now(),
-        donorName,
-        amount,
-        currency,
-        message,
-        method,
-        date: new Date().toLocaleDateString("fr-FR")
-      });
-      pushNotif(`🎁 Don de ${donorName} (${formatMoney(amount, currency)}) ${message}`);
-      e.target.reset();
-      document.getElementById("donorMessage").value = "félicitations 🎊";
-      closeModal("donateModal");
-      showToast("Merci pour votre don !");
-      saveState();
-    });
-
-    /* Wallet Transactions */
-    document.getElementById("txType").addEventListener("change", (e) => {
-      document.getElementById("txTargetWrap").style.display = e.target.value === "transfert" ? "block" : "none";
-    });
-
-    document.getElementById("txForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const user = getCurrentUser();
-      if (!ensureNotBlocked(user)) return;
-
-      const type = document.getElementById("txType").value;
-      const currency = document.getElementById("txCurrency").value;
-      const amount = parseFloat(document.getElementById("txAmount").value);
-      const method = document.getElementById("txMethod").value;
-      const targetUsername = document.getElementById("txTargetUser").value.trim().replace(/^@/, "");
-      const ref = document.getElementById("txRef").value.trim();
-
-      if ((type === "retrait" || type === "transfert")) {
-        const bal = currency === "USD" ? user.usd : user.fc;
-        if (bal < amount) return showToast("Solde insuffisant pour cette opération.");
-      }
-
-      state.transactions.unshift({
-        id: "tx_" + Date.now(),
-        userId: user.id,
-        username: user.username,
-        type,
-        currency,
-        amount,
-        method,
-        targetUsername,
-        ref,
-        status: "En attente",
-        date: new Date().toLocaleString("fr-FR")
-      });
-
-      e.target.reset();
-      document.getElementById("txTargetWrap").style.display = "none";
-      showToast("Demande envoyée à l'Admin pour validation.");
-      saveState();
-    });
-
-    /* Market Actions */
-    function orderProduct(prodId) {
-      const user = getCurrentUser();
-      if (!ensureNotBlocked(user)) return;
-      const prod = state.products.find(p => p.id === prodId);
-      if (!prod) return;
-
-      const bal = prod.currency === "USD" ? user.usd : user.fc;
-      if (bal < prod.price) {
-        return showToast(`Solde ${prod.currency} insuffisant pour commander cet article.`);
-      }
-      if (prod.currency === "USD") user.usd -= prod.price;
-      else user.fc -= prod.price;
-
-      state.orders.unshift({
-        id: "ord_" + Date.now(),
-        userId: user.id,
-        username: user.username,
-        productName: prod.name,
-        price: prod.price,
-        currency: prod.currency,
-        status: "En attente",
-        date: new Date().toLocaleDateString("fr-FR")
-      });
-      showToast("Commande enregistrée !");
-      saveState();
-    }
-
-    function likeProduct(prodId) {
-      const prod = state.products.find(p => p.id === prodId);
-      if (!prod) return;
-      prod.likes = (prod.likes || 0) + 1;
-      saveState();
-    }
-
-    function shareProduct(prod) {
-      const text = `${prod.name} — ${formatMoney(prod.price, prod.currency)} sur Chico Business Kinshasa (CBK)`;
-      if (navigator.clipboard) navigator.clipboard.writeText(text).catch(() => {});
-      showToast("Lien / infos de l'article copié !");
-    }
-
-    /* Passport & Studio */
-    document.getElementById("passportForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const user = getCurrentUser();
-      if (!ensureNotBlocked(user)) return;
-      state.serviceRequests.unshift({
-        id: "srv_" + Date.now(),
-        userId: user.id,
-        username: user.username,
-        service: "Assistance Passeport Rapide",
-        detail: `${document.getElementById("passName").value.trim()} (${document.getElementById("passPhone").value.trim()}) — ${document.getElementById("passNote").value.trim()}`,
-        status: "En attente",
-        date: new Date().toLocaleDateString("fr-FR")
-      });
-      e.target.reset();
-      showToast("Demande Passeport envoyée !");
-      saveState();
-    });
-
-    document.getElementById("studioForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const user = getCurrentUser();
-      if (!ensureNotBlocked(user)) return;
-      state.serviceRequests.unshift({
-        id: "srv_" + Date.now(),
-        userId: user.id,
-        username: user.username,
-        service: "Studio — " + document.getElementById("studioType").value,
-        detail: `Date: ${document.getElementById("studioDate").value.trim()} — ${document.getElementById("studioNote").value.trim()}`,
-        status: "En attente",
-        date: new Date().toLocaleDateString("fr-FR")
-      });
-      e.target.reset();
-      showToast("Réservation Studio envoyée !");
-      saveState();
-    });
-
-    /* Artists Comments & Clickable Replies */
-    function addArtistComment(e, artistId) {
-      e.preventDefault();
-      const user = getCurrentUser();
-      if (!ensureNotBlocked(user)) return;
-      const input = document.getElementById("commentInput_" + artistId);
-      const text = input.value.trim();
-      if (!text) return;
-
-      const artist = state.artists.find(a => a.id === artistId);
-      artist.comments.push({
-        id: "c_" + Date.now(),
-        author: user.username,
-        text,
-        replies: []
-      });
-      input.value = "";
-      saveState();
-    }
-
-    function selectCommentToReply(artistId, commentId, authorName) {
-      activeReplyTarget = { artistId, commentId };
-      renderArtists();
-      const replyInput = document.getElementById(`replyInput_${artistId}_${commentId}`);
-      if (replyInput) replyInput.focus();
-      showToast(`Réponse à @${authorName}`);
-    }
-
-    function addReplyToComment(e, artistId, commentId) {
-      e.preventDefault();
-      const user = getCurrentUser();
-      if (!ensureNotBlocked(user)) return;
-      const input = document.getElementById(`replyInput_${artistId}_${commentId}`);
-      const text = input.value.trim();
-      if (!text) return;
-
-      const artist = state.artists.find(a => a.id === artistId);
-      const comment = artist.comments.find(c => c.id === commentId);
-      comment.replies.push({
-        id: "r_" + Date.now(),
-        author: state.isAdmin ? "PDG Chico Mofonga" : user.username,
-        text
-      });
-      activeReplyTarget = null;
-      saveState();
-    }
-
-    /* Account & KYC */
-    document.getElementById("kycForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const user = getCurrentUser();
-      if (!ensureNotBlocked(user)) return;
-      user.kycDoc = document.getElementById("kycDoc").value.trim();
-      user.kycStatus = "En attente de validation";
-      document.getElementById("kycDoc").value = "";
-      showToast("Pièce d'identité soumise pour vérification.");
-      saveState();
-    });
-
-    document.getElementById("createUserForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const username = document.getElementById("newUsername").value.trim().replace(/^@/, "");
-      const fullName = document.getElementById("newFullName").value.trim();
-      const phone = document.getElementById("newPhone").value.trim();
-      let existing = state.users.find(u => u.username.toLowerCase() === username.toLowerCase());
-      if (!existing) {
-        existing = {
-          id: "u_" + Date.now(),
-          username,
-          fullName,
-          phone,
-          usd: 0,
-          fc: 0,
-          kycStatus: "Non vérifié",
-          kycDoc: "",
-          blocked: false
-        };
-        state.users.push(existing);
-      }
-      state.currentUserId = existing.id;
-      e.target.reset();
-      closeModal("authModal");
-      showToast(`Connecté sur @${existing.username}`);
-      saveState();
-    });
-
-    /* Admin Actions */
-    document.getElementById("rateForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      state.rateUsdToFc = parseFloat(document.getElementById("adminRateInput").value);
-      pushNotif(`💱 Nouveau taux CBK : 1 USD = ${state.rateUsdToFc} FC`);
-      showToast("Taux USD/FC mis à jour.");
-      saveState();
-    });
-
-    function processTx(txId, approve) {
-      const tx = state.transactions.find(t => t.id === txId);
-      if (!tx || tx.status !== "En attente") return;
-      const sender = state.users.find(u => u.id === tx.userId);
-      if (!sender) return;
-
-      if (!approve) {
-        tx.status = "Refusé";
-        saveState();
-        return showToast("Transaction refusée.");
-      }
-
-      if (tx.type === "depot") {
-        if (tx.currency === "USD") sender.usd += tx.amount;
-        else sender.fc += tx.amount;
-      } else if (tx.type === "retrait") {
-        const bal = tx.currency === "USD" ? sender.usd : sender.fc;
-        if (bal < tx.amount) return showToast("Solde client insuffisant.");
-        if (tx.currency === "USD") sender.usd -= tx.amount;
-        else sender.fc -= tx.amount;
-      } else if (tx.type === "transfert") {
-        const bal = tx.currency === "USD" ? sender.usd : sender.fc;
-        const receiver = state.users.find(u => u.username.toLowerCase() === tx.targetUsername.toLowerCase());
-        if (bal < tx.amount) return showToast("Solde expéditeur insuffisant.");
-        if (!receiver) return showToast("Destinataire introuvable.");
-        if (tx.currency === "USD") { sender.usd -= tx.amount; receiver.usd += tx.amount; }
-        else { sender.fc -= tx.amount; receiver.fc += tx.amount; }
-      }
-
-      tx.status = "Validé";
-      showToast("Transaction validée !");
-      saveState();
-    }
-
-    document.getElementById("adminBalanceForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const user = state.users.find(u => u.id === document.getElementById("adminBalUser").value);
-      const action = document.getElementById("adminBalAction").value;
-      const currency = document.getElementById("adminBalCurrency").value;
-      const amount = parseFloat(document.getElementById("adminBalAmount").value);
-      if (!user) return;
-
-      if (action === "add") {
-        if (currency === "USD") user.usd += amount;
-        else user.fc += amount;
-      } else {
-        if (currency === "USD") user.usd = Math.max(0, user.usd - amount);
-        else user.fc = Math.max(0, user.fc - amount);
-      }
-      e.target.reset();
-      showToast(`Solde ${currency} mis à jour pour @${user.username}`);
-      saveState();
-    });
-
-    document.getElementById("adminPmForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const toUserId = document.getElementById("adminPmUser").value;
-      const text = document.getElementById("adminPmText").value.trim();
-      const target = state.users.find(u => u.id === toUserId);
-      state.privateMessages.unshift({
-        id: "pm_" + Date.now(),
-        toUserId,
-        toUsername: target ? target.username : "",
-        from: "PDG Chico Mofonga (Admin)",
-        text,
-        date: new Date().toLocaleString("fr-FR")
-      });
-      if (toUserId === state.currentUserId) {
-        pushNotif(`✉️ Nouveau message privé de l'Admin : "${text}"`);
-      }
-      e.target.reset();
-      showToast("Message privé envoyé !");
-      saveState();
-    });
-
-    function verifyKyc(userId, status) {
-      const u = state.users.find(x => x.id === userId);
-      if (!u) return;
-      u.kycStatus = status;
-      showToast(`KYC @${u.username} : ${status}`);
-      saveState();
-    }
-
-    function toggleBlockUser(userId) {
-      const u = state.users.find(x => x.id === userId);
-      if (!u) return;
-      u.blocked = !u.blocked;
-      showToast(u.blocked ? `@${u.username} bloqué.` : `@${u.username} débloqué.`);
-      saveState();
-    }
-
-    function deleteUser(userId) {
-      if (state.users.length <= 1) return showToast("Impossible de supprimer le dernier utilisateur.");
-      state.users = state.users.filter(x => x.id !== userId);
-      if (state.currentUserId === userId) state.currentUserId = state.users[0].id;
-      showToast("Utilisateur supprimé.");
-      saveState();
-    }
-
-    document.getElementById("adminProductForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const prod = {
-        id: "p_" + Date.now(),
-        name: document.getElementById("prodName").value.trim(),
-        price: parseFloat(document.getElementById("prodPrice").value),
-        currency: document.getElementById("prodCurrency").value,
-        badge: document.getElementById("prodBadge").value.trim() || "Vérifié CBK",
-        img: document.getElementById("prodImg").value.trim(),
-        desc: document.getElementById("prodDesc").value.trim(),
-        likes: 0
-      };
-      state.products.unshift(prod);
-      pushNotif(`🛒 Nouveau produit au Marché : ${prod.name} (${formatMoney(prod.price, prod.currency)})`);
-      e.target.reset();
-      showToast("Produit publié !");
-      saveState();
-    });
-
-    function updateOrderStatus(orderId, status) {
-      const ord = state.orders.find(o => o.id === orderId);
-      if (!ord) return;
-      ord.status = status;
-      showToast("Statut commande mis à jour.");
-      saveState();
-    }
-
-    document.getElementById("adminArtistForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const art = {
-        id: "art_" + Date.now(),
-        name: document.getElementById("artName").value.trim(),
-        genre: document.getElementById("artGenre").value.trim(),
-        img: document.getElementById("artImg").value.trim(),
-        comments: []
-      };
-      state.artists.unshift(art);
-      pushNotif(`🎤 Nouvel artiste publié : ${art.name}`);
-      e.target.reset();
-      showToast("Artiste publié !");
-      saveState();
-    });
-
-    document.getElementById("adminActiveUsersForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const list = document.getElementById("activeUsersInput").value
-        .split(",")
-        .map(s => s.trim().replace(/^@/, ""))
-        .filter(Boolean);
-      state.activeUsersMonth = list;
-      pushNotif(`🏆 Publication mensuelle des utilisateurs actifs mise à jour !`);
-      e.target.reset();
-      showToast("Utilisateurs actifs du mois publiés !");
-      saveState();
-    });
-
-    function deleteDonation(donId) {
-      state.donations = state.donations.filter(d => d.id !== donId);
-      saveState();
-    }
-
-    function updateServiceStatus(srvId, status) {
-      const srv = state.serviceRequests.find(s => s.id === srvId);
-      if (!srv) return;
-      srv.status = status;
-      saveState();
-    }
-
-    /* Notifications & Backup */
-    function renderNotifs() {
-      const box = document.getElementById("notifList");
-      if (!state.notifications.length) {
-        box.innerHTML = `<p class="muted small">Aucune notification.</p>`;
-        return;
-      }
-      box.innerHTML = state.notifications.map(n => `
-        <div class="comment-item" style="cursor:default; ${n.read ? 'opacity:0.65;' : ''}">
-          <div class="small"><strong>${n.text}</strong></div>
-          <div class="muted small">${n.date}</div>
-        </div>
-      `).join("");
-    }
-
-    function markAllNotifsRead() {
-      state.notifications.forEach(n => n.read = true);
-      saveState();
-      renderNotifs();
-    }
-
-    function exportBackup() {
-      const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "cbk-kinshasa-sauvegarde.json";
-      a.click();
-      URL.revokeObjectURL(url);
-      showToast("Sauvegarde JSON exportée.");
-    }
-
-    function importBackup(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        try {
-          state = { ...structuredClone(DEFAULT_STATE), ...JSON.parse(reader.result) };
-          saveState();
-          showToast("Sauvegarde importée avec succès.");
-        } catch (err) {
-          showToast("Fichier JSON invalide.");
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    function resetDemoData() {
-      state = structuredClone(DEFAULT_STATE);
-      state.isAdmin = true;
-      saveState();
-      showToast("Données réinitialisées.");
-    }
-
-    /* Render All Views */
-    function renderAll() {
-      const user = getCurrentUser();
-      const unreadCount = state.notifications.filter(n => !n.read).length;
-
-      document.getElementById("headerSessionInfo").textContent =
-        `@${user.username} • Taux 1$ = ${state.rateUsdToFc} FC`;
-      document.getElementById("notifCount").textContent = unreadCount;
-      document.getElementById("btnAdminToggle").textContent = state.isAdmin ? "Admin ACTIF" : "Admin";
-      document.getElementById("adminTabBtn").style.display = state.isAdmin ? "inline-block" : "none";
-      document.getElementById("exchangeRateBadge").textContent = `1 USD = ${state.rateUsdToFc} FC`;
-
-      // Wallet
-      document.getElementById("balUsd").textContent = formatMoney(user.usd, "USD");
-      document.getElementById("balFc").textContent = formatMoney(user.fc, "FC");
-      document.getElementById("walletAccountStatus").innerHTML = user.blocked
-        ? `<span class="status-bad">Compte BLOQUÉ par l'administration.</span>`
-        : `Compte <strong>@${user.username}</strong> • KYC : <span class="${user.kycStatus === 'Vérifié' ? 'status-ok' : 'status-pending'}">${user.kycStatus}</span>`;
-
-      // Donations
-      document.getElementById("donorsList").innerHTML = state.donations.length
-        ? state.donations.map(d => `
-          <div class="comment-item" style="cursor:default;">
-            <strong>${d.donorName}</strong> <span class="badge">${formatMoney(d.amount, d.currency)}</span> <span>${d.message}</span>
-            <div class="muted small">${d.date} • ${d.method}</div>
-          </div>
-        `).join("")
-        : `<p class="muted small">Aucun don affiché pour le moment.</p>`;
-
-      // Private Messages for current user
-      const myPms = state.privateMessages.filter(pm => pm.toUserId === user.id);
-      document.getElementById("clientPrivateMessages").innerHTML = myPms.length
-        ? myPms.map(pm => `
-          <div class="comment-item" style="cursor:default; border-color:rgba(210,248,1,0.4);">
-            <div class="small"><strong>${pm.from}</strong> • <span class="muted">${pm.date}</span></div>
-            <div style="margin-top:4px;">${pm.text}</div>
-          </div>
-        `).join("")
-        : `<p class="muted small">Aucun message privé reçu.</p>`;
-
-      // My Transactions
-      const myTxs = state.transactions.filter(t => t.userId === user.id);
-      document.getElementById("myTransactionsList").innerHTML = myTxs.length
-        ? myTxs.map(t => {
-          const cls = t.status === "Validé" ? "status-ok" : t.status === "Refusé" ? "status-bad" : "status-pending";
-          return `
-            <div class="comment-item" style="cursor:default;">
-              <div class="row-between">
-                <strong>${t.type.toUpperCase()} — ${formatMoney(t.amount, t.currency)}</strong>
-                <span class="${cls}">${t.status}</span>
-              </div>
-              <div class="muted small">${t.method} ${t.targetUsername ? "→ @" + t.targetUsername : ""} • ${t.date}</div>
-            </div>
-          `;
-        }).join("")
-        : `<p class="muted small">Aucune transaction enregistrée.</p>`;
-
-      // Market
-      document.getElementById("marketList").innerHTML = state.products.map(p => `
-        <div class="card">
-          ${p.img ? `<img class="media-preview" src="${p.img}" alt="${p.name}" />` : ""}
-          <div class="row-between">
-            <div>
-              <span class="badge">${p.badge}</span>
-              <h4 style="font-size:1rem; margin-top:4px;">${p.name}</h4>
-            </div>
-            <div style="font-weight:900; color:var(--lime); font-size:1.05rem;">${formatMoney(p.price, p.currency)}</div>
-          </div>
-          <p class="muted small" style="margin-top:6px;">${p.desc || ""}</p>
-          <div class="row-gap" style="margin-top:10px;">
-            <button type="button" class="btn btn-sm btn-lime" onclick="orderProduct('${p.id}')">Commander</button>
-            <button type="button" class="btn btn-sm" onclick="likeProduct('${p.id}')">👍 Aimer (${p.likes || 0})</button>
-            <button type="button" class="btn btn-sm" onclick='shareProduct(${JSON.stringify(p).replace(/'/g, "&apos;")})'>🔗 Partager</button>
-          </div>
-        </div>
-      `).join("");
-
-      const myOrders = state.orders.filter(o => o.userId === user.id);
-      document.getElementById("myOrdersList").innerHTML = myOrders.length
-        ? myOrders.map(o => `
-          <div class="comment-item" style="cursor:default;">
-            <div class="row-between">
-              <strong>${o.productName}</strong>
-              <span class="status-pending">${o.status}</span>
-            </div>
-            <div class="muted small">${formatMoney(o.price, o.currency)} • ${o.date}</div>
-          </div>
-        `).join("")
-        : `<p class="muted small">Aucune commande passée.</p>`;
-
-      // Service Requests
-      const mySrvs = state.serviceRequests.filter(s => s.userId === user.id);
-      document.getElementById("myServiceRequests").innerHTML = mySrvs.length
-        ? mySrvs.map(s => `
-          <div class="comment-item" style="cursor:default;">
-            <div class="row-between">
-              <strong>${s.service}</strong>
-              <span class="status-pending">${s.status}</span>
-            </div>
-            <div class="muted small">${s.detail} • ${s.date}</div>
-          </div>
-        `).join("")
-        : `<p class="muted small">Aucune demande envoyée.</p>`;
-
-      // Active Users Month
-      document.getElementById("activeUsersList").innerHTML = state.activeUsersMonth.length
-        ? state.activeUsersMonth.map((u, idx) => `
-          <span class="badge">#${idx + 1} @${u} • Actif du mois</span>
-        `).join("")
-        : `<p class="muted small">Liste en attente de publication.</p>`;
-
-      // Artists & Clickable Comments
-      renderArtists();
-
-      // Account Box
-      document.getElementById("accountProfileBox").innerHTML = `
-        <div><strong>Nom :</strong> ${user.fullName} (@${user.username})</div>
-        <div class="small muted">Téléphone : ${user.phone}</div>
-        <div class="small" style="margin-top:4px;">Statut KYC : <strong>${user.kycStatus}</strong> ${user.kycDoc ? "(" + user.kycDoc + ")" : ""}</div>
-        <div class="small">Statut compte : <strong class="${user.blocked ? 'status-bad' : 'status-ok'}">${user.blocked ? "Bloqué" : "Actif"}</strong></div>
-      `;
-
-      // Admin Renders
-      if (state.isAdmin) renderAdmin();
-
-      updateNavButtons();
-    }
-
-    function renderArtists() {
-      document.getElementById("artistsList").innerHTML = state.artists.map(art => `
-        <div class="card">
-          ${art.img ? `<img class="media-preview" src="${art.img}" alt="${art.name}" />` : ""}
-          <div class="row-between">
-            <div>
-              <h4 style="font-size:1rem;">${art.name}</h4>
-              <div class="muted small">${art.genre}</div>
-            </div>
-            <span class="badge">ARTISTE CBK</span>
-          </div>
-
-          <form onsubmit="addArtistComment(event, '${art.id}')" style="margin-top:10px;">
-            <div class="row-gap">
-              <input id="commentInput_${art.id}" type="text" placeholder="Écrire un commentaire..." style="margin:0; flex:1;" required />
-              <button type="submit" class="btn btn-sm btn-lime">Commenter</button>
-            </div>
-          </form>
-
-          <div style="margin-top:8px;">
-            ${art.comments.map(c => {
-              const isReplyingHere = activeReplyTarget && activeReplyTarget.artistId === art.id && activeReplyTarget.commentId === c.id;
-              return `
-                <div class="comment-item" onclick="selectCommentToReply('${art.id}', '${c.id}', '${c.author}')">
-                  <div class="row-between">
-                    <strong class="small">@${c.author}</strong>
-                    <span class="muted small">Cliquer pour répondre</span>
-                  </div>
-                  <div class="small" style="margin-top:3px;">${c.text}</div>
-
-                  ${(c.replies && c.replies.length) ? `
-                    <div class="reply-list">
-                      ${c.replies.map(r => `
-                        <div class="small" style="margin-bottom:4px;">
-                          <strong style="color:var(--lime);">${r.author} :</strong> ${r.text}
-                        </div>
-                      `).join("")}
-                    </div>
-                  ` : ""}
-
-                  ${isReplyingHere ? `
-                    <form onclick="event.stopPropagation()" onsubmit="addReplyToComment(event, '${art.id}', '${c.id}')" style="margin-top:8px;">
-                      <div class="row-gap">
-                        <input id="replyInput_${art.id}_${c.id}" type="text" placeholder="Votre réponse à @${c.author}..." style="margin:0; flex:1;" required />
-                        <button type="submit" class="btn btn-sm btn-lime">Répondre</button>
-                      </div>
-                    </form>
-                  ` : ""}
-                </div>
-              `;
-            }).join("")}
-          </div>
-        </div>
-      `).join("");
-    }
-
-    function renderAdmin() {
-      document.getElementById("adminRateInput").value = state.rateUsdToFc;
-
-      const userOptions = state.users.map(u => `<option value="${u.id}">@${u.username} (${formatMoney(u.usd, "USD")} | ${formatMoney(u.fc, "FC")})</option>`).join("");
-      document.getElementById("adminBalUser").innerHTML = userOptions;
-      document.getElementById("adminPmUser").innerHTML = userOptions;
-
-      document.getElementById("adminTxList").innerHTML = state.transactions.length
-        ? state.transactions.map(t => `
-          <div class="comment-item" style="cursor:default;">
-            <div class="row-between">
-              <div>
-                <strong>@${t.username}</strong> • ${t.type.toUpperCase()} <strong>${formatMoney(t.amount, t.currency)}</strong>
-                <div class="muted small">${t.method} ${t.targetUsername ? "→ @" + t.targetUsername : ""} ${t.ref ? "• Réf: " + t.ref : ""}</div>
-              </div>
-              <div class="row-gap">
-                ${t.status === "En attente"
-                  ? `<button type="button" class="btn btn-sm btn-lime" onclick="processTx('${t.id}', true)">Valider</button>
-                     <button type="button" class="btn btn-sm btn-danger" onclick="processTx('${t.id}', false)">Refuser</button>`
-                  : `<span class="${t.status === 'Validé' ? 'status-ok' : 'status-bad'}">${t.status}</span>`}
-              </div>
-            </div>
-          </div>
-        `).join("")
-        : `<p class="muted small">Aucune transaction.</p>`;
-
-      document.getElementById("adminUsersList").innerHTML = state.users.map(u => `
-        <div class="comment-item" style="cursor:default;">
-          <div class="row-between">
-            <div>
-              <strong>@${u.username}</strong> (${u.fullName}) • <span class="badge">${formatMoney(u.usd, "USD")}</span> <span class="badge">${formatMoney(u.fc, "FC")}</span>
-              <div class="muted small">KYC: <strong>${u.kycStatus}</strong> ${u.kycDoc ? "• Doc: " + u.kycDoc : ""} • ${u.blocked ? "<span class='status-bad'>BLOQUÉ</span>" : "<span class='status-ok'>ACTIF</span>"}</div>
-            </div>
-            <div class="row-gap">
-              <button type="button" class="btn btn-sm btn-lime" onclick="verifyKyc('${u.id}', 'Vérifié')">Valider KYC</button>
-              <button type="button" class="btn btn-sm" onclick="toggleBlockUser('${u.id}')">${u.blocked ? "Débloquer" : "Bloquer"}</button>
-              <button type="button" class="btn btn-sm btn-danger" onclick="deleteUser('${u.id}')">Supprimer</button>
-            </div>
-          </div>
-        </div>
-      `).join("");
-
-      document.getElementById("adminOrdersList").innerHTML = state.orders.length
-        ? state.orders.map(o => `
-          <div class="comment-item" style="cursor:default;">
-            <div class="row-between">
-              <div><strong>@${o.username}</strong> — ${o.productName} (${formatMoney(o.price, o.currency)})</div>
-              <select style="width:auto; margin:0;" onchange="updateOrderStatus('${o.id}', this.value)">
-                <option ${o.status === "En attente" ? "selected" : ""}>En attente</option>
-                <option ${o.status === "Confirmée" ? "selected" : ""}>Confirmée</option>
-                <option ${o.status === "En livraison" ? "selected" : ""}>En livraison</option>
-                <option ${o.status === "Livré" ? "selected" : ""}>Livré</option>
-              </select>
-            </div>
-          </div>
-        `).join("")
-        : `<p class="muted small">Aucune commande client.</p>`;
-
-      document.getElementById("adminDonationsList").innerHTML = state.donations.length
-        ? state.donations.map(d => `
-          <div class="comment-item" style="cursor:default;">
-            <div class="row-between">
-              <div><strong>${d.donorName}</strong> — ${formatMoney(d.amount, d.currency)} — ${d.message}</div>
-              <button type="button" class="btn btn-sm btn-danger" onclick="deleteDonation('${d.id}')">Retirer</button>
-            </div>
-          </div>
-        `).join("")
-        : `<p class="muted small">Aucun don.</p>`;
-
-      document.getElementById("adminServicesList").innerHTML = state.serviceRequests.length
-        ? state.serviceRequests.map(s => `
-          <div class="comment-item" style="cursor:default;">
-            <div class="row-between">
-              <div><strong>@${s.username}</strong> • ${s.service}<div class="muted small">${s.detail}</div></div>
-              <select style="width:auto; margin:0;" onchange="updateServiceStatus('${s.id}', this.value)">
-                <option ${s.status === "En attente" ? "selected" : ""}>En attente</option>
-                <option ${s.status === "En cours" ? "selected" : ""}>En cours</option>
-                <option ${s.status === "Terminé" ? "selected" : ""}>Terminé</option>
-              </select>
-            </div>
-          </div>
-        `).join("")
-        : `<p class="muted small">Aucune demande Passeport ou Studio.</p>`;
-    }
-
-    switchView(state.history[state.historyIndex] || "home", false);
-    renderAll();
-  </script>
+<div id="toast" class="toast"></div>
+<div id="drawerBackdrop" class="drawer-backdrop" onclick="closeDrawer()"></div>
+
+<!-- Top Bar -->
+<header class="topbar">
+<div class="brand-box">
+<button type="button" class="icon-btn menu-toggle-btn" onclick="toggleDrawer()" aria-label="Menu">☰</button>
+<div class="logo-badge">CBK</div>
+<div>
+<div class="brand-title">CBK Chico Business</div>
+<div id="headerSessionInfo" class="brand-sub">Kinshasa • Taux 1$ = 2800 FC</div>
+</div>
+</div>
+<div class="top-actions">
+<button type="button" id="btnNotif" class="icon-btn" title="Notifications">🔔 <span id="notifCount">0</span></button>
+<button type="button" id="btnAdminToggle" class="icon-btn lime">Admin</button>
+</div>
+</header>
+
+<div class="app-shell">
+<!-- Sidebar / Mobile Drawer -->
+<aside id="sidebarMenu" class="sidebar">
+<div>
+<div style="margin-bottom:12px;">
+<div style="font-weight:900; font-size:1rem;">CBK Chico Business</div>
+<div class="muted small">Kinshasa • Mobile & PC</div>
+</div>
+<div class="nav-list">
+<button type="button" class="nav-item active" data-view="home">🏠 1. Accueil</button>
+<button type="button" class="nav-item" data-view="about">ℹ️ 2. A Propos</button>
+<button type="button" class="nav-item" data-view="account">👤 3. Créer un compte / Connexion</button>
+<button type="button" class="nav-item" data-view="services">🛠️ 4. Mes Services</button>
+<button type="button" class="nav-item" data-view="payments">💰 5. Mode de paiement & Dons</button>
+<button type="button" class="nav-item" data-view="market">🛒 6. Marché CBK</button>
+<button type="button" class="nav-item" data-view="artists">🎤 7. Artistes & Actifs</button>
+<button type="button" class="nav-item" data-view="faq">❓ 8. FAQ & Contact</button>
+<button type="button" id="adminNavItem" class="nav-item" data-view="admin" style="display:none;">⚡ Espace PDG / Admin</button>
+</div>
+</div>
+
+<div class="sidebar-footer">
+<button type="button" class="btn btn-sm" style="width:100%; margin-bottom:8px;" onclick="logoutToAccount()">🚪 Déconnexion</button>
+<div>Version 1.2.4 - Kinshasa</div>
+</div>
+</aside>
+
+<!-- Main Page Area -->
+<main class="main-content">
+<div class="page-container">
+
+<!-- 1. ACCUEIL -->
+<section id="view-home" class="view active">
+<div class="hero-banner">
+<span class="hero-kicker">KINSHASA • RDC</span>
+<h1 class="hero-title">Chico Business Kinshasa (CBK)</h1>
+<div class="hero-sub">La Maîtrise de vos Affaires & Services</div>
+<p class="hero-desc">
+Plateforme centralisée de <strong>Chico Business Production</strong> : création de compte, portefeuille double devise USD/FC, dons, assistance passeport, studio vidéo/photo/audio, marché et communauté artistique.
+</p>
+<div class="row-gap" style="margin-top:14px;">
+<button type="button" class="btn btn-lime" onclick="switchView('account')">Créer un compte / Connexion</button>
+<button type="button" class="btn" onclick="switchView('services')">Nos Services</button>
+<button type="button" class="btn" onclick="switchView('payments')">Paiements & Dons</button>
+</div>
+</div>
+
+<div class="card card-lime">
+<div class="row-gap" style="align-items:flex-start;">
+<img id="pdgImg" class="pdg-photo" src="https://via.placeholder.com/150/1a1a1a/D2F801?text=PDG+CBK" alt="CHICO MOFONGA" />
+<div style="flex:1; min-width:220px;">
+<span class="badge">DIRECTION GÉNÉRALE</span>
+<h2 style="font-size:1.12rem; margin-top:4px;">PDG : CHICO MOFONGA</h2>
+<p class="muted small" style="margin-top:4px;">
+Accompagnement business, production studio, démarches et services rapides à Kinshasa.
+</p>
+<div class="row-gap" style="margin-top:10px;">
+<a class="btn btn-sm btn-lime link-btn" href="https://wa.me/message/2DFDG7JRKVQQL1" target="_blank" rel="noopener">WhatsApp Officiel</a>
+<a class="btn btn-sm link-btn" href="https://www.facebook.com/share/1CVrhKCMQ7/?mibextid=wwXIfr" target="_blank" rel="noopener">Facebook CBK</a>
+</div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3 class="section-title">✉️ Messages privés de l'Admin</h3>
+<div id="clientPrivateMessages"></div>
+</div>
+</section>
+
+<!-- 2. A PROPOS -->
+<section id="view-about" class="view">
+<div class="page-header">
+<h1 class="page-title">A Propos</h1>
+<p class="page-desc">Présentation de Chico Business Kinshasa (CBK) et de sa vision.</p>
+</div>
+
+<div class="card card-lime">
+<h3 class="section-title">Chico Business Kinshasa (CBK)</h3>
+<p class="muted" style="margin-bottom:10px;">
+<strong>CBK</strong> est une plateforme de services et de gestion d'activités basée à <strong>Kinshasa</strong>, dirigée par le PDG <strong>CHICO MOFONGA</strong> au sein de <strong>Chico Business Production</strong>.
+</p>
+<p class="muted">
+Elle réunit dans un seul espace la gestion de portefeuille (USD et FC), les dons communautaires, l'assistance passeport rapide, la réservation studio (vidéo, photo, audio), le marché d'articles vérifiés et la mise en valeur des artistes et utilisateurs actifs du mois.
+</p>
+</div>
+</section>
+
+<!-- 3. CRÉER UN COMPTE / CONNEXION & KYC -->
+<section id="view-account" class="view">
+<div class="page-header">
+<h1 class="page-title">Créer un compte / Connexion</h1>
+<p class="page-desc">Fenêtre dédiée à l'inscription d'un nouveau compte, à la connexion et à la vérification KYC.</p>
+</div>
+
+<div class="grid-2">
+<div class="card card-lime">
+<h3 class="section-title">📝 Créer un nouveau compte</h3>
+<form id="registerForm">
+<label>Nom</label>
+<input id="regNom" type="text" placeholder="Ex: Mofonga" required />
+<label>Post-nom</label>
+<input id="regPostNom" type="text" placeholder="Post-nom" />
+<label>Prénom</label>
+<input id="regPrenom" type="text" placeholder="Prénom" required />
+<label>Nom d'utilisateur (sans espace)</label>
+<input id="regUsername" type="text" placeholder="Ex: client_kinshasa" required />
+<label>Téléphone</label>
+<input id="regPhone" type="text" placeholder="08..." required />
+<label>E-mail</label>
+<input id="regEmail" type="email" placeholder="exemple@email.com" />
+<label>Mot de passe / Code personnel</label>
+<input id="regPassword" type="password" placeholder="Choisissez un code" required />
+<button type="submit" class="btn btn-lime" style="width:100%;">Créer mon compte</button>
+</form>
+</div>
+
+<div>
+<div class="card">
+<h3 class="section-title">🔑 Connexion & Compte actif</h3>
+<div id="accountProfileBox"></div>
+<form id="loginSwitchForm" style="margin-top:12px;">
+<label>Connexion par nom d'utilisateur</label>
+<div class="row-gap">
+<input id="loginUsername" type="text" placeholder="Nom d'utilisateur" style="margin:0; flex:1;" required />
+<button type="submit" class="btn btn-sm btn-lime">Connexion</button>
+</div>
+</form>
+</div>
+
+<div class="card">
+<h3 class="section-title">🪪 Vérification d'identité (KYC)</h3>
+<form id="kycForm">
+<label>Pièce d'identité (Numéro ou référence document)</label>
+<input id="kycDoc" type="text" placeholder="Ex: Carte d'électeur / Passeport" required />
+<button type="submit" class="btn btn-sm btn-lime">Soumettre ma pièce KYC</button>
+</form>
+</div>
+</div>
+</div>
+</section>
+
+<!-- 4. MES SERVICES (PASSEPORT & STUDIO) -->
+<section id="view-services" class="view">
+<div class="page-header">
+<h1 class="page-title">Mes Services</h1>
+<p class="page-desc">Assistance Passeport Rapide à Kinshasa et Studio Vidéo / Photo / Audio.</p>
+</div>
+
+<div class="grid-2">
+<div class="card card-lime">
+<h3 class="section-title">🛂 Assistance Passeport Rapide</h3>
+<p class="muted small">Accompagnement, prise de rendez-vous et suivi de dossier.</p>
+<form id="passportForm" style="margin-top:10px;">
+<label>Nom complet du demandeur</label>
+<input id="passName" type="text" placeholder="Nom Post-nom Prénom" required />
+<label>Téléphone / WhatsApp</label>
+<input id="passPhone" type="text" placeholder="08..." required />
+<label>Détails / Date souhaitée</label>
+<textarea id="passNote" rows="2" placeholder="Précisez votre demande..."></textarea>
+<button type="submit" class="btn btn-lime">Envoyer la demande Passeport</button>
+</form>
+</div>
+
+<div class="card">
+<h3 class="section-title">🎬 Studio Vidéo / Photo / Audio</h3>
+<p class="muted small">Réservez une séance avec <strong>Chico Business Production</strong>.</p>
+<form id="studioForm" style="margin-top:10px;">
+<label>Type de prestation</label>
+<select id="studioType">
+<option value="Tournage Vidéo / Clip">Tournage Vidéo / Clip</option>
+<option value="Shooting Photo Professionnel">Shooting Photo Professionnel</option>
+<option value="Enregistrement Audio / Studio">Enregistrement Audio / Studio</option>
+<option value="Couverture Événement Kinshasa">Couverture Événement Kinshasa</option>
+</select>
+<label>Date & Heure souhaitées</label>
+<input id="studioDate" type="text" placeholder="Ex: Samedi 14h" required />
+<label>Notes du projet</label>
+<textarea id="studioNote" rows="2" placeholder="Décrivez votre besoin..."></textarea>
+<button type="submit" class="btn btn-lime">Réserver le Studio</button>
+</form>
+</div>
+</div>
+
+<div class="card">
+<h3 class="section-title">📌 Suivi de mes demandes</h3>
+<div id="myServiceRequests"></div>
+</div>
+</section>
+
+<!-- 5. MODE DE PAIEMENT, PORTEFEUILLE USD/FC & DONS -->
+<section id="view-payments" class="view">
+<div class="page-header">
+<h1 class="page-title">Mode de paiement & Dons</h1>
+<p class="page-desc">Réseaux mobiles officiels, portefeuille double devise (USD / FC), transactions et dons.</p>
+</div>
+
+<div class="card">
+<h3 class="section-title">📱 Modes de paiement disponibles</h3>
+<p class="muted small" style="margin-bottom:10px;">
+Effectuez vos opérations facilement via nos numéros mobiles officiels à Kinshasa :
+</p>
+<div class="grid-3">
+<div class="pay-card">
+<div class="pay-tag">Airtel Money</div>
+<div style="font-weight:900; font-size:1rem;">0983 995 019</div>
+<div class="muted small">Dépôt • Retrait • Don</div>
+</div>
+<div class="pay-card">
+<div class="pay-tag">Orange Money</div>
+<div style="font-weight:900; font-size:1rem;">0859312214</div>
+<div class="muted small">Dépôt • Retrait • Don</div>
+</div>
+<div class="pay-card">
+<div class="pay-tag">M-Pesa</div>
+<div style="font-weight:900; font-size:1rem;">0815897990</div>
+<div class="muted small">Dépôt • Retrait • Don</div>
+</div>
+</div>
+</div>
+
+<div class="card card-lime">
+<div class="row-between">
+<h3 class="section-title" style="margin:0;">💼 Mon Portefeuille CBK</h3>
+<span id="exchangeRateBadge" class="badge">1 USD = 2800 FC</span>
+</div>
+<p id="walletAccountStatus" class="muted small" style="margin-top:4px;"></p>
+<div class="grid-2" style="margin-top:12px;">
+<div class="wallet-box">
+<div class="muted small">Solde Dollar américain</div>
+<div id="balUsd" class="wallet-amount">$0.00</div>
+</div>
+<div class="wallet-box">
+<div class="muted small">Solde Franc congolais</div>
+<div id="balFc" class="wallet-amount">0 FC</div>
+</div>
+</div>
+</div>
+
+<div class="grid-2">
+<div class="card">
+<h3 class="section-title">📲 Dépôt / Retrait / Transfert</h3>
+<form id="txForm">
+<label>Type d'opération</label>
+<select id="txType">
+<option value="depot">Dépôt (Recharge)</option>
+<option value="retrait">Retrait</option>
+<option value="transfert">Transfert interne (username)</option>
+</select>
+<label>Devise</label>
+<select id="txCurrency">
+<option value="USD">USD ($)</option>
+<option value="FC">FC</option>
+</select>
+<label>Montant</label>
+<input id="txAmount" type="number" step="0.01" min="0.01" required />
+<label>Réseau / Moyen</label>
+<select id="txMethod">
+<option value="M-Pesa (0815897990)">M-Pesa (0815897990)</option>
+<option value="Orange Money (0859312214)">Orange Money (0859312214)</option>
+<option value="Airtel Money (0983 995 019)">Airtel Money (0983 995 019)</option>
+<option value="Portefeuille CBK">Portefeuille CBK</option>
+</select>
+<div id="txTargetWrap" style="display:none;">
+<label>Nom d'utilisateur destinataire</label>
+<input id="txTargetUser" type="text" placeholder="Ex: client_kin" />
+</div>
+<label>Référence transaction / Note</label>
+<input id="txRef" type="text" placeholder="Ex: Réf paiement..." />
+<button type="submit" class="btn btn-lime">Soumettre la demande</button>
+</form>
+</div>
+
+<div class="card">
+<div class="row-between">
+<h3 class="section-title" style="margin:0;">🎁 Dons & Donateurs</h3>
+<button type="button" class="btn btn-sm btn-lime" onclick="openModal('donateModal')">Faire un don</button>
+</div>
+<p class="muted small" style="margin-top:6px;">
+Ajoutez un don avec le nom du donateur, le montant en USD/FC et un message.
+</p>
+<div id="donorsList" style="margin-top:10px;"></div>
+</div>
+</div>
+
+<div class="card">
+<h3 class="section-title">📜 Historique de mes transactions</h3>
+<div id="myTransactionsList"></div>
+</div>
+</section>
+
+<!-- 6. MARCHÉ CBK -->
+<section id="view-market" class="view">
+<div class="page-header">
+<h1 class="page-title">Marché CBK</h1>
+<p class="page-desc">Articles et offres vérifiés disponibles à Kinshasa.</p>
+</div>
+<div id="marketList" class="grid-2"></div>
+<div class="card">
+<h3 class="section-title">📦 Mes commandes</h3>
+<div id="myOrdersList"></div>
+</div>
+</section>
+
+<!-- 7. ARTISTES & UTILISATEURS ACTIFS -->
+<section id="view-artists" class="view">
+<div class="page-header">
+<h1 class="page-title">Artistes & Actifs du mois</h1>
+<p class="page-desc">Commentez, cliquez sur un commentaire pour répondre et consultez les utilisateurs actifs du mois.</p>
+</div>
+
+<div class="card card-lime">
+<h3 class="section-title">🏆 Utilisateurs actifs du mois</h3>
+<div id="activeUsersList"></div>
+</div>
+
+<div id="artistsList" class="grid-2"></div>
+</section>
+
+<!-- 8. FAQ & CONTACT -->
+<section id="view-faq" class="view">
+<div class="page-header">
+<h1 class="page-title">FAQ</h1>
+<p class="page-desc">Questions fréquentes et contacts officiels de Chico Business Kinshasa (CBK).</p>
+</div>
+
+<div class="card">
+<div class="small" style="display:grid; gap:12px;">
+<div>
+<strong>Comment créer un compte ou me connecter ?</strong>
+<p class="muted">Ouvrez « 3. Créer un compte / Connexion » dans le menu pour inscrire un nouveau compte ou vous connecter.</p>
+</div>
+<div>
+<strong>Quels sont les numéros de paiement officiels ?</strong>
+<p class="muted">Airtel Money : <code>0983 995 019</code> • Orange Money : <code>0859312214</code> • M-Pesa : <code>0815897990</code>.</p>
+</div>
+<div>
+<strong>Comment faire un don avec le nom du donateur ?</strong>
+<p class="muted">Dans « 5. Mode de paiement & Dons », cliquez sur « Faire un don », entrez le nom du donateur, le montant (USD ou FC) et son message.</p>
+</div>
+<div>
+<strong>Comment commenter et répondre sur les artistes ?</strong>
+<p class="muted">Dans « 7. Artistes & Actifs », écrivez un commentaire puis cliquez directement dessus pour répondre.</p>
+</div>
+<div>
+<strong>Comment contacter l'équipe ?</strong>
+<p class="muted">Utilisez le bouton de chat flottant en bas à droite ou les liens WhatsApp et Facebook.</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- ESPACE ADMIN (Chico899) -->
+<section id="view-admin" class="view">
+<div class="page-header">
+<div class="row-between">
+<div>
+<h1 class="page-title">⚡ Espace PDG / Admin</h1>
+<p class="page-desc">Gestion complète des soldes, taux USD/FC, validations, produits, artistes, actifs du mois, dons, utilisateurs et messages privés.</p>
+</div>
+<button type="button" class="btn btn-sm btn-danger" onclick="logoutAdmin()">Quitter Admin</button>
+</div>
+</div>
+
+<div class="card card-lime">
+<form id="rateForm">
+<label>Taux du jour (1 USD en FC)</label>
+<div class="row-gap">
+<input id="adminRateInput" type="number" step="1" min="1" style="margin:0; flex:1;" required />
+<button type="submit" class="btn btn-lime">Mettre à jour le taux</button>
+</div>
+</form>
+<div class="row-gap" style="margin-top:12px;">
+<button type="button" class="btn btn-sm" onclick="exportBackup()">Exporter sauvegarde JSON</button>
+<label class="btn btn-sm" style="margin:0;">
+Importer JSON <input type="file" accept=".json" style="display:none;" onchange="importBackup(event)" />
+</label>
+<button type="button" class="btn btn-sm btn-danger" onclick="resetDemoData()">Réinitialiser données</button>
+</div>
+</div>
+
+<div class="card">
+<h3 class="section-title">💳 Validation Dépôts, Retraits & Transferts</h3>
+<div id="adminTxList"></div>
+</div>
+
+<div class="grid-2">
+<div class="card">
+<h3 class="section-title">💰 Ajuster le solde d'un client</h3>
+<form id="adminBalanceForm">
+<label>Client</label>
+<select id="adminBalUser"></select>
+<label>Action</label>
+<select id="adminBalAction">
+<option value="add">Ajouter au solde</option>
+<option value="sub">Retirer du solde</option>
+</select>
+<label>Devise</label>
+<select id="adminBalCurrency">
+<option value="USD">USD ($)</option>
+<option value="FC">FC</option>
+</select>
+<label>Montant</label>
+<input id="adminBalAmount" type="number" step="0.01" min="0.01" required />
+<button type="submit" class="btn btn-lime">Appliquer le solde</button>
+</form>
+</div>
+
+<div class="card">
+<h3 class="section-title">✉️ Envoyer un message privé à un client</h3>
+<form id="adminPmForm">
+<label>Client destinataire</label>
+<select id="adminPmUser"></select>
+<label>Message privé</label>
+<textarea id="adminPmText" rows="3" placeholder="Votre message privé..." required></textarea>
+<button type="submit" class="btn btn-lime">Envoyer le message privé</button>
+</form>
+</div>
+</div>
+
+<div class="card">
+<h3 class="section-title">👥 Utilisateurs & Vérification KYC</h3>
+<div id="adminUsersList"></div>
+</div>
+
+<div class="card">
+<h3 class="section-title">🛒 Ajouter un produit au Marché</h3>
+<form id="adminProductForm">
+<label>Nom du produit</label>
+<input id="prodName" type="text" placeholder="Ex: Pack Studio / Accessoire CBK" required />
+<div class="grid-2">
+<div>
+<label>Prix</label>
+<input id="prodPrice" type="number" step="0.01" min="0.01" required />
+</div>
+<div>
+<label>Devise</label>
+<select id="prodCurrency">
+<option value="USD">USD ($)</option>
+<option value="FC">FC</option>
+</select>
+</div>
+</div>
+<label>Badge</label>
+<input id="prodBadge" type="text" value="Vérifié CBK" />
+<label>Image (URL optionnelle)</label>
+<input id="prodImg" type="text" placeholder="https://..." />
+<label>Description</label>
+<textarea id="prodDesc" rows="2"></textarea>
+<button type="submit" class="btn btn-lime">Publier le produit</button>
+</form>
+<div id="adminOrdersList" style="margin-top:14px;"></div>
+</div>
+
+<div class="grid-2">
+<div class="card">
+<h3 class="section-title">🎤 Publier un artiste</h3>
+<form id="adminArtistForm">
+<label>Nom de l'artiste</label>
+<input id="artName" type="text" required />
+<label>Style / Catégorie</label>
+<input id="artGenre" type="text" required />
+<label>Photo (URL optionnelle)</label>
+<input id="artImg" type="text" placeholder="https://..." />
+<button type="submit" class="btn btn-lime">Publier l'artiste</button>
+</form>
+</div>
+
+<div class="card">
+<h3 class="section-title">🏆 Publier Utilisateurs Actifs du Mois</h3>
+<form id="adminActiveUsersForm">
+<label>Pseudos (séparés par des virgules)</label>
+<input id="activeUsersInput" type="text" placeholder="Ex: @membre1, @membre2" required />
+<button type="submit" class="btn btn-lime">Publier la liste du mois</button>
+</form>
+</div>
+</div>
+
+<div class="card">
+<h3 class="section-title">🎁 Gestion des Dons</h3>
+<div id="adminDonationsList"></div>
+</div>
+
+<div class="card">
+<h3 class="section-title">🛂🎬 Demandes Passeport & Studio</h3>
+<div id="adminServicesList"></div>
+</div>
+</section>
+
+</div>
+</main>
+</div>
+
+<!-- Floating Chat Button -->
+<button type="button" id="fabChat" class="fab-chat" title="Chat & Contact CBK">💬</button>
+
+<!-- MODAL ADMIN LOGIN (Chico899) -->
+<div id="adminAuthModal" class="modal-backdrop">
+<div class="modal-box">
+<div class="row-between">
+<h3 class="section-title" style="margin:0;">🔐 Accès PDG / Admin</h3>
+<button type="button" class="btn btn-sm" onclick="closeModal('adminAuthModal')">✕</button>
+</div>
+<p class="muted small" style="margin-top:6px;">Entrez le code administrateur pour ouvrir l'espace Admin.</p>
+<form id="adminPinForm" style="margin-top:12px;">
+<label>Code Admin</label>
+<input id="adminPinInput" type="password" placeholder="Entrez le code" required />
+<button type="submit" class="btn btn-lime" style="width:100%;">Débloquer l'espace Admin</button>
+</form>
+</div>
+</div>
+
+<!-- MODAL DONATION -->
+<div id="donateModal" class="modal-backdrop">
+<div class="modal-box">
+<div class="row-between">
+<h3 class="section-title" style="margin:0;">🎁 Faire un don à CBK</h3>
+<button type="button" class="btn btn-sm" onclick="closeModal('donateModal')">✕</button>
+</div>
+<form id="donateForm" style="margin-top:10px;">
+<label>Nom du donateur</label>
+<input id="donorName" type="text" placeholder="Nom du donateur" required />
+<div class="grid-2">
+<div>
+<label>Montant</label>
+<input id="donorAmount" type="number" step="0.01" min="0.01" required />
+</div>
+<div>
+<label>Devise</label>
+<select id="donorCurrency">
+<option value="FC">FC</option>
+<option value="USD">USD ($)</option>
+</select>
+</div>
+</div>
+<label>Message du donateur</label>
+<input id="donorMessage" type="text" placeholder="Message du donateur..." />
+<label>Moyen utilisé</label>
+<select id="donorMethod">
+<option value="Airtel Money (0983 995 019)">Airtel Money (0983 995 019)</option>
+<option value="Orange Money (0859312214)">Orange Money (0859312214)</option>
+<option value="M-Pesa (0815897990)">M-Pesa (0815897990)</option>
+<option value="Solde Portefeuille CBK">Débiter mon portefeuille CBK</option>
+</select>
+<button type="submit" class="btn btn-lime" style="width:100%;">Valider et publier le don</button>
+</form>
+</div>
+</div>
+
+<!-- MODAL CHAT -->
+<div id="chatModal" class="modal-backdrop">
+<div class="modal-box">
+<div class="row-between">
+<h3 class="section-title" style="margin:0;">💬 Assistance CBK — Kinshasa</h3>
+<button type="button" class="btn btn-sm" onclick="closeModal('chatModal')">✕</button>
+</div>
+<p class="muted small" style="margin-top:8px;">
+Contactez l'équipe de <strong>Chico Mofonga</strong> :
+</p>
+<div class="row-gap" style="margin-top:12px;">
+<a class="btn btn-lime link-btn" style="flex:1;" href="https://wa.me/message/2DFDG7JRKVQQL1" target="_blank" rel="noopener">WhatsApp Officiel</a>
+<a class="btn link-btn" style="flex:1;" href="https://www.facebook.com/share/1CVrhKCMQ7/?mibextid=wwXIfr" target="_blank" rel="noopener">Facebook CBK</a>
+</div>
+<div class="list-box" style="margin-top:14px;">
+<div class="small"><strong>Numéros officiels :</strong></div>
+<div class="muted small">• Airtel Money : <code>0983 995 019</code></div>
+<div class="muted small">• Orange Money : <code>0859312214</code></div>
+<div class="muted small">• M-Pesa : <code>0815897990</code></div>
+</div>
+</div>
+</div>
+
+<!-- MODAL NOTIFICATIONS -->
+<div id="notifModal" class="modal-backdrop">
+<div class="modal-box">
+<div class="row-between">
+<h3 class="section-title" style="margin:0;">🔔 Notifications</h3>
+<div class="row-gap">
+<button type="button" class="btn btn-sm" onclick="markAllNotifsRead()">Tout lire</button>
+<button type="button" class="btn btn-sm" onclick="closeModal('notifModal')">✕</button>
+</div>
+</div>
+<div id="notifList" style="margin-top:10px;"></div>
+</div>
+</div>
+
+<script>
+const ADMIN_CODE = "Chico899";
+const STORAGE_KEY = "cbk_kinshasa_state_v4";
+
+const DEFAULT_STATE = {
+rateUsdToFc: 2800,
+isAdmin: false,
+currentUserId: "u_client_1",
+activeView: "home",
+users: [
+{
+id: "u_client_1",
+username: "client_cbk",
+nom: "CBK",
+postNom: "",
+prenom: "Membre",
+fullName: "Membre CBK Kinshasa",
+phone: "0810000000",
+email: "",
+password: "",
+usd: 0,
+fc: 0,
+kycStatus: "Non vérifié",
+kycDoc: "",
+blocked: false
+}
+],
+transactions: [],
+donations: [],
+products: [],
+orders: [],
+serviceRequests: [],
+activeUsersMonth: [],
+artists: [],
+privateMessages: [],
+notifications: []
+};
+
+let state = loadState();
+let activeReplyTarget = null;
+
+function loadState() {
+try {
+const raw = localStorage.getItem(STORAGE_KEY);
+if (!raw) return structuredClone(DEFAULT_STATE);
+return { ...structuredClone(DEFAULT_STATE), ...JSON.parse(raw) };
+} catch (e) {
+return structuredClone(DEFAULT_STATE);
+}
+}
+
+function saveState() {
+localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+renderAll();
+}
+
+function showToast(msg) {
+const t = document.getElementById("toast");
+t.textContent = msg;
+t.style.display = "block";
+clearTimeout(showToast._timer);
+showToast._timer = setTimeout(() => { t.style.display = "none"; }, 2600);
+}
+
+function pushNotif(text) {
+state.notifications.unshift({
+id: "n_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
+text,
+read: false,
+date: new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })
+});
+}
+
+function getCurrentUser() {
+return state.users.find(u => u.id === state.currentUserId) || state.users[0];
+}
+
+function formatMoney(amount, currency) {
+const num = Number(amount) || 0;
+return currency === "USD" ? `$${num.toFixed(2)}` : `${num.toLocaleString("fr-FR")} FC`;
+}
+
+function ensureNotBlocked(user) {
+if (user.blocked) {
+showToast("Compte bloqué par l'Admin. Contactez CBK.");
+return false;
+}
+return true;
+}
+
+/* Drawer Mobile */
+function toggleDrawer() {
+document.getElementById("sidebarMenu").classList.toggle("open");
+document.getElementById("drawerBackdrop").classList.toggle("open");
+}
+function closeDrawer() {
+document.getElementById("sidebarMenu").classList.remove("open");
+document.getElementById("drawerBackdrop").classList.remove("open");
+}
+
+/* View Switching */
+function switchView(viewName) {
+if (viewName === "admin" && !state.isAdmin) {
+openModal("adminAuthModal");
+return;
+}
+state.activeView = viewName;
+document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+const target = document.getElementById("view-" + viewName);
+if (target) target.classList.add("active");
+
+document.querySelectorAll(".nav-item").forEach(b => {
+b.classList.toggle("active", b.dataset.view === viewName);
+});
+
+closeDrawer();
+saveState();
+}
+
+document.querySelectorAll(".nav-item").forEach(btn => {
+btn.addEventListener("click", () => switchView(btn.dataset.view));
+});
+
+/* Modals & Floating Chat */
+function openModal(id) { document.getElementById(id).classList.add("open"); }
+function closeModal(id) { document.getElementById(id).classList.remove("open"); }
+document.getElementById("fabChat").addEventListener("click", () => openModal("chatModal"));
+document.getElementById("btnNotif").addEventListener("click", () => { renderNotifs(); openModal("notifModal"); });
+
+/* Admin Auth */
+document.getElementById("btnAdminToggle").addEventListener("click", () => {
+if (state.isAdmin) switchView("admin");
+else openModal("adminAuthModal");
+});
+
+document.getElementById("adminPinForm").addEventListener("submit", (e) => {
+e.preventDefault();
+const pin = document.getElementById("adminPinInput").value.trim();
+if (pin === ADMIN_CODE) {
+state.isAdmin = true;
+document.getElementById("adminPinInput").value = "";
+closeModal("adminAuthModal");
+showToast("Mode Admin débloqué (Chico899)");
+switchView("admin");
+} else {
+showToast("Code Admin incorrect.");
+}
+});
+
+function logoutAdmin() {
+state.isAdmin = false;
+switchView("home");
+showToast("Mode Admin fermé.");
+}
+
+function logoutToAccount() {
+state.isAdmin = false;
+switchView("account");
+showToast("Ouverture de la page Compte / Connexion.");
+}
+
+/* Registration & Account Switch */
+document.getElementById("registerForm").addEventListener("submit", (e) => {
+e.preventDefault();
+const nom = document.getElementById("regNom").value.trim();
+const postNom = document.getElementById("regPostNom").value.trim();
+const prenom = document.getElementById("regPrenom").value.trim();
+const username = document.getElementById("regUsername").value.trim().replace(/^@/, "");
+const phone = document.getElementById("regPhone").value.trim();
+const email = document.getElementById("regEmail").value.trim();
+const password = document.getElementById("regPassword").value;
+
+const fullName = [nom, postNom, prenom].filter(Boolean).join(" ");
+let existing = state.users.find(u => u.username.toLowerCase() === username.toLowerCase());
+if (!existing) {
+existing = {
+id: "u_" + Date.now(),
+username,
+nom,
+postNom,
+prenom,
+fullName,
+phone,
+email,
+password,
+usd: 0,
+fc: 0,
+kycStatus: "Non vérifié",
+kycDoc: "",
+blocked: false
+};
+state.users.push(existing);
+}
+state.currentUserId = existing.id;
+e.target.reset();
+showToast(`Compte créé et activé : @${existing.username}`);
+saveState();
+});
+
+document.getElementById("loginSwitchForm").addEventListener("submit", (e) => {
+e.preventDefault();
+const uname = document.getElementById("loginUsername").value.trim().replace(/^@/, "");
+const found = state.users.find(u => u.username.toLowerCase() === uname.toLowerCase());
+if (!found) return showToast("Aucun compte trouvé avec ce nom d'utilisateur.");
+state.currentUserId = found.id;
+e.target.reset();
+showToast(`Connecté sur @${found.username}`);
+saveState();
+});
+
+/* Donations */
+document.getElementById("donateForm").addEventListener("submit", (e) => {
+e.preventDefault();
+const user = getCurrentUser();
+if (!ensureNotBlocked(user)) return;
+
+const donorName = document.getElementById("donorName").value.trim();
+const amount = parseFloat(document.getElementById("donorAmount").value);
+const currency = document.getElementById("donorCurrency").value;
+const message = document.getElementById("donorMessage").value.trim();
+const method = document.getElementById("donorMethod").value;
+
+if (method === "Solde Portefeuille CBK") {
+if (currency === "USD" && user.usd < amount) return showToast("Solde USD insuffisant.");
+if (currency === "FC" && user.fc < amount) return showToast("Solde FC insuffisant.");
+if (currency === "USD") user.usd -= amount;
+else user.fc -= amount;
+}
+
+state.donations.unshift({
+id: "don_" + Date.now(),
+donorName,
+amount,
+currency,
+message,
+method,
+date: new Date().toLocaleDateString("fr-FR")
+});
+pushNotif(`🎁 Don de ${donorName} (${formatMoney(amount, currency)}) ${message}`);
+e.target.reset();
+closeModal("donateModal");
+showToast("Don enregistré !");
+saveState();
+});
+
+/* Wallet Transactions */
+document.getElementById("txType").addEventListener("change", (e) => {
+document.getElementById("txTargetWrap").style.display = e.target.value === "transfert" ? "block" : "none";
+});
+
+document.getElementById("txForm").addEventListener("submit", (e) => {
+e.preventDefault();
+const user = getCurrentUser();
+if (!ensureNotBlocked(user)) return;
+
+const type = document.getElementById("txType").value;
+const currency = document.getElementById("txCurrency").value;
+const amount = parseFloat(document.getElementById("txAmount").value);
+const method = document.getElementById("txMethod").value;
+const targetUsername = document.getElementById("txTargetUser").value.trim().replace(/^@/, "");
+const ref = document.getElementById("txRef").value.trim();
+
+if ((type === "retrait" || type === "transfert")) {
+const bal = currency === "USD" ? user.usd : user.fc;
+if (bal < amount) return showToast("Solde insuffisant.");
+}
+
+state.transactions.unshift({
+id: "tx_" + Date.now(),
+userId: user.id,
+username: user.username,
+type,
+currency,
+amount,
+method,
+targetUsername,
+ref,
+status: "En attente",
+date: new Date().toLocaleString("fr-FR")
+});
+
+e.target.reset();
+document.getElementById("txTargetWrap").style.display = "none";
+showToast("Demande envoyée à l'Admin.");
+saveState();
+});
+
+/* Market Actions */
+function orderProduct(prodId) {
+const user = getCurrentUser();
+if (!ensureNotBlocked(user)) return;
+const prod = state.products.find(p => p.id === prodId);
+if (!prod) return;
+
+const bal = prod.currency === "USD" ? user.usd : user.fc;
+if (bal < prod.price) return showToast(`Solde ${prod.currency} insuffisant.`);
+if (prod.currency === "USD") user.usd -= prod.price;
+else user.fc -= prod.price;
+
+state.orders.unshift({
+id: "ord_" + Date.now(),
+userId: user.id,
+username: user.username,
+productName: prod.name,
+price: prod.price,
+currency: prod.currency,
+status: "En attente",
+date: new Date().toLocaleDateString("fr-FR")
+});
+showToast("Commande enregistrée !");
+saveState();
+}
+
+function likeProduct(prodId) {
+const prod = state.products.find(p => p.id === prodId);
+if (!prod) return;
+prod.likes = (prod.likes || 0) + 1;
+saveState();
+}
+
+function shareProduct(prod) {
+const text = `${prod.name} — ${formatMoney(prod.price, prod.currency)} sur CBK Kinshasa`;
+if (navigator.clipboard) navigator.clipboard.writeText(text).catch(() => {});
+showToast("Infos de l'article copiées !");
+}
+
+/* Passport & Studio */
+document.getElementById("passportForm").addEventListener("submit", (e) => {
+e.preventDefault();
+const user = getCurrentUser();
+if (!ensureNotBlocked(user)) return;
+state.serviceRequests.unshift({
+id: "srv_" + Date.now(),
+userId: user.id,
+username: user.username,
+service: "Assistance Passeport Rapide",
+detail: `${document.getElementById("passName").value.trim()} (${document.getElementById("passPhone").value.trim()}) — ${document.getElementById("passNote").value.trim()}`,
+status: "En attente",
+date: new Date().toLocaleDateString("fr-FR")
+});
+e.target.reset();
+showToast("Demande Passeport envoyée !");
+saveState();
+});
+
+document.getElementById("studioForm").addEventListener("submit", (e) => {
+e.preventDefault();
+const user = getCurrentUser();
+if (!ensureNotBlocked(user)) return;
+state.serviceRequests.unshift({
+id: "srv_" + Date.now(),
+userId: user.id,
+username: user.username,
+service: "Studio — " + document.getElementById("studioType").value,
+detail: `Date: ${document.getElementById("studioDate").value.trim()} — ${document.getElementById("studioNote").value.trim()}`,
+status: "En attente",
+date: new Date().toLocaleDateString("fr-FR")
+});
+e.target.reset();
+showToast("Réservation Studio envoyée !");
+saveState();
+});
+
+/* Artists Comments & Clickable Replies */
+function addArtistComment(e, artistId) {
+e.preventDefault();
+const user = getCurrentUser();
+if (!ensureNotBlocked(user)) return;
+const input = document.getElementById("commentInput_" + artistId);
+const text = input.value.trim();
+if (!text) return;
+
+const artist = state.artists.find(a => a.id === artistId);
+artist.comments.push({
+id: "c_" + Date.now(),
+author: user.username,
+text,
+replies: []
+});
+input.value = "";
+saveState();
+}
+
+function selectCommentToReply(artistId, commentId, authorName) {
+activeReplyTarget = { artistId, commentId };
+renderArtists();
+const replyInput = document.getElementById(`replyInput_${artistId}_${commentId}`);
+if (replyInput) replyInput.focus();
+showToast(`Réponse à @${authorName}`);
+}
+
+function addReplyToComment(e, artistId, commentId) {
+e.preventDefault();
+const user = getCurrentUser();
+if (!ensureNotBlocked(user)) return;
+const input = document.getElementById(`replyInput_${artistId}_${commentId}`);
+const text = input.value.trim();
+if (!text) return;
+
+const artist = state.artists.find(a => a.id === artistId);
+const comment = artist.comments.find(c => c.id === commentId);
+comment.replies.push({
+id: "r_" + Date.now(),
+author: state.isAdmin ? "PDG Chico Mofonga" : user.username,
+text
+});
+activeReplyTarget = null;
+saveState();
+}
+
+/* KYC */
+document.getElementById("kycForm").addEventListener("submit", (e) => {
+e.preventDefault();
+const user = getCurrentUser();
+if (!ensureNotBlocked(user)) return;
+user.kycDoc = document.getElementById("kycDoc").value.trim();
+user.kycStatus = "En attente de validation";
+document.getElementById("kycDoc").value = "";
+showToast("Pièce d'identité soumise.");
+saveState();
+});
+
+/* Admin Actions */
+document.getElementById("rateForm").addEventListener("submit", (e) => {
+e.preventDefault();
+state.rateUsdToFc = parseFloat(document.getElementById("adminRateInput").value);
+pushNotif(`💱 Nouveau taux CBK : 1 USD = ${state.rateUsdToFc} FC`);
+showToast("Taux USD/FC mis à jour.");
+saveState();
+});
+
+function processTx(txId, approve) {
+const tx = state.transactions.find(t => t.id === txId);
+if (!tx || tx.status !== "En attente") return;
+const sender = state.users.find(u => u.id === tx.userId);
+if (!sender) return;
+
+if (!approve) {
+tx.status = "Refusé";
+saveState();
+return showToast("Transaction refusée.");
+}
+
+if (tx.type === "depot") {
+if (tx.currency === "USD") sender.usd += tx.amount;
+else sender.fc += tx.amount;
+} else if (tx.type === "retrait") {
+const bal = tx.currency === "USD" ? sender.usd : sender.fc;
+if (bal < tx.amount) return showToast("Solde client insuffisant.");
+if (tx.currency === "USD") sender.usd -= tx.amount;
+else sender.fc -= tx.amount;
+} else if (tx.type === "transfert") {
+const bal = tx.currency === "USD" ? sender.usd : sender.fc;
+const receiver = state.users.find(u => u.username.toLowerCase() === tx.targetUsername.toLowerCase());
+if (bal < tx.amount) return showToast("Solde expéditeur insuffisant.");
+if (!receiver) return showToast("Destinataire introuvable.");
+if (tx.currency === "USD") { sender.usd -= tx.amount; receiver.usd += tx.amount; }
+else { sender.fc -= tx.amount; receiver.fc += tx.amount; }
+}
+
+tx.status = "Validé";
+showToast("Transaction validée !");
+saveState();
+}
+
+document.getElementById("adminBalanceForm").addEventListener("submit", (e) => {
+e.preventDefault();
+const user = state.users.find(u => u.id === document.getElementById("adminBalUser").value);
+const action = document.getElementById("adminBalAction").value;
+const currency = document.getElementById("adminBalCurrency").value;
+const amount = parseFloat(document.getElementById("adminBalAmount").value);
+if (!user) return;
+
+if (action === "add") {
+if (currency === "USD") user.usd += amount;
+else user.fc += amount;
+} else {
+if (currency === "USD") user.usd = Math.max(0, user.usd - amount);
+else user.fc = Math.max(0, user.fc - amount);
+}
+e.target.reset();
+showToast(`Solde ${currency} mis à jour pour @${user.username}`);
+saveState();
+});
+
+document.getElementById("adminPmForm").addEventListener("submit", (e) => {
+e.preventDefault();
+const toUserId = document.getElementById("adminPmUser").value;
+const text = document.getElementById("adminPmText").value.trim();
+const target = state.users.find(u => u.id === toUserId);
+state.privateMessages.unshift({
+id: "pm_" + Date.now(),
+toUserId,
+toUsername: target ? target.username : "",
+from: "PDG Chico Mofonga (Admin)",
+text,
+date: new Date().toLocaleString("fr-FR")
+});
+if (toUserId === state.currentUserId) {
+pushNotif(`✉️ Nouveau message privé de l'Admin : "${text}"`);
+}
+e.target.reset();
+showToast("Message privé envoyé !");
+saveState();
+});
+
+function verifyKyc(userId, status) {
+const u = state.users.find(x => x.id === userId);
+if (!u) return;
+u.kycStatus = status;
+showToast(`KYC @${u.username} : ${status}`);
+saveState();
+}
+
+function toggleBlockUser(userId) {
+const u = state.users.find(x => x.id === userId);
+if (!u) return;
+u.blocked = !u.blocked;
+showToast(u.blocked ? `@${u.username} bloqué.` : `@${u.username} débloqué.`);
+saveState();
+}
+
+function deleteUser(userId) {
+if (state.users.length <= 1) return showToast("Impossible de supprimer le dernier utilisateur.");
+state.users = state.users.filter(x => x.id !== userId);
+if (state.currentUserId === userId) state.currentUserId = state.users[0].id;
+showToast("Utilisateur supprimé.");
+saveState();
+}
+
+document.getElementById("adminProductForm").addEventListener("submit", (e) => {
+e.preventDefault();
+const prod = {
+id: "p_" + Date.now(),
+name: document.getElementById("prodName").value.trim(),
+price: parseFloat(document.getElementById("prodPrice").value),
+currency: document.getElementById("prodCurrency").value,
+badge: document.getElementById("prodBadge").value.trim() || "Vérifié CBK",
+img: document.getElementById("prodImg").value.trim(),
+desc: document.getElementById("prodDesc").value.trim(),
+likes: 0
+};
+state.products.unshift(prod);
+pushNotif(`🛒 Nouveau produit au Marché : ${prod.name} (${formatMoney(prod.price, prod.currency)})`);
+e.target.reset();
+showToast("Produit publié !");
+saveState();
+});
+
+function updateOrderStatus(orderId, status) {
+const ord = state.orders.find(o => o.id === orderId);
+if (!ord) return;
+ord.status = status;
+showToast("Statut commande mis à jour.");
+saveState();
+}
+
+document.getElementById("adminArtistForm").addEventListener("submit", (e) => {
+e.preventDefault();
+const art = {
+id: "art_" + Date.now(),
+name: document.getElementById("artName").value.trim(),
+genre: document.getElementById("artGenre").value.trim(),
+img: document.getElementById("artImg").value.trim(),
+comments: []
+};
+state.artists.unshift(art);
+pushNotif(`🎤 Nouvel artiste publié : ${art.name}`);
+e.target.reset();
+showToast("Artiste publié !");
+saveState();
+});
+
+document.getElementById("adminActiveUsersForm").addEventListener("submit", (e) => {
+e.preventDefault();
+const list = document.getElementById("activeUsersInput").value
+.split(",")
+.map(s => s.trim().replace(/^@/, ""))
+.filter(Boolean);
+state.activeUsersMonth = list;
+pushNotif(`🏆 Utilisateurs actifs du mois mis à jour !`);
+e.target.reset();
+showToast("Liste des actifs du mois publiée !");
+saveState();
+});
+
+function deleteDonation(donId) {
+state.donations = state.donations.filter(d => d.id !== donId);
+saveState();
+}
+
+function updateServiceStatus(srvId, status) {
+const srv = state.serviceRequests.find(s => s.id === srvId);
+if (!srv) return;
+srv.status = status;
+saveState();
+}
+
+/* Notifications & Backup */
+function renderNotifs() {
+const box = document.getElementById("notifList");
+if (!state.notifications.length) {
+box.innerHTML = `<p class="muted small">Aucune notification.</p>`;
+return;
+}
+box.innerHTML = state.notifications.map(n => `
+<div class="list-box" style="${n.read ? 'opacity:0.65;' : ''}">
+<div class="small"><strong>${n.text}</strong></div>
+<div class="muted small">${n.date}</div>
+</div>
+`).join("");
+}
+
+function markAllNotifsRead() {
+state.notifications.forEach(n => n.read = true);
+saveState();
+renderNotifs();
+}
+
+function exportBackup() {
+const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+const url = URL.createObjectURL(blob);
+const a = document.createElement("a");
+a.href = url;
+a.download = "cbk-kinshasa-sauvegarde.json";
+a.click();
+URL.revokeObjectURL(url);
+showToast("Sauvegarde JSON exportée.");
+}
+
+function importBackup(event) {
+const file = event.target.files[0];
+if (!file) return;
+const reader = new FileReader();
+reader.onload = () => {
+try {
+state = { ...structuredClone(DEFAULT_STATE), ...JSON.parse(reader.result) };
+saveState();
+showToast("Sauvegarde importée.");
+} catch (err) {
+showToast("Fichier JSON invalide.");
+}
+};
+reader.readAsText(file);
+}
+
+function resetDemoData() {
+state = structuredClone(DEFAULT_STATE);
+state.isAdmin = true;
+saveState();
+showToast("Données réinitialisées.");
+}
+
+/* Render All */
+function renderAll() {
+const user = getCurrentUser();
+const unreadCount = state.notifications.filter(n => !n.read).length;
+
+document.getElementById("headerSessionInfo").textContent =
+`@${user.username} • Taux 1$ = ${state.rateUsdToFc} FC`;
+document.getElementById("notifCount").textContent = unreadCount;
+document.getElementById("btnAdminToggle").textContent = state.isAdmin ? "Admin ACTIF" : "Admin";
+document.getElementById("adminNavItem").style.display = state.isAdmin ? "flex" : "none";
+document.getElementById("exchangeRateBadge").textContent = `1 USD = ${state.rateUsdToFc} FC`;
+
+// Wallet
+document.getElementById("balUsd").textContent = formatMoney(user.usd, "USD");
+document.getElementById("balFc").textContent = formatMoney(user.fc, "FC");
+document.getElementById("walletAccountStatus").innerHTML = user.blocked
+? `<span class="status-bad">Compte BLOQUÉ par l'administration.</span>`
+: `Compte <strong>@${user.username}</strong> • KYC : <span class="${user.kycStatus === 'Vérifié' ? 'status-ok' : 'status-pending'}">${user.kycStatus}</span>`;
+
+// Donations
+document.getElementById("donorsList").innerHTML = state.donations.length
+? state.donations.map(d => `
+<div class="list-box">
+<strong>${d.donorName}</strong> <span class="badge">${formatMoney(d.amount, d.currency)}</span> <span>${d.message || ""}</span>
+<div class="muted small">${d.date} • ${d.method}</div>
+</div>
+`).join("")
+: `<p class="muted small">Aucun don enregistré pour le moment.</p>`;
+
+// Private Messages
+const myPms = state.privateMessages.filter(pm => pm.toUserId === user.id);
+document.getElementById("clientPrivateMessages").innerHTML = myPms.length
+? myPms.map(pm => `
+<div class="list-box" style="border-color:rgba(210,248,1,0.4);">
+<div class="small"><strong>${pm.from}</strong> • <span class="muted">${pm.date}</span></div>
+<div style="margin-top:4px;">${pm.text}</div>
+</div>
+`).join("")
+: `<p class="muted small">Aucun message privé reçu.</p>`;
+
+// My Transactions
+const myTxs = state.transactions.filter(t => t.userId === user.id);
+document.getElementById("myTransactionsList").innerHTML = myTxs.length
+? myTxs.map(t => {
+const cls = t.status === "Validé" ? "status-ok" : t.status === "Refusé" ? "status-bad" : "status-pending";
+return `
+<div class="list-box">
+<div class="row-between">
+<strong>${t.type.toUpperCase()} — ${formatMoney(t.amount, t.currency)}</strong>
+<span class="${cls}">${t.status}</span>
+</div>
+<div class="muted small">${t.method} ${t.targetUsername ? "→ @" + t.targetUsername : ""} • ${t.date}</div>
+</div>
+`;
+}).join("")
+: `<p class="muted small">Aucune transaction enregistrée.</p>`;
+
+// Market
+document.getElementById("marketList").innerHTML = state.products.length
+? state.products.map(p => `
+<div class="card" style="margin-bottom:0;">
+${p.img ? `<img class="media-preview" src="${p.img}" alt="${p.name}" />` : ""}
+<div class="row-between">
+<div>
+<span class="badge">${p.badge}</span>
+<h4 style="font-size:1rem; margin-top:4px;">${p.name}</h4>
+</div>
+<div style="font-weight:900; color:var(--lime); font-size:1.05rem;">${formatMoney(p.price, p.currency)}</div>
+</div>
+<p class="muted small" style="margin-top:6px;">${p.desc || ""}</p>
+<div class="row-gap" style="margin-top:10px;">
+<button type="button" class="btn btn-sm btn-lime" onclick="orderProduct('${p.id}')">Commander</button>
+<button type="button" class="btn btn-sm" onclick="likeProduct('${p.id}')">👍 Aimer (${p.likes || 0})</button>
+<button type="button" class="btn btn-sm" onclick='shareProduct(${JSON.stringify(p).replace(/'/g, "&apos;")})'>🔗 Partager</button>
+</div>
+</div>
+`).join("")
+: `<div class="card"><p class="muted small">Aucun produit publié pour le moment.</p></div>`;
+
+const myOrders = state.orders.filter(o => o.userId === user.id);
+document.getElementById("myOrdersList").innerHTML = myOrders.length
+? myOrders.map(o => `
+<div class="list-box">
+<div class="row-between">
+<strong>${o.productName}</strong>
+<span class="status-pending">${o.status}</span>
+</div>
+<div class="muted small">${formatMoney(o.price, o.currency)} • ${o.date}</div>
+</div>
+`).join("")
+: `<p class="muted small">Aucune commande passée.</p>`;
+
+// Service Requests
+const mySrvs = state.serviceRequests.filter(s => s.userId === user.id);
+document.getElementById("myServiceRequests").innerHTML = mySrvs.length
+? mySrvs.map(s => `
+<div class="list-box">
+<div class="row-between">
+<strong>${s.service}</strong>
+<span class="status-pending">${s.status}</span>
+</div>
+<div class="muted small">${s.detail} • ${s.date}</div>
+</div>
+`).join("")
+: `<p class="muted small">Aucune demande envoyée.</p>`;
+
+// Active Users Month
+document.getElementById("activeUsersList").innerHTML = state.activeUsersMonth.length
+? state.activeUsersMonth.map((u, idx) => `<span class="badge">#${idx + 1} @${u}</span>`).join("")
+: `<p class="muted small">Aucun utilisateur actif publié pour le moment.</p>`;
+
+// Artists
+renderArtists();
+
+// Account Box
+document.getElementById("accountProfileBox").innerHTML = `
+<div><strong>Nom complet :</strong> ${user.fullName}</div>
+<div class="small"><strong>Pseudo :</strong> @${user.username}</div>
+<div class="small muted">Téléphone : ${user.phone} ${user.email ? "• " + user.email : ""}</div>
+<div class="small" style="margin-top:4px;">Statut KYC : <strong>${user.kycStatus}</strong> ${user.kycDoc ? "(" + user.kycDoc + ")" : ""}</div>
+<div class="small">Statut compte : <strong class="${user.blocked ? 'status-bad' : 'status-ok'}">${user.blocked ? "Bloqué" : "Actif"}</strong></div>
+`;
+
+if (state.isAdmin) renderAdmin();
+}
+
+function renderArtists() {
+const box = document.getElementById("artistsList");
+if (!state.artists.length) {
+box.innerHTML = `<div class="card"><p class="muted small">Aucun artiste publié pour le moment.</p></div>`;
+return;
+}
+box.innerHTML = state.artists.map(art => `
+<div class="card" style="margin-bottom:0;">
+${art.img ? `<img class="media-preview" src="${art.img}" alt="${art.name}" />` : ""}
+<div class="row-between">
+<div>
+<h4 style="font-size:1rem;">${art.name}</h4>
+<div class="muted small">${art.genre}</div>
+</div>
+<span class="badge">ARTISTE CBK</span>
+</div>
+
+<form onsubmit="addArtistComment(event, '${art.id}')" style="margin-top:10px;">
+<div class="row-gap">
+<input id="commentInput_${art.id}" type="text" placeholder="Écrire un commentaire..." style="margin:0; flex:1;" required />
+<button type="submit" class="btn btn-sm btn-lime">Commenter</button>
+</div>
+</form>
+
+<div style="margin-top:8px;">
+${art.comments.map(c => {
+const isReplyingHere = activeReplyTarget && activeReplyTarget.artistId === art.id && activeReplyTarget.commentId === c.id;
+return `
+<div class="comment-item" onclick="selectCommentToReply('${art.id}', '${c.id}', '${c.author}')">
+<div class="row-between">
+<strong class="small">@${c.author}</strong>
+<span class="muted small">Cliquer pour répondre</span>
+</div>
+<div class="small" style="margin-top:3px;">${c.text}</div>
+
+${(c.replies && c.replies.length) ? `
+<div class="reply-list">
+${c.replies.map(r => `
+<div class="small" style="margin-bottom:4px;">
+<strong style="color:var(--lime);">${r.author} :</strong> ${r.text}
+</div>
+`).join("")}
+</div>
+` : ""}
+
+${isReplyingHere ? `
+<form onclick="event.stopPropagation()" onsubmit="addReplyToComment(event, '${art.id}', '${c.id}')" style="margin-top:8px;">
+<div class="row-gap">
+<input id="replyInput_${art.id}_${c.id}" type="text" placeholder="Répondre à @${c.author}..." style="margin:0; flex:1;" required />
+<button type="submit" class="btn btn-sm btn-lime">Répondre</button>
+</div>
+</form>
+` : ""}
+</div>
+`;
+}).join("")}
+</div>
+</div>
+`).join("");
+}
+
+function renderAdmin() {
+document.getElementById("adminRateInput").value = state.rateUsdToFc;
+
+const userOptions = state.users.map(u => `<option value="${u.id}">@${u.username} (${formatMoney(u.usd, "USD")} | ${formatMoney(u.fc, "FC")})</option>`).join("");
+document.getElementById("adminBalUser").innerHTML = userOptions;
+document.getElementById("adminPmUser").innerHTML = userOptions;
+
+document.getElementById("adminTxList").innerHTML = state.transactions.length
+? state.transactions.map(t => `
+<div class="list-box">
+<div class="row-between">
+<div>
+<strong>@${t.username}</strong> • ${t.type.toUpperCase()} <strong>${formatMoney(t.amount, t.currency)}</strong>
+<div class="muted small">${t.method} ${t.targetUsername ? "→ @" + t.targetUsername : ""} ${t.ref ? "• Réf: " + t.ref : ""}</div>
+</div>
+<div class="row-gap">
+${t.status === "En attente"
+? `<button type="button" class="btn btn-sm btn-lime" onclick="processTx('${t.id}', true)">Valider</button>
+<button type="button" class="btn btn-sm btn-danger" onclick="processTx('${t.id}', false)">Refuser</button>`
+: `<span class="${t.status === 'Validé' ? 'status-ok' : 'status-bad'}">${t.status}</span>`}
+</div>
+</div>
+</div>
+`).join("")
+: `<p class="muted small">Aucune transaction.</p>`;
+
+document.getElementById("adminUsersList").innerHTML = state.users.map(u => `
+<div class="list-box">
+<div class="row-between">
+<div>
+<strong>@${u.username}</strong> (${u.fullName}) • <span class="badge">${formatMoney(u.usd, "USD")}</span> <span class="badge">${formatMoney(u.fc, "FC")}</span>
+<div class="muted small">KYC: <strong>${u.kycStatus}</strong> ${u.kycDoc ? "• Doc: " + u.kycDoc : ""} • ${u.blocked ? "<span class='status-bad'>BLOQUÉ</span>" : "<span class='status-ok'>ACTIF</span>"}</div>
+</div>
+<div class="row-gap">
+<button type="button" class="btn btn-sm btn-lime" onclick="verifyKyc('${u.id}', 'Vérifié')">Valider KYC</button>
+<button type="button" class="btn btn-sm" onclick="toggleBlockUser('${u.id}')">${u.blocked ? "Débloquer" : "Bloquer"}</button>
+<button type="button" class="btn btn-sm btn-danger" onclick="deleteUser('${u.id}')">Supprimer</button>
+</div>
+</div>
+</div>
+`).join("");
+
+document.getElementById("adminOrdersList").innerHTML = state.orders.length
+? state.orders.map(o => `
+<div class="list-box">
+<div class="row-between">
+<div><strong>@${o.username}</strong> — ${o.productName} (${formatMoney(o.price, o.currency)})</div>
+<select style="width:auto; margin:0;" onchange="updateOrderStatus('${o.id}', this.value)">
+<option ${o.status === "En attente" ? "selected" : ""}>En attente</option>
+<option ${o.status === "Confirmée" ? "selected" : ""}>Confirmée</option>
+<option ${o.status === "En livraison" ? "selected" : ""}>En livraison</option>
+<option ${o.status === "Livré" ? "selected" : ""}>Livré</option>
+</select>
+</div>
+</div>
+`).join("")
+: `<p class="muted small">Aucune commande client.</p>`;
+
+document.getElementById("adminDonationsList").innerHTML = state.donations.length
+? state.donations.map(d => `
+<div class="list-box">
+<div class="row-between">
+<div><strong>${d.donorName}</strong> — ${formatMoney(d.amount, d.currency)} — ${d.message || ""}</div>
+<button type="button" class="btn btn-sm btn-danger" onclick="deleteDonation('${d.id}')">Retirer</button>
+</div>
+</div>
+`).join("")
+: `<p class="muted small">Aucun don.</p>`;
+
+document.getElementById("adminServicesList").innerHTML = state.serviceRequests.length
+? state.serviceRequests.map(s => `
+<div class="list-box">
+<div class="row-between">
+<div><strong>@${s.username}</strong> • ${s.service}<div class="muted small">${s.detail}</div></div>
+<select style="width:auto; margin:0;" onchange="updateServiceStatus('${s.id}', this.value)">
+<option ${s.status === "En attente" ? "selected" : ""}>En attente</option>
+<option ${s.status === "En cours" ? "selected" : ""}>En cours</option>
+<option ${s.status === "Terminé" ? "selected" : ""}>Terminé</option>
+</select>
+</div>
+</div>
+`).join("")
+: `<p class="muted small">Aucune demande Passeport ou Studio.</p>`;
+}
+
+switchView(state.activeView || "home");
+renderAll();
+</script>
 </body>
 </html>
