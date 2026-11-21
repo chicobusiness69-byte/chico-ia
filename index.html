@@ -2606,7 +2606,7 @@ async function pullCloud(){
       const cloud = j[0].data;
       const cloudTime = parseInt(cloud["sb-sync-time"] || "0");
       const localTime = parseInt(localStorage.getItem("sb-sync-time") || "0");
-      if(cloudTime > localTime){
+      if(true){
         let changed = false;
         for(let k in cloud){
           if(localStorage.getItem(k) !== cloud[k]){
@@ -2623,7 +2623,7 @@ async function pullCloud(){
 
 window.addEventListener("beforeunload", pushCloud);
 setInterval(pullCloud, 10000);
-setInterval(pushCloud, 15000);
+//setInterval(pushCloud, 15000);
 pullCloud();
   renderAll();
 </script>
