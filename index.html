@@ -2568,8 +2568,59 @@ document.getElementById("adminServicesList").innerHTML = state.serviceRequests.l
 
 switchView(state.activeView || "home");
 renderAll();
+<script>
 const SUPABASE_URL = "https://sluyxkduglypjvgunxxm.supabase.co";
 const SUPABASE_KEY = "sb_publishable_ku3bD0z7vYTU4lw8Z3b8RQ_FQ_AfsFD";
+const HEADERS = { "apikey": SUPABASE_KEY, "Authorization": "Bearer " + SUPABASE_KEY, "Content-Type": "application/json", "Prefer": "return=representation" };
+let syncing = false;
+let lastPush = 0;
+
+async function pushToCloud(){
+  if(syncing) return;
+  const now = Date.now();
+  if(now - lastPush < 1000) return;
+  lastPush = now;
+  try{
+    const all = {};
+    for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); try{ all[k]=localStorage.getItem(k); }catch(e){} }
+    // 1. Vérifier si ligne existe
+    const check = await fetch(SUPABASE_URL + "/rest/v1/app_settings?id=eq.1&select=id", {headers: HEADERS});
+    const rows = await check.json();
+    if(rows && rows.length>0){
+      await fetch(SUPABASE_URL + "/rest/v1/app_settings?id=eq.1", {method:"PATCH", headers: HEADERS, body: JSON.stringify({data: all})});
+    } else {
+      await fetch(SUPABASE_URL + "/rest/v1/app_settings", {method:"POST", headers: HEADERS, body: JSON.stringify({id:1, data: all})});
+    }
+    console.log("✅ Sync push OK");
+  }catch(e){ console.log("Sync push err", e); }
+}
+
+async function pullFromCloud(){
+  if(syncing) return; syncing = true;
+  try{
+    const res = await fetch(SUPABASE_URL + "/rest/v1/app_settings?id=eq.1&select=data", {headers: HEADERS});
+    const rows = await res.json();
+    if(rows && rows[0] && rows[0].data){
+      const cloud = rows[0].data;
+      let changed = false;
+      for(const k in cloud){ if(localStorage.getItem(k) !== cloud[k]){ localStorage.setItem(k, cloud[k]); changed = true; } }
+      if(changed){ console.log("✅ Données reçues du cloud, rechargement"); location.reload(); }
+    }
+  }catch(e){ console.log("Sync pull err", e); }
+  syncing = false;
+}
+
+// Intercepter chaque sauvegarde locale
+const _setItem = localStorage.setItem.bind(localStorage);
+localStorage.setItem = function(k,v){ _setItem(k,v); setTimeout(pushToCloud, 500); };
+const _removeItem = localStorage.removeItem.bind(localStorage);
+localStorage.removeItem = function(k){ _removeItem(k); setTimeout(pushToCloud, 500); };
+
+// Au démarrage : récupérer puis pousser
+pullFromCloud().then(()=>{ setTimeout(pushToCloud, 1500); });
+
+// Vérifier toutes les 3 secondes si l'autre appareil a changé quelque chose
+setInterval(pullFromCloud, 3000);
 </script>
 </body>
 </html>
