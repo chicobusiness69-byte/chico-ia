@@ -2567,7 +2567,65 @@ document.getElementById("adminServicesList").innerHTML = state.serviceRequests.l
 }
 
 switchView(state.activeView || "home");
-renderAll();
+// === SYNC BON CODE ===
+const SB_URL = "https://sluyxkduglypjvgunxxm.supabase.co";
+const SB_KEY = "sb_publishable_ku3bD0z7vYTU4lw8Z3b8RQ_FQ_AfsFD";
+const SB_H = {"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY,"Content-Type":"application/json","Prefer":"return=minimal"};
+let SYNC_BUSY = false;
+let LAST_PUSH = 0;
+
+async function pushCloud(){
+  if(SYNC_BUSY) return;
+  if(Date.now() - LAST_PUSH < 5000) return;
+  try{
+    SYNC_BUSY = true;
+    const all = {};
+    for(let i=0;i<localStorage.length;i++){
+      let k = localStorage.key(i);
+      if(k === "sb-sync-time") continue;
+      all[k] = localStorage.getItem(k);
+    }
+    all["sb-sync-time"] = Date.now().toString();
+    await fetch(SB_URL + "/rest/v1/app_settings?id=eq.1", {
+      method: "PATCH",
+      headers: SB_H,
+      body: JSON.stringify({data: all})
+    });
+    LAST_PUSH = Date.now();
+  }catch(e){}
+  SYNC_BUSY = false;
+}
+
+async function pullCloud(){
+  if(SYNC_BUSY) return;
+  try{
+    SYNC_BUSY = true;
+    const r = await fetch(SB_URL + "/rest/v1/app_settings?id=eq.1&select=data", {headers: SB_H});
+    const j = await r.json();
+    if(j && j[0] && j[0].data){
+      const cloud = j[0].data;
+      const cloudTime = parseInt(cloud["sb-sync-time"] || "0");
+      const localTime = parseInt(localStorage.getItem("sb-sync-time") || "0");
+      if(cloudTime > localTime){
+        let changed = false;
+        for(let k in cloud){
+          if(localStorage.getItem(k) !== cloud[k]){
+            localStorage.setItem(k, cloud[k]);
+            changed = true;
+          }
+        }
+        if(changed) renderAll();
+      }
+    }
+  }catch(e){}
+  SYNC_BUSY = false;
+}
+
+window.addEventListener("beforeunload", pushCloud);
+setInterval(pullCloud, 10000);
+setInterval(pushCloud, 15000);
+pullCloud();
+  renderAll();
 </script>
 </body>
 </html>
