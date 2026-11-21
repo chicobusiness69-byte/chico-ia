@@ -166,7 +166,11 @@ min-height: 100vh;
 .main-content { flex: 1; min-width: 0; padding: 18px 16px 104px; }
 .page-container { max-width: 980px; margin: 0 auto; }
 .view { display: none; }
-.view.active { display: block; }
+.view.active { display: block; animation: cbkFadeIn 0.2s ease; }
+@keyframes cbkFadeIn {
+from { opacity: 0; transform: translateY(4px); }
+to { opacity: 1; transform: translateY(0); }
+}
 
 /* Hero Banner */
 .hero-banner {
@@ -434,18 +438,17 @@ box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
 <!-- Top Bar -->
 <header class="topbar">
 <div class="brand-box" id="brandDoubleClickArea" title="Double-cliquez pour le mode PDG / Admin">
-<button type="button" class="icon-btn menu-toggle-btn" onclick="event.stopPropagation(); toggleDrawer()" aria-label="Menu">☰</button>
+<button type="button" class="icon-btn menu-toggle-btn" id="mobileMenuBtn" onclick="event.stopPropagation(); toggleDrawer()" aria-label="Menu">☰</button>
 <img id="headerLogoImg" class="brand-logo-img" style="display:none;" alt="Logo CBK" />
 <div id="headerLogoText" class="logo-badge">CBK</div>
 <div>
 <div class="brand-title" id="appBrandTitle">CBK Chico Business</div>
-<!-- Taux en $ visible sur téléphone et sur ordinateur -->
-<div id="headerSessionInfo" class="brand-sub">Taux 1$ = 2800 FC • Kinshasa</div>
+<div id="headerSessionInfo" class="brand-sub">Connexion requise • Kinshasa</div>
 </div>
 </div>
 
-<!-- Sur PC : raccourci rapide Notifications -->
-<div class="top-actions desktop-only-actions">
+<!-- Sur PC : raccourci rapide Notifications (visible une fois connecté) -->
+<div class="top-actions desktop-only-actions" id="desktopTopActions">
 <button type="button" id="btnNotifDesktop" class="icon-btn" title="Notifications">🔔 <span id="notifCountDesktop">0</span></button>
 </div>
 </header>
@@ -458,11 +461,11 @@ box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
 <img id="sidebarLogoImg" class="brand-logo-img" style="display:none;" alt="Logo CBK" />
 <div>
 <div style="font-weight:900; font-size:1rem;">CBK Chico Business</div>
-<div id="sidebarUserLabel" class="muted small">@client_cbk • Kinshasa</div>
+<div id="sidebarUserLabel" class="muted small">Invité • Kinshasa</div>
 </div>
 </div>
 
-<div class="nav-list">
+<div class="nav-list" id="sidebarNavList">
 <button type="button" class="nav-item active" data-view="home"><span>🏠 1. Accueil</span></button>
 <button type="button" class="nav-item" data-view="account"><span>👤 2. Créer un compte / Connexion</span></button>
 <button type="button" class="nav-item" data-view="services"><span>🛠️ 3. Mes Services</span></button>
@@ -493,7 +496,7 @@ box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
 <div class="page-container">
 
 <!-- 1. ACCUEIL -->
-<section id="view-home" class="view active">
+<section id="view-home" class="view">
 <div class="hero-banner">
 <div class="row-between" style="margin-bottom:8px;">
 <span class="hero-kicker">KINSHASA • RDC</span>
@@ -506,7 +509,7 @@ box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
 Plateforme centralisée de <strong>Chico Business Production</strong> : création de compte, portefeuille double devise USD/FC, dons, assistance passeport, studio vidéo/photo/audio, marché et communauté artistique.
 </p>
 <div class="row-gap" style="margin-top:14px;">
-<button type="button" class="btn btn-lime" onclick="switchView('account')">Créer un compte / Connexion</button>
+<button type="button" class="btn btn-lime" onclick="switchView('account')">Gérer mon compte</button>
 <button type="button" class="btn" onclick="switchView('services')">Mes Services</button>
 <button type="button" class="btn" onclick="switchView('payments')">Paiements & Dons</button>
 </div>
@@ -543,11 +546,16 @@ Accompagnement business, production studio, démarches et services rapides à Ki
 </div>
 </section>
 
-<!-- 2. CRÉER UN COMPTE / CONNEXION & KYC -->
-<section id="view-account" class="view">
+<!-- 2. CRÉER UN COMPTE / CONNEXION & GESTION PROFIL -->
+<section id="view-account" class="view active">
 <div class="page-header">
+<div class="row-between">
+<div>
 <h1 class="page-title">Créer un compte / Connexion</h1>
-<p class="page-desc">Inscription avec photo de profil, connexion, raccourcis portefeuille et vérification KYC.</p>
+<p class="page-desc">Connectez-vous ou créez votre compte pour accéder à l'application CBK et gérer votre profil.</p>
+</div>
+<a class="btn btn-sm btn-lime link-btn" href="https://wa.me/message/2DFDG7JRKVQQL1" target="_blank" rel="noopener">💬 Support WhatsApp</a>
+</div>
 </div>
 
 <div class="grid-2">
@@ -570,26 +578,64 @@ Accompagnement business, production studio, démarches et services rapides à Ki
 <input id="regAvatarFile" type="file" accept="image/*" />
 <label>Mot de passe / Code personnel</label>
 <input id="regPassword" type="password" placeholder="Choisissez un code" required />
-<button type="submit" class="btn btn-lime" style="width:100%;">Créer mon compte</button>
+<button type="submit" class="btn btn-lime" style="width:100%;">Créer mon compte et entrer</button>
 </form>
 </div>
 
 <div>
 <div class="card">
-<h3 class="section-title">🔑 Connexion & Compte actif</h3>
+<h3 class="section-title">🔑 Connexion à mon compte</h3>
+<form id="loginSwitchForm">
+<label>Nom d'utilisateur</label>
+<input id="loginUsername" type="text" placeholder="Nom d'utilisateur" required />
+<label>Code / Mot de passe (si défini)</label>
+<input id="loginPassword" type="password" placeholder="Votre code personnel" />
+<button type="submit" class="btn btn-lime" style="width:100%;">Se connecter</button>
+</form>
+<div class="row-gap" style="margin-top:12px;">
+<a class="btn btn-sm link-btn" style="flex:1;" href="https://wa.me/message/2DFDG7JRKVQQL1" target="_blank" rel="noopener">💬 Contacter l'équipe sur WhatsApp</a>
+</div>
+</div>
+
+<div id="authenticatedAccountPanel" style="display:none;">
+<div class="card card-lime">
+<h3 class="section-title">👤 Mon Profil & Gestion du Compte</h3>
 <div id="accountProfileBox"></div>
 <div class="row-gap" style="margin-top:10px;">
-<button type="button" class="btn btn-sm btn-lime" onclick="switchView('payments')">💼 Mon Portefeuille & Dons</button>
+<button type="button" class="btn btn-sm btn-lime" onclick="switchView('home')">🏠 Aller à l'Accueil</button>
+<button type="button" class="btn btn-sm" onclick="switchView('payments')">💼 Mon Portefeuille</button>
 <label class="btn btn-sm" style="margin:0;">
 📷 Changer photo profil <input type="file" accept="image/*" style="display:none;" onchange="updateCurrentUserAvatar(event)" />
 </label>
 </div>
-<form id="loginSwitchForm" style="margin-top:12px;">
-<label>Connexion par nom d'utilisateur</label>
-<div class="row-gap">
-<input id="loginUsername" type="text" placeholder="Nom d'utilisateur" style="margin:0; flex:1;" required />
-<button type="submit" class="btn btn-sm btn-lime">Connexion</button>
+
+<form id="editProfileForm" style="margin-top:14px; border-top:1px solid var(--border); padding-top:12px;">
+<div class="small" style="margin-bottom:8px;"><strong style="color:var(--lime);">✏️ Modifier mes informations personnelles</strong></div>
+<div class="grid-2">
+<div>
+<label>Nom</label>
+<input id="editNom" type="text" required />
 </div>
+<div>
+<label>Post-nom</label>
+<input id="editPostNom" type="text" />
+</div>
+</div>
+<div class="grid-2">
+<div>
+<label>Prénom</label>
+<input id="editPrenom" type="text" required />
+</div>
+<div>
+<label>Téléphone</label>
+<input id="editPhone" type="text" required />
+</div>
+</div>
+<label>E-mail</label>
+<input id="editEmail" type="email" placeholder="exemple@email.com" />
+<label>Nouveau code / mot de passe (optionnel)</label>
+<input id="editPassword" type="password" placeholder="Laisser vide pour garder l'actuel" />
+<button type="submit" class="btn btn-sm btn-lime">Enregistrer mes modifications</button>
 </form>
 </div>
 
@@ -600,6 +646,7 @@ Accompagnement business, production studio, démarches et services rapides à Ki
 <input id="kycDoc" type="text" placeholder="Ex: Carte d'électeur / Passeport" required />
 <button type="submit" class="btn btn-sm btn-lime">Soumettre ma pièce KYC</button>
 </form>
+</div>
 </div>
 </div>
 </div>
@@ -677,41 +724,26 @@ Accompagnement business, production studio, démarches et services rapides à Ki
 <img id="payBannerImg" class="media-preview" style="display:none;" alt="Paiements CBK" />
 <h3 class="section-title">📱 Modes de paiement disponibles</h3>
 <p class="muted small" style="margin-bottom:10px;">
-Copiez facilement nos numéros officiels à Kinshasa ou ajoutez le logo de chaque méthode :
+Copiez facilement nos numéros officiels à Kinshasa :
 </p>
 <div class="grid-3">
 <div class="pay-card">
 <img id="payLogoAirtel" class="pay-logo-img" style="display:none;" alt="Logo Airtel Money" />
 <div class="pay-tag">Airtel Money</div>
 <div style="font-weight:900; font-size:1rem; margin-bottom:8px;">0983 995 019</div>
-<div class="row-gap" style="justify-content:center;">
-<button type="button" class="btn btn-sm" onclick="copyText('0983 995 019', 'Numéro Airtel Money copié !')">📋 Copier</button>
-<label class="btn btn-sm btn-lime" style="margin:0;">
-🖼️ Logo <input type="file" accept="image/*" style="display:none;" onchange="updatePaymentLogo('airtel', event)" />
-</label>
-</div>
+<button type="button" class="btn btn-sm" onclick="copyText('0983 995 019', 'Numéro Airtel Money copié !')">📋 Copier le numéro</button>
 </div>
 <div class="pay-card">
 <img id="payLogoOrange" class="pay-logo-img" style="display:none;" alt="Logo Orange Money" />
 <div class="pay-tag">Orange Money</div>
 <div style="font-weight:900; font-size:1rem; margin-bottom:8px;">0859312214</div>
-<div class="row-gap" style="justify-content:center;">
-<button type="button" class="btn btn-sm" onclick="copyText('0859312214', 'Numéro Orange Money copié !')">📋 Copier</button>
-<label class="btn btn-sm btn-lime" style="margin:0;">
-🖼️ Logo <input type="file" accept="image/*" style="display:none;" onchange="updatePaymentLogo('orange', event)" />
-</label>
-</div>
+<button type="button" class="btn btn-sm" onclick="copyText('0859312214', 'Numéro Orange Money copié !')">📋 Copier le numéro</button>
 </div>
 <div class="pay-card">
 <img id="payLogoMpesa" class="pay-logo-img" style="display:none;" alt="Logo M-Pesa" />
 <div class="pay-tag">M-Pesa</div>
 <div style="font-weight:900; font-size:1rem; margin-bottom:8px;">0815897990</div>
-<div class="row-gap" style="justify-content:center;">
-<button type="button" class="btn btn-sm" onclick="copyText('0815897990', 'Numéro M-Pesa copié !')">📋 Copier</button>
-<label class="btn btn-sm btn-lime" style="margin:0;">
-🖼️ Logo <input type="file" accept="image/*" style="display:none;" onchange="updatePaymentLogo('mpesa', event)" />
-</label>
-</div>
+<button type="button" class="btn btn-sm" onclick="copyText('0815897990', 'Numéro M-Pesa copié !')">📋 Copier le numéro</button>
 </div>
 </div>
 </div>
@@ -920,7 +952,7 @@ Posez vos questions pour obtenir des <strong>idées de business</strong> adapté
 <div class="small" style="display:grid; gap:12px;">
 <div>
 <strong>Comment créer un compte ou me connecter ?</strong>
-<p class="muted">Ouvrez « Créer un compte / Connexion » dans le menu pour inscrire un nouveau compte avec photo de profil ou vous connecter.</p>
+<p class="muted">Ouvrez « Créer un compte / Connexion » pour inscrire un nouveau compte avec photo de profil ou vous connecter.</p>
 </div>
 <div>
 <strong>Quels sont les numéros de paiement officiels ?</strong>
@@ -948,7 +980,7 @@ Posez vos questions pour obtenir des <strong>idées de business</strong> adapté
 <div class="row-between">
 <div>
 <h1 class="page-title">⚡ Espace PDG / Admin</h1>
-<p class="page-desc">Gestion du logo CBK, photos des sections, publications du PDG, taux USD/FC, abonnés, soldes, validations et messages privés.</p>
+<p class="page-desc" id="adminSyncStatusLabel">Gestion du logo CBK, logos paiements, photos, publications du PDG, taux USD/FC, abonnés et validations.</p>
 </div>
 <button type="button" class="btn btn-sm btn-danger" onclick="logoutAdmin()">Quitter Admin</button>
 </div>
@@ -981,6 +1013,40 @@ Importer JSON <input type="file" accept=".json" style="display:none;" onchange="
 <textarea id="annBodyInput" rows="2" placeholder="Votre publication du PDG..."></textarea>
 <button type="submit" class="btn btn-sm btn-lime">Publier en temps réel</button>
 </form>
+</div>
+</div>
+
+<!-- Logos des Moyens de Paiement (Exclusivement dans l'Espace Admin) -->
+<div class="card card-lime">
+<h3 class="section-title">💳 Logos des Moyens de Paiement (Admin)</h3>
+<p class="muted small" style="margin-bottom:10px;">
+Ajoutez ou modifiez le logo de chaque moyen de paiement ici (affiché côté client sur la page Paiements).
+</p>
+<div class="grid-3">
+<div class="pay-card">
+<img id="adminPayLogoAirtel" class="pay-logo-img" style="display:none;" alt="Logo Airtel Money" />
+<div class="pay-tag">Airtel Money</div>
+<div class="small muted" style="margin-bottom:8px;">0983 995 019</div>
+<label class="btn btn-sm btn-lime" style="width:100%; margin:0;">
+🖼️ Ajouter logo Airtel <input type="file" accept="image/*" style="display:none;" onchange="updatePaymentLogo('airtel', event)" />
+</label>
+</div>
+<div class="pay-card">
+<img id="adminPayLogoOrange" class="pay-logo-img" style="display:none;" alt="Logo Orange Money" />
+<div class="pay-tag">Orange Money</div>
+<div class="small muted" style="margin-bottom:8px;">0859312214</div>
+<label class="btn btn-sm btn-lime" style="width:100%; margin:0;">
+🖼️ Ajouter logo Orange <input type="file" accept="image/*" style="display:none;" onchange="updatePaymentLogo('orange', event)" />
+</label>
+</div>
+<div class="pay-card">
+<img id="adminPayLogoMpesa" class="pay-logo-img" style="display:none;" alt="Logo M-Pesa" />
+<div class="pay-tag">M-Pesa</div>
+<div class="small muted" style="margin-bottom:8px;">0815897990</div>
+<label class="btn btn-sm btn-lime" style="width:100%; margin:0;">
+🖼️ Ajouter logo M-Pesa <input type="file" accept="image/*" style="display:none;" onchange="updatePaymentLogo('mpesa', event)" />
+</label>
+</div>
 </div>
 </div>
 
@@ -1296,15 +1362,16 @@ Contactez l'équipe de <strong>Chico Mofonga</strong> :
 const ADMIN_CODE = "Chico899";
 const STORAGE_KEY = "cbk_kinshasa_state_v7";
 const SUPABASE_URL = "https://sluyxkduglypjvgunxxm.supabase.co";
-const SUPABASE_PUBLIC_KEY = "Sb_publishable_ku3bD0z7vYTU4lw8Z3b8RQ_FQ_AfsFD";
+const SUPABASE_PUBLIC_KEY = "sb_publishable_ku3bD0z7vYTU4lw8Z3b8RQ_FQ_AfsFD";
 
 const nowFormatted = () => new Date().toLocaleString("fr-FR");
 
 const DEFAULT_STATE = {
 rateUsdToFc: 2800,
 isAdmin: false,
-currentUserId: "u_client_1",
-activeView: "home",
+isAuthenticated: false,
+currentUserId: "",
+activeView: "account",
 visuals: {
 logo: "",
 pdgPhoto: "https://via.placeholder.com/150/1a1a1a/D2F801?text=PDG+CBK",
@@ -1325,28 +1392,7 @@ title: "",
 body: ""
 },
 ceoPosts: [],
-users: [
-{
-id: "u_client_1",
-username: "client_cbk",
-nom: "CBK",
-postNom: "",
-prenom: "Membre",
-fullName: "Membre CBK Kinshasa",
-phone: "0810000000",
-email: "",
-password: "",
-avatar: "",
-usd: 0,
-fc: 0,
-kycStatus: "Non vérifié",
-kycDoc: "",
-blocked: false,
-createdAt: nowFormatted(),
-lastLoginAt: nowFormatted(),
-lastLogoutAt: "—"
-}
-],
+users: [],
 transactions: [],
 donations: [],
 products: [],
@@ -1365,6 +1411,7 @@ let serviceFilterMode = "all";
 let supabaseClient = null;
 let realtimeChannel = null;
 let isSyncingFromRemote = false;
+let syncStatusMessage = "Synchronisation locale active";
 
 function initSupabaseSync() {
 try {
@@ -1374,6 +1421,7 @@ pullRemoteState().then(() => {
 setupRealtimeSubscriptions();
 });
 } catch (err) {
+syncStatusMessage = "Mode local (vérifiez la clé API Supabase)";
 console.warn("Supabase sync standby :", err.message || err);
 }
 }
@@ -1398,12 +1446,20 @@ activeUsersMonth: state.activeUsersMonth,
 artists: state.artists,
 privateMessages: state.privateMessages,
 notifications: state.notifications
-},
-updated_at: new Date().toISOString()
+}
 };
-await supabaseClient.from("app_settings").upsert(payload, { onConflict: "id" });
+const { error } = await supabaseClient
+.from("app_settings")
+.upsert(payload, { onConflict: "id" });
+
+if (error) {
+syncStatusMessage = "Erreur synchro Supabase : " + error.message;
+} else {
+syncStatusMessage = "Synchronisé avec Supabase en temps réel (" + new Date().toLocaleTimeString("fr-FR") + ")";
+}
+if (state.isAdmin) renderAdmin();
 } catch (err) {
-// Silencieux si la structure de app_settings diffère ou si RLS est en cours
+syncStatusMessage = "Erreur réseau Supabase : " + (err.message || err);
 }
 }
 
@@ -1412,17 +1468,26 @@ if (!supabaseClient) return;
 try {
 const { data, error } = await supabaseClient
 .from("app_settings")
-.select("*")
+.select("id, data")
 .eq("id", "cbk_main_state")
 .maybeSingle();
 
-if (error || !data || !data.data) return;
+if (error) {
+syncStatusMessage = "Lecture Supabase : " + error.message;
+return;
+}
+if (!data || !data.data) {
+syncStatusMessage = "Supabase connecté (aucune donnée distante enregistrée pour l'instant)";
+return;
+}
+
 isSyncingFromRemote = true;
 const remote = data.data;
 state = {
 ...structuredClone(DEFAULT_STATE),
 ...remote,
 isAdmin: state.isAdmin,
+isAuthenticated: state.isAuthenticated,
 currentUserId: state.currentUserId,
 activeView: state.activeView,
 visuals: {
@@ -1439,6 +1504,7 @@ announcement: {
 }
 };
 localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+syncStatusMessage = "Synchronisé avec Supabase (" + new Date().toLocaleTimeString("fr-FR") + ")";
 renderAll();
 } finally {
 isSyncingFromRemote = false;
@@ -1459,35 +1525,12 @@ async () => {
 await pullRemoteState();
 }
 )
-.on(
-"postgres_changes",
-{ event: "*", schema: "public", table: "products" },
-async () => {
-await pullRemoteState();
+.subscribe((status) => {
+if (status === "SUBSCRIBED") {
+syncStatusMessage = "Temps réel actif sur Supabase";
+if (state.isAdmin) renderAdmin();
 }
-)
-.on(
-"postgres_changes",
-{ event: "*", schema: "public", table: "comments" },
-async () => {
-await pullRemoteState();
-}
-)
-.on(
-"postgres_changes",
-{ event: "*", schema: "public", table: "ceo_posts" },
-async () => {
-await pullRemoteState();
-}
-)
-.on(
-"postgres_changes",
-{ event: "*", schema: "public", table: "notifications" },
-async () => {
-await pullRemoteState();
-}
-)
-.subscribe();
+});
 }
 
 function loadState() {
@@ -1571,8 +1614,15 @@ date: new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit
 });
 }
 
+function hasActiveSession() {
+if (state.isAdmin) return true;
+if (!state.isAuthenticated || !state.currentUserId) return false;
+return state.users.some(u => u.id === state.currentUserId);
+}
+
 function getCurrentUser() {
-return state.users.find(u => u.id === state.currentUserId) || state.users[0];
+if (!state.currentUserId) return null;
+return state.users.find(u => u.id === state.currentUserId) || null;
 }
 
 function formatMoney(amount, currency) {
@@ -1581,6 +1631,11 @@ return currency === "USD" ? `$${num.toFixed(2)}` : `${num.toLocaleString("fr-FR"
 }
 
 function ensureNotBlocked(user) {
+if (!user) {
+showToast("Veuillez d'abord créer un compte ou vous connecter.");
+switchView("account");
+return false;
+}
 if (user.blocked) {
 showToast("Compte bloqué par l'Admin. Contactez CBK.");
 return false;
@@ -1590,6 +1645,7 @@ return true;
 
 /* Drawer Mobile */
 function toggleDrawer() {
+if (!hasActiveSession()) return;
 document.getElementById("sidebarMenu").classList.toggle("open");
 document.getElementById("drawerBackdrop").classList.toggle("open");
 }
@@ -1598,13 +1654,20 @@ document.getElementById("sidebarMenu").classList.remove("open");
 document.getElementById("drawerBackdrop").classList.remove("open");
 }
 
-/* View Switching */
+/* View Switching avec contrôle d'accès authentifié */
 function switchView(viewName) {
 if (viewName === "admin" && !state.isAdmin) {
 openModal("adminAuthModal");
 return;
 }
+if (!hasActiveSession() && viewName !== "account") {
+state.activeView = "account";
+viewName = "account";
+showToast("Créez un compte ou connectez-vous pour accéder à l'application.");
+} else {
 state.activeView = viewName;
+}
+
 document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
 const target = document.getElementById("view-" + viewName);
 if (target) target.classList.add("active");
@@ -1615,9 +1678,11 @@ b.classList.toggle("active", b.dataset.view === viewName);
 
 if (viewName === "home") {
 const user = getCurrentUser();
+if (user) {
 state.privateMessages.forEach(pm => {
 if (pm.toUserId === user.id) pm.read = true;
 });
+}
 }
 
 closeDrawer();
@@ -1645,6 +1710,7 @@ function closeModal(id) { document.getElementById(id).classList.remove("open"); 
 document.getElementById("fabChat").addEventListener("click", () => openModal("chatModal"));
 
 function openNotifModal() {
+if (!hasActiveSession()) return;
 closeDrawer();
 renderNotifs();
 openModal("notifModal");
@@ -1668,7 +1734,11 @@ showToast("Code Admin incorrect.");
 
 function logoutAdmin() {
 state.isAdmin = false;
+if (!hasActiveSession()) {
+switchView("account");
+} else {
 switchView("home");
+}
 showToast("Mode Admin masqué.");
 }
 
@@ -1677,7 +1747,9 @@ const user = getCurrentUser();
 if (user) {
 user.lastLogoutAt = nowFormatted();
 }
+state.isAuthenticated = false;
 state.isAdmin = false;
+state.activeView = "account";
 saveState();
 switchView("account");
 showToast("Déconnexion enregistrée.");
@@ -1717,7 +1789,7 @@ const dataUrl = await readAndCompressImage(file);
 if (dataUrl) {
 if (!state.visuals.paymentLogos) state.visuals.paymentLogos = { airtel: "", orange: "", mpesa: "" };
 state.visuals.paymentLogos[methodKey] = dataUrl;
-showToast("Logo de la méthode de paiement ajouté !");
+showToast("Logo de la méthode de paiement mis à jour !");
 saveState();
 }
 }
@@ -1800,7 +1872,7 @@ if (!q) return;
 document.getElementById("aiAdvisorReply").innerHTML = generateAiAdvice(q);
 });
 
-/* Registration & Account Switch with Login/Logout Tracking */
+/* Registration, Account Switch & Profile Management */
 document.getElementById("registerForm").addEventListener("submit", async (e) => {
 e.preventDefault();
 const nom = document.getElementById("regNom").value.trim();
@@ -1845,15 +1917,19 @@ existing.lastLoginAt = stamp;
 }
 
 state.currentUserId = existing.id;
+state.isAuthenticated = true;
+state.activeView = "home";
 e.target.reset();
-showToast(`Compte créé et activé : @${existing.username}`);
+showToast(`Bienvenue @${existing.username} !`);
 saveState();
+switchView("home");
 });
 
 async function updateCurrentUserAvatar(event) {
 const file = event.target.files[0];
 if (!file) return;
 const user = getCurrentUser();
+if (!ensureNotBlocked(user)) return;
 user.avatar = await readAndCompressImage(file);
 showToast("Photo de profil mise à jour !");
 saveState();
@@ -1862,12 +1938,43 @@ saveState();
 document.getElementById("loginSwitchForm").addEventListener("submit", (e) => {
 e.preventDefault();
 const uname = document.getElementById("loginUsername").value.trim().replace(/^@/, "");
+const pwd = document.getElementById("loginPassword").value;
 const found = state.users.find(u => u.username.toLowerCase() === uname.toLowerCase());
 if (!found) return showToast("Aucun compte trouvé avec ce nom d'utilisateur.");
+if (found.password && pwd && found.password !== pwd) {
+return showToast("Code / mot de passe incorrect.");
+}
 found.lastLoginAt = nowFormatted();
 state.currentUserId = found.id;
+state.isAuthenticated = true;
+state.activeView = "home";
 e.target.reset();
 showToast(`Connecté sur @${found.username}`);
+saveState();
+switchView("home");
+});
+
+document.getElementById("editProfileForm").addEventListener("submit", (e) => {
+e.preventDefault();
+const user = getCurrentUser();
+if (!ensureNotBlocked(user)) return;
+const nom = document.getElementById("editNom").value.trim();
+const postNom = document.getElementById("editPostNom").value.trim();
+const prenom = document.getElementById("editPrenom").value.trim();
+const phone = document.getElementById("editPhone").value.trim();
+const email = document.getElementById("editEmail").value.trim();
+const newPwd = document.getElementById("editPassword").value;
+
+user.nom = nom;
+user.postNom = postNom;
+user.prenom = prenom;
+user.fullName = [nom, postNom, prenom].filter(Boolean).join(" ");
+user.phone = phone;
+user.email = email;
+if (newPwd) user.password = newPwd;
+
+document.getElementById("editPassword").value = "";
+showToast("Informations de votre profil mises à jour !");
 saveState();
 });
 
@@ -2312,11 +2419,15 @@ saveState();
 }
 
 function deleteUser(userId) {
-if (state.users.length <= 1) return showToast("Impossible de supprimer le dernier utilisateur.");
 state.users = state.users.filter(x => x.id !== userId);
-if (state.currentUserId === userId) state.currentUserId = state.users[0].id;
+if (state.currentUserId === userId) {
+state.currentUserId = "";
+state.isAuthenticated = false;
+state.activeView = "account";
+}
 showToast("Utilisateur supprimé.");
 saveState();
+switchView(state.activeView || "account");
 }
 
 document.getElementById("adminProductForm").addEventListener("submit", async (e) => {
@@ -2520,11 +2631,14 @@ reader.readAsText(file);
 function resetDemoData() {
 state = structuredClone(DEFAULT_STATE);
 state.isAdmin = true;
+state.activeView = "admin";
 saveState();
 showToast("Données réinitialisées.");
+switchView("admin");
 }
 
 function applyOptionalImg(imgEl, src) {
+if (!imgEl) return;
 if (src) {
 imgEl.src = src;
 imgEl.style.display = "block";
@@ -2536,8 +2650,15 @@ imgEl.style.display = "none";
 
 /* Render All */
 function renderAll() {
+const loggedIn = hasActiveSession();
 const user = getCurrentUser();
 const unreadCount = state.notifications.filter(n => !n.read).length;
+
+// Verrouillage d'accès : tant que non connecté (et hors mode Admin), seule la vue Compte/Connexion est visible
+document.getElementById("sidebarMenu").style.display = loggedIn ? "flex" : "none";
+document.getElementById("mobileMenuBtn").style.display = loggedIn ? "" : "none";
+document.getElementById("desktopTopActions").style.display = loggedIn ? "" : "none";
+document.getElementById("fabChat").style.display = loggedIn ? "block" : "none";
 
 // Logo CBK
 const logoSrc = state.visuals.logo;
@@ -2553,11 +2674,14 @@ el.style.display = "none";
 });
 document.getElementById("headerLogoText").style.display = logoSrc ? "none" : "inline-flex";
 
-// Logos des méthodes de paiement
+// Logos des méthodes de paiement (affichage côté client & aperçu côté admin)
 const pLogos = (state.visuals && state.visuals.paymentLogos) || {};
 applyOptionalImg(document.getElementById("payLogoAirtel"), pLogos.airtel || "");
 applyOptionalImg(document.getElementById("payLogoOrange"), pLogos.orange || "");
 applyOptionalImg(document.getElementById("payLogoMpesa"), pLogos.mpesa || "");
+applyOptionalImg(document.getElementById("adminPayLogoAirtel"), pLogos.airtel || "");
+applyOptionalImg(document.getElementById("adminPayLogoOrange"), pLogos.orange || "");
+applyOptionalImg(document.getElementById("adminPayLogoMpesa"), pLogos.mpesa || "");
 
 // Section images
 document.getElementById("pdgImg").src = state.visuals.pdgPhoto || DEFAULT_STATE.visuals.pdgPhoto;
@@ -2589,22 +2713,55 @@ annCard.style.display = "none";
 }
 
 // Rates & Header / Sidebar
-document.getElementById("headerSessionInfo").textContent =
-`Taux 1$ = ${state.rateUsdToFc} FC • @${user.username}`;
+document.getElementById("headerSessionInfo").textContent = user
+? `Taux 1$ = ${state.rateUsdToFc} FC • @${user.username}`
+: `Taux 1$ = ${state.rateUsdToFc} FC • Connexion requise`;
 document.getElementById("homeRateBadge").textContent = `1$ = ${state.rateUsdToFc} FC`;
 document.getElementById("exchangeRateBadge").textContent = `1 USD = ${state.rateUsdToFc} FC`;
-document.getElementById("sidebarUserLabel").textContent =
-`@${user.username} • Kinshasa`;
+document.getElementById("sidebarUserLabel").textContent = user
+? `@${user.username} • Kinshasa`
+: `Invité • Kinshasa`;
 
 document.getElementById("notifCountDesktop").textContent = unreadCount;
 document.getElementById("notifCountMenu").textContent = unreadCount;
 
 updateConverter();
 
+// Account & Profile Panel
+const authPanel = document.getElementById("authenticatedAccountPanel");
+if (user && state.isAuthenticated) {
+authPanel.style.display = "block";
+document.getElementById("accountProfileBox").innerHTML = `
+<div class="row-gap">
+<img class="avatar-photo" src="${user.avatar || 'https://via.placeholder.com/80/1a1a1a/D2F801?text=CBK'}" alt="Profil @${user.username}" />
+<div>
+<div><strong>${user.fullName}</strong></div>
+<div class="small"><strong>Pseudo :</strong> @${user.username}</div>
+<div class="small muted">Téléphone : ${user.phone} ${user.email ? "• " + user.email : ""}</div>
+</div>
+</div>
+<div class="small" style="margin-top:8px;">Statut KYC : <strong>${user.kycStatus}</strong> ${user.kycDoc ? "(" + user.kycDoc + ")" : ""}</div>
+<div class="small">Statut compte : <strong class="${user.blocked ? 'status-bad' : 'status-ok'}">${user.blocked ? "Bloqué" : "Actif"}</strong></div>
+`;
+if (document.activeElement !== document.getElementById("editNom")) {
+document.getElementById("editNom").value = user.nom || "";
+document.getElementById("editPostNom").value = user.postNom || "";
+document.getElementById("editPrenom").value = user.prenom || "";
+document.getElementById("editPhone").value = user.phone || "";
+document.getElementById("editEmail").value = user.email || "";
+}
+} else {
+authPanel.style.display = "none";
+}
+
 // Wallet
-document.getElementById("balUsd").textContent = formatMoney(user.usd, "USD");
-document.getElementById("balFc").textContent = formatMoney(user.fc, "FC");
-document.getElementById("walletAccountStatus").innerHTML = user.blocked
+const balUsdVal = user ? user.usd : 0;
+const balFcVal = user ? user.fc : 0;
+document.getElementById("balUsd").textContent = formatMoney(balUsdVal, "USD");
+document.getElementById("balFc").textContent = formatMoney(balFcVal, "FC");
+document.getElementById("walletAccountStatus").innerHTML = !user
+? `<span class="muted">Connectez-vous pour consulter votre portefeuille.</span>`
+: user.blocked
 ? `<span class="status-bad">Compte BLOQUÉ par l'administration.</span>`
 : `Compte <strong>@${user.username}</strong> • KYC : <span class="${user.kycStatus === 'Vérifié' ? 'status-ok' : 'status-pending'}">${user.kycStatus}</span>`;
 
@@ -2619,7 +2776,7 @@ document.getElementById("donorsList").innerHTML = state.donations.length
 : `<p class="muted small">Aucun don enregistré pour le moment.</p>`;
 
 // Private Messages with Read Status
-const myPms = state.privateMessages.filter(pm => pm.toUserId === user.id);
+const myPms = user ? state.privateMessages.filter(pm => pm.toUserId === user.id) : [];
 document.getElementById("clientPrivateMessages").innerHTML = myPms.length
 ? myPms.map(pm => `
 <div class="list-box" style="border-color:rgba(210,248,1,0.4);">
@@ -2633,7 +2790,7 @@ document.getElementById("clientPrivateMessages").innerHTML = myPms.length
 : `<p class="muted small">Aucun message privé reçu.</p>`;
 
 // My Transactions
-const myTxs = state.transactions.filter(t => t.userId === user.id);
+const myTxs = user ? state.transactions.filter(t => t.userId === user.id) : [];
 document.getElementById("myTransactionsList").innerHTML = myTxs.length
 ? myTxs.map(t => {
 const cls = t.status === "Validé" ? "status-ok" : t.status === "Refusé" ? "status-bad" : "status-pending";
@@ -2730,7 +2887,7 @@ ${isReplyingHere && isAvailable ? `
 }).join("")
 : `<div class="card"><p class="muted small">Aucun produit trouvé pour ce filtre.</p></div>`;
 
-const myOrders = state.orders.filter(o => o.userId === user.id);
+const myOrders = user ? state.orders.filter(o => o.userId === user.id) : [];
 document.getElementById("myOrdersList").innerHTML = myOrders.length
 ? myOrders.map(o => `
 <div class="list-box">
@@ -2744,7 +2901,7 @@ document.getElementById("myOrdersList").innerHTML = myOrders.length
 : `<p class="muted small">Aucune commande passée.</p>`;
 
 // Service Requests
-const mySrvs = state.serviceRequests.filter(s => s.userId === user.id);
+const mySrvs = user ? state.serviceRequests.filter(s => s.userId === user.id) : [];
 document.getElementById("myServiceRequests").innerHTML = mySrvs.length
 ? mySrvs.map(s => `
 <div class="list-box">
@@ -2764,20 +2921,6 @@ document.getElementById("activeUsersList").innerHTML = state.activeUsersMonth.le
 
 // Artists
 renderArtists();
-
-// Account Box with Client Profile Photo
-document.getElementById("accountProfileBox").innerHTML = `
-<div class="row-gap">
-<img class="avatar-photo" src="${user.avatar || 'https://via.placeholder.com/80/1a1a1a/D2F801?text=CBK'}" alt="Profil @${user.username}" />
-<div>
-<div><strong>${user.fullName}</strong></div>
-<div class="small"><strong>Pseudo :</strong> @${user.username}</div>
-<div class="small muted">Téléphone : ${user.phone} ${user.email ? "• " + user.email : ""}</div>
-</div>
-</div>
-<div class="small" style="margin-top:8px;">Statut KYC : <strong>${user.kycStatus}</strong> ${user.kycDoc ? "(" + user.kycDoc + ")" : ""}</div>
-<div class="small">Statut compte : <strong class="${user.blocked ? 'status-bad' : 'status-ok'}">${user.blocked ? "Bloqué" : "Actif"}</strong></div>
-`;
 
 if (state.isAdmin) renderAdmin();
 }
@@ -2844,16 +2987,20 @@ ${isReplyingHere ? `
 }
 
 function renderAdmin() {
+document.getElementById("adminSyncStatusLabel").textContent = syncStatusMessage;
 document.getElementById("adminRateInput").value = state.rateUsdToFc;
 document.getElementById("annTitleInput").value = state.announcement.title || "";
 document.getElementById("annBodyInput").value = state.announcement.body || "";
 
-const userOptions = state.users.map(u => `<option value="${u.id}">@${u.username} (${formatMoney(u.usd, "USD")} | ${formatMoney(u.fc, "FC")})</option>`).join("");
+const userOptions = state.users.length
+? state.users.map(u => `<option value="${u.id}">@${u.username} (${formatMoney(u.usd, "USD")} | ${formatMoney(u.fc, "FC")})</option>`).join("")
+: `<option value="">Aucun abonné inscrit</option>`;
 document.getElementById("adminBalUser").innerHTML = userOptions;
 document.getElementById("adminPmUser").innerHTML = userOptions;
 
 // Base professionnelle des abonnés : connexion / déconnexion
-document.getElementById("adminSubscribersProList").innerHTML = state.users.map((u, idx) => `
+document.getElementById("adminSubscribersProList").innerHTML = state.users.length
+? state.users.map((u, idx) => `
 <div class="list-box">
 <div class="row-between">
 <div>
@@ -2868,7 +3015,8 @@ document.getElementById("adminSubscribersProList").innerHTML = state.users.map((
 <span class="badge">${u.blocked ? "Bloqué" : "Actif"}</span>
 </div>
 </div>
-`).join("");
+`).join("")
+: `<p class="muted small">Aucun abonné inscrit pour le moment.</p>`;
 
 document.getElementById("adminTxList").innerHTML = state.transactions.length
 ? state.transactions.map(t => `
@@ -2889,7 +3037,8 @@ ${t.status === "En attente"
 `).join("")
 : `<p class="muted small">Aucune transaction.</p>`;
 
-document.getElementById("adminUsersList").innerHTML = state.users.map(u => `
+document.getElementById("adminUsersList").innerHTML = state.users.length
+? state.users.map(u => `
 <div class="list-box">
 <div class="row-between">
 <div>
@@ -2903,7 +3052,8 @@ document.getElementById("adminUsersList").innerHTML = state.users.map(u => `
 </div>
 </div>
 </div>
-`).join("");
+`).join("")
+: `<p class="muted small">Aucun utilisateur.</p>`;
 
 document.getElementById("adminProductsManageList").innerHTML = state.products.length
 ? state.products.map(p => {
@@ -2989,7 +3139,8 @@ document.getElementById("adminServicesList").innerHTML = state.serviceRequests.l
 : `<p class="muted small">Aucune demande Passeport ou Studio.</p>`;
 }
 
-switchView(state.activeView || "home");
+const initialView = hasActiveSession() ? (state.activeView || "home") : "account";
+switchView(initialView);
 renderAll();
 initSupabaseSync();
 </script>
