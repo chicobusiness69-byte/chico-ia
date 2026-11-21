@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>CBK — Chico Business Kinshasa</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
 --lime: #D2F801;
@@ -43,7 +44,7 @@ align-items: center;
 justify-content: space-between;
 gap: 10px;
 }
-.brand-box { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.brand-box { display: flex; align-items: center; gap: 10px; min-width: 0; user-select: none; }
 .logo-badge {
 background: var(--lime);
 color: #0e0e0e;
@@ -62,7 +63,7 @@ border: 1.5px solid var(--lime);
 flex-shrink: 0;
 background: #141414;
 }
-.brand-title { font-weight: 800; font-size: 0.96rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brand-title { font-weight: 800; font-size: 0.96rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
 .brand-sub { font-size: 0.74rem; color: var(--lime); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .top-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
@@ -78,7 +79,7 @@ cursor: pointer;
 }
 .icon-btn.lime { background: var(--lime); color: #0e0e0e; border-color: var(--lime); }
 
-/* Sur téléphone : garder le taux visible en haut, déplacer Notif + Admin dans le menu */
+/* Sur téléphone : garder le taux visible en haut, déplacer Notif dans le menu */
 @media (max-width: 860px) {
 .desktop-only-actions { display: none !important; }
 .brand-title { font-size: 0.88rem; }
@@ -247,6 +248,16 @@ font-size: 0.82rem;
 padding: 4px 10px;
 border-radius: 999px;
 margin-bottom: 8px;
+}
+.pay-logo-img {
+width: 48px;
+height: 48px;
+border-radius: 12px;
+object-fit: cover;
+border: 1px solid var(--border);
+margin: 0 auto 8px;
+display: block;
+background: #121212;
 }
 
 /* Controls */
@@ -422,21 +433,20 @@ box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
 
 <!-- Top Bar -->
 <header class="topbar">
-<div class="brand-box">
-<button type="button" class="icon-btn menu-toggle-btn" onclick="toggleDrawer()" aria-label="Menu">☰</button>
+<div class="brand-box" id="brandDoubleClickArea" title="Double-cliquez pour le mode PDG / Admin">
+<button type="button" class="icon-btn menu-toggle-btn" onclick="event.stopPropagation(); toggleDrawer()" aria-label="Menu">☰</button>
 <img id="headerLogoImg" class="brand-logo-img" style="display:none;" alt="Logo CBK" />
 <div id="headerLogoText" class="logo-badge">CBK</div>
 <div>
-<div class="brand-title">CBK Chico Business</div>
+<div class="brand-title" id="appBrandTitle">CBK Chico Business</div>
 <!-- Taux en $ visible sur téléphone et sur ordinateur -->
 <div id="headerSessionInfo" class="brand-sub">Taux 1$ = 2800 FC • Kinshasa</div>
 </div>
 </div>
 
-<!-- Sur PC : raccourcis rapides Notifications et Admin (sur téléphone, ils sont dans le menu près de FAQ & A Propos) -->
+<!-- Sur PC : raccourci rapide Notifications -->
 <div class="top-actions desktop-only-actions">
 <button type="button" id="btnNotifDesktop" class="icon-btn" title="Notifications">🔔 <span id="notifCountDesktop">0</span></button>
-<button type="button" id="btnAdminDesktop" class="icon-btn lime">Admin</button>
 </div>
 </header>
 
@@ -462,15 +472,12 @@ box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
 
 <div class="sidebar-divider"></div>
 
-<!-- Regroupement : A Propos, FAQ, Notifications et Admin au même endroit -->
+<!-- Regroupement : A Propos, FAQ, Notifications -->
 <button type="button" class="nav-item" data-view="about"><span>ℹ️ 7. A Propos</span></button>
 <button type="button" class="nav-item" data-view="faq"><span>❓ 8. FAQ & Assistant IA</span></button>
 <button type="button" id="menuNotifBtn" class="nav-item">
 <span>🔔 Notifications</span>
 <span id="notifCountMenu" class="nav-pill">0</span>
-</button>
-<button type="button" id="menuAdminBtn" class="nav-item">
-<span id="menuAdminLabel">🔐 Espace Admin</span>
 </button>
 </div>
 </div>
@@ -505,11 +512,12 @@ Plateforme centralisée de <strong>Chico Business Production</strong> : créatio
 </div>
 </div>
 
-<!-- Annonce du jour / Mot du PDG -->
+<!-- Annonce du jour / Publication du PDG -->
 <div id="announcementCard" class="card" style="display:none; border-color:rgba(210,248,1,0.55);">
-<span class="badge">📢 ANNONCE CBK</span>
+<span class="badge">📢 PUBLICATION DU PDG / ANNONCE CBK</span>
 <h3 id="announcementTitle" style="font-size:1rem; margin-top:4px;"></h3>
 <p id="announcementBody" class="muted small" style="margin-top:4px;"></p>
+<div id="ceoPostsFeed" style="margin-top:10px;"></div>
 </div>
 
 <div class="card card-lime">
@@ -669,23 +677,41 @@ Accompagnement business, production studio, démarches et services rapides à Ki
 <img id="payBannerImg" class="media-preview" style="display:none;" alt="Paiements CBK" />
 <h3 class="section-title">📱 Modes de paiement disponibles</h3>
 <p class="muted small" style="margin-bottom:10px;">
-Copiez facilement nos numéros officiels à Kinshasa :
+Copiez facilement nos numéros officiels à Kinshasa ou ajoutez le logo de chaque méthode :
 </p>
 <div class="grid-3">
 <div class="pay-card">
+<img id="payLogoAirtel" class="pay-logo-img" style="display:none;" alt="Logo Airtel Money" />
 <div class="pay-tag">Airtel Money</div>
 <div style="font-weight:900; font-size:1rem; margin-bottom:8px;">0983 995 019</div>
-<button type="button" class="btn btn-sm" onclick="copyText('0983 995 019', 'Numéro Airtel Money copié !')">📋 Copier le numéro</button>
+<div class="row-gap" style="justify-content:center;">
+<button type="button" class="btn btn-sm" onclick="copyText('0983 995 019', 'Numéro Airtel Money copié !')">📋 Copier</button>
+<label class="btn btn-sm btn-lime" style="margin:0;">
+🖼️ Logo <input type="file" accept="image/*" style="display:none;" onchange="updatePaymentLogo('airtel', event)" />
+</label>
+</div>
 </div>
 <div class="pay-card">
+<img id="payLogoOrange" class="pay-logo-img" style="display:none;" alt="Logo Orange Money" />
 <div class="pay-tag">Orange Money</div>
 <div style="font-weight:900; font-size:1rem; margin-bottom:8px;">0859312214</div>
-<button type="button" class="btn btn-sm" onclick="copyText('0859312214', 'Numéro Orange Money copié !')">📋 Copier le numéro</button>
+<div class="row-gap" style="justify-content:center;">
+<button type="button" class="btn btn-sm" onclick="copyText('0859312214', 'Numéro Orange Money copié !')">📋 Copier</button>
+<label class="btn btn-sm btn-lime" style="margin:0;">
+🖼️ Logo <input type="file" accept="image/*" style="display:none;" onchange="updatePaymentLogo('orange', event)" />
+</label>
+</div>
 </div>
 <div class="pay-card">
+<img id="payLogoMpesa" class="pay-logo-img" style="display:none;" alt="Logo M-Pesa" />
 <div class="pay-tag">M-Pesa</div>
 <div style="font-weight:900; font-size:1rem; margin-bottom:8px;">0815897990</div>
-<button type="button" class="btn btn-sm" onclick="copyText('0815897990', 'Numéro M-Pesa copié !')">📋 Copier le numéro</button>
+<div class="row-gap" style="justify-content:center;">
+<button type="button" class="btn btn-sm" onclick="copyText('0815897990', 'Numéro M-Pesa copié !')">📋 Copier</button>
+<label class="btn btn-sm btn-lime" style="margin:0;">
+🖼️ Logo <input type="file" accept="image/*" style="display:none;" onchange="updatePaymentLogo('mpesa', event)" />
+</label>
+</div>
 </div>
 </div>
 </div>
@@ -784,18 +810,26 @@ Soutenez CBK avec le nom du donateur, le montant en USD/FC et un message.
 </div>
 </section>
 
-<!-- 5. MARCHÉ CBK -->
+<!-- 5. MARCHÉ CBK (VENTES & LOCATION + COMMENTAIRES SUR LOCATION DISPONIBLE) -->
 <section id="view-market" class="view">
 <div class="page-header">
 <h1 class="page-title">Marché CBK</h1>
-<p class="page-desc">Articles et offres vérifiés disponibles à Kinshasa.</p>
+<p class="page-desc">Articles, offres et locations vérifiés disponibles à Kinshasa.</p>
 </div>
 
 <div class="card" style="padding:12px;">
-<div class="grid-2" style="gap:10px;">
+<div class="grid-3" style="gap:10px;">
 <div>
 <label>Rechercher un article</label>
 <input id="marketSearchInput" type="text" placeholder="Mot-clé..." style="margin-bottom:0;" oninput="renderAll()" />
+</div>
+<div>
+<label>Filtrer par type</label>
+<select id="marketTypeFilter" style="margin-bottom:0;" onchange="renderAll()">
+<option value="ALL">Tout (Vente & Location)</option>
+<option value="sale">Vente</option>
+<option value="rental">Location</option>
+</select>
 </div>
 <div>
 <label>Filtrer par devise</label>
@@ -897,8 +931,8 @@ Posez vos questions pour obtenir des <strong>idées de business</strong> adapté
 <p class="muted">Dans « Mode de paiement & Dons », cliquez sur « Faire un don », entrez le nom du donateur, le montant (USD ou FC) et son message.</p>
 </div>
 <div>
-<strong>Comment commenter et répondre sur les artistes ?</strong>
-<p class="muted">Dans « Artistes & Actifs », écrivez un commentaire puis cliquez directement dessus pour répondre.</p>
+<strong>Comment commenter et répondre sur les artistes ou locations ?</strong>
+<p class="muted">Dans « Artistes & Actifs » ou sur un article de location disponible dans « Marché CBK », écrivez un commentaire et cliquez dessus pour répondre.</p>
 </div>
 <div>
 <strong>Comment contacter l'équipe ?</strong>
@@ -914,7 +948,7 @@ Posez vos questions pour obtenir des <strong>idées de business</strong> adapté
 <div class="row-between">
 <div>
 <h1 class="page-title">⚡ Espace PDG / Admin</h1>
-<p class="page-desc">Gestion du logo CBK, photos des sections, annonce du jour, taux USD/FC, soldes, validations et messages privés.</p>
+<p class="page-desc">Gestion du logo CBK, photos des sections, publications du PDG, taux USD/FC, abonnés, soldes, validations et messages privés.</p>
 </div>
 <button type="button" class="btn btn-sm btn-danger" onclick="logoutAdmin()">Quitter Admin</button>
 </div>
@@ -939,13 +973,13 @@ Importer JSON <input type="file" accept=".json" style="display:none;" onchange="
 </div>
 
 <div class="card">
-<h3 class="section-title">📢 Annonce du jour / Mot du PDG</h3>
+<h3 class="section-title">📢 Publication du PDG / Annonce du jour</h3>
 <form id="adminAnnouncementForm">
-<label>Titre de l'annonce</label>
+<label>Titre de la publication / annonce</label>
 <input id="annTitleInput" type="text" placeholder="Ex: Nouveau service CBK à Kinshasa" />
 <label>Message (laisser vide pour masquer)</label>
-<textarea id="annBodyInput" rows="2" placeholder="Votre annonce..."></textarea>
-<button type="submit" class="btn btn-sm btn-lime">Publier l'annonce</button>
+<textarea id="annBodyInput" rows="2" placeholder="Votre publication du PDG..."></textarea>
+<button type="submit" class="btn btn-sm btn-lime">Publier en temps réel</button>
 </form>
 </div>
 </div>
@@ -1057,16 +1091,41 @@ Ajoutez ou remplacez vos images depuis votre galerie / PC (ou via lien URL) pour
 </div>
 </div>
 
+<!-- Base professionnelle des abonnés : connexion, déconnexion, KYC -->
+<div class="card card-lime">
+<h3 class="section-title">📋 Base des Abonnés & Suivi Connexion / Déconnexion</h3>
+<p class="muted small" style="margin-bottom:8px;">
+Liste complète des abonnés ayant créé un compte, avec heure de connexion, heure de déconnexion et gestion KYC.
+</p>
+<div id="adminSubscribersProList"></div>
+</div>
+
 <div class="card">
 <h3 class="section-title">👥 Utilisateurs & Vérification KYC</h3>
 <div id="adminUsersList"></div>
 </div>
 
 <div class="card">
-<h3 class="section-title">🛒 Publier & Gérer les produits du Marché</h3>
+<h3 class="section-title">🛒 Publier & Gérer les produits / locations du Marché</h3>
 <form id="adminProductForm">
-<label>Nom du produit</label>
-<input id="prodName" type="text" placeholder="Ex: Pack Studio / Accessoire CBK" required />
+<label>Nom du produit ou article de location</label>
+<input id="prodName" type="text" placeholder="Ex: Pack Studio / Caméra Location CBK" required />
+<div class="grid-2">
+<div>
+<label>Type d'offre</label>
+<select id="prodItemType">
+<option value="sale">Vente</option>
+<option value="rental">Location</option>
+</select>
+</div>
+<div>
+<label>Disponibilité (surtout pour location)</label>
+<select id="prodAvailable">
+<option value="true">Disponible</option>
+<option value="false">Indisponible</option>
+</select>
+</div>
+</div>
 <div class="grid-2">
 <div>
 <label>Prix</label>
@@ -1088,11 +1147,11 @@ Ajoutez ou remplacez vos images depuis votre galerie / PC (ou via lien URL) pour
 <input id="prodImg" type="text" placeholder="https://..." />
 <label>Description</label>
 <textarea id="prodDesc" rows="2"></textarea>
-<button type="submit" class="btn btn-lime">Publier le produit</button>
+<button type="submit" class="btn btn-lime">Publier sur le Marché</button>
 </form>
 
 <div style="margin-top:14px;">
-<strong class="small">Produits publiés (changer photo ou supprimer) :</strong>
+<strong class="small">Produits / locations publiés (disponibilité, photo ou supprimer) :</strong>
 <div id="adminProductsManageList"></div>
 </div>
 <div id="adminOrdersList" style="margin-top:14px;"></div>
@@ -1235,7 +1294,11 @@ Contactez l'équipe de <strong>Chico Mofonga</strong> :
 
 <script>
 const ADMIN_CODE = "Chico899";
-const STORAGE_KEY = "cbk_kinshasa_state_v6";
+const STORAGE_KEY = "cbk_kinshasa_state_v7";
+const SUPABASE_URL = "https://sluyxkduglypjvgunxxm.supabase.co";
+const SUPABASE_PUBLIC_KEY = "Sb_publishable_ku3bD0z7vYTU4lw8Z3b8RQ_FQ_AfsFD";
+
+const nowFormatted = () => new Date().toLocaleString("fr-FR");
 
 const DEFAULT_STATE = {
 rateUsdToFc: 2800,
@@ -1250,12 +1313,18 @@ passportImg: "",
 studioImg: "",
 paymentsImg: "",
 donationsImg: "",
-aboutImg: ""
+aboutImg: "",
+paymentLogos: {
+airtel: "",
+orange: "",
+mpesa: ""
+}
 },
 announcement: {
 title: "",
 body: ""
 },
+ceoPosts: [],
 users: [
 {
 id: "u_client_1",
@@ -1272,7 +1341,10 @@ usd: 0,
 fc: 0,
 kycStatus: "Non vérifié",
 kycDoc: "",
-blocked: false
+blocked: false,
+createdAt: nowFormatted(),
+lastLoginAt: nowFormatted(),
+lastLogoutAt: "—"
 }
 ],
 transactions: [],
@@ -1288,7 +1360,135 @@ notifications: []
 
 let state = loadState();
 let activeReplyTarget = null;
+let activeRentalReplyTarget = null;
 let serviceFilterMode = "all";
+let supabaseClient = null;
+let realtimeChannel = null;
+let isSyncingFromRemote = false;
+
+function initSupabaseSync() {
+try {
+if (!window.supabase || !SUPABASE_URL || !SUPABASE_PUBLIC_KEY) return;
+supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLIC_KEY);
+pullRemoteState().then(() => {
+setupRealtimeSubscriptions();
+});
+} catch (err) {
+console.warn("Supabase sync standby :", err.message || err);
+}
+}
+
+async function pushRemoteSnapshot() {
+if (!supabaseClient || isSyncingFromRemote) return;
+try {
+const payload = {
+id: "cbk_main_state",
+data: {
+rateUsdToFc: state.rateUsdToFc,
+visuals: state.visuals,
+announcement: state.announcement,
+ceoPosts: state.ceoPosts,
+users: state.users,
+transactions: state.transactions,
+donations: state.donations,
+products: state.products,
+orders: state.orders,
+serviceRequests: state.serviceRequests,
+activeUsersMonth: state.activeUsersMonth,
+artists: state.artists,
+privateMessages: state.privateMessages,
+notifications: state.notifications
+},
+updated_at: new Date().toISOString()
+};
+await supabaseClient.from("app_settings").upsert(payload, { onConflict: "id" });
+} catch (err) {
+// Silencieux si la structure de app_settings diffère ou si RLS est en cours
+}
+}
+
+async function pullRemoteState() {
+if (!supabaseClient) return;
+try {
+const { data, error } = await supabaseClient
+.from("app_settings")
+.select("*")
+.eq("id", "cbk_main_state")
+.maybeSingle();
+
+if (error || !data || !data.data) return;
+isSyncingFromRemote = true;
+const remote = data.data;
+state = {
+...structuredClone(DEFAULT_STATE),
+...remote,
+isAdmin: state.isAdmin,
+currentUserId: state.currentUserId,
+activeView: state.activeView,
+visuals: {
+...structuredClone(DEFAULT_STATE.visuals),
+...(remote.visuals || {}),
+paymentLogos: {
+...structuredClone(DEFAULT_STATE.visuals.paymentLogos),
+...((remote.visuals && remote.visuals.paymentLogos) || {})
+}
+},
+announcement: {
+...structuredClone(DEFAULT_STATE.announcement),
+...(remote.announcement || {})
+}
+};
+localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+renderAll();
+} finally {
+isSyncingFromRemote = false;
+}
+}
+
+function setupRealtimeSubscriptions() {
+if (!supabaseClient) return;
+if (realtimeChannel) {
+supabaseClient.removeChannel(realtimeChannel);
+}
+realtimeChannel = supabaseClient
+.channel("cbk-realtime-all")
+.on(
+"postgres_changes",
+{ event: "*", schema: "public", table: "app_settings" },
+async () => {
+await pullRemoteState();
+}
+)
+.on(
+"postgres_changes",
+{ event: "*", schema: "public", table: "products" },
+async () => {
+await pullRemoteState();
+}
+)
+.on(
+"postgres_changes",
+{ event: "*", schema: "public", table: "comments" },
+async () => {
+await pullRemoteState();
+}
+)
+.on(
+"postgres_changes",
+{ event: "*", schema: "public", table: "ceo_posts" },
+async () => {
+await pullRemoteState();
+}
+)
+.on(
+"postgres_changes",
+{ event: "*", schema: "public", table: "notifications" },
+async () => {
+await pullRemoteState();
+}
+)
+.subscribe();
+}
 
 function loadState() {
 try {
@@ -1298,7 +1498,14 @@ const parsed = JSON.parse(raw);
 return {
 ...structuredClone(DEFAULT_STATE),
 ...parsed,
-visuals: { ...structuredClone(DEFAULT_STATE.visuals), ...(parsed.visuals || {}) },
+visuals: {
+...structuredClone(DEFAULT_STATE.visuals),
+...(parsed.visuals || {}),
+paymentLogos: {
+...structuredClone(DEFAULT_STATE.visuals.paymentLogos),
+...((parsed.visuals && parsed.visuals.paymentLogos) || {})
+}
+},
 announcement: { ...structuredClone(DEFAULT_STATE.announcement), ...(parsed.announcement || {}) }
 };
 } catch (e) {
@@ -1306,13 +1513,16 @@ return structuredClone(DEFAULT_STATE);
 }
 }
 
-function saveState() {
+function saveState(skipRemote = false) {
 try {
 localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 } catch (e) {
 showToast("Espace de stockage plein. Supprimez d'anciennes images.");
 }
 renderAll();
+if (!skipRemote) {
+pushRemoteSnapshot();
+}
 }
 
 function readAndCompressImage(file) {
@@ -1411,11 +1621,22 @@ if (pm.toUserId === user.id) pm.read = true;
 }
 
 closeDrawer();
-saveState();
+saveState(true);
 }
 
 document.querySelectorAll(".nav-item[data-view]").forEach(btn => {
 btn.addEventListener("click", () => switchView(btn.dataset.view));
+});
+
+/* Double-clic sur le nom de l'application pour afficher / masquer le mode Admin */
+document.getElementById("brandDoubleClickArea").addEventListener("dblclick", (e) => {
+e.stopPropagation();
+closeDrawer();
+if (state.isAdmin) {
+logoutAdmin();
+} else {
+openModal("adminAuthModal");
+}
 });
 
 /* Modals & Floating Chat */
@@ -1431,14 +1652,6 @@ openModal("notifModal");
 document.getElementById("btnNotifDesktop").addEventListener("click", openNotifModal);
 document.getElementById("menuNotifBtn").addEventListener("click", openNotifModal);
 
-function handleAdminAccessClick() {
-closeDrawer();
-if (state.isAdmin) switchView("admin");
-else openModal("adminAuthModal");
-}
-document.getElementById("btnAdminDesktop").addEventListener("click", handleAdminAccessClick);
-document.getElementById("menuAdminBtn").addEventListener("click", handleAdminAccessClick);
-
 document.getElementById("adminPinForm").addEventListener("submit", (e) => {
 e.preventDefault();
 const pin = document.getElementById("adminPinInput").value.trim();
@@ -1446,7 +1659,7 @@ if (pin === ADMIN_CODE) {
 state.isAdmin = true;
 document.getElementById("adminPinInput").value = "";
 closeModal("adminAuthModal");
-showToast("Mode Admin débloqué (Chico899)");
+showToast("Mode Admin activé (double-cliquez sur le nom pour masquer)");
 switchView("admin");
 } else {
 showToast("Code Admin incorrect.");
@@ -1456,16 +1669,21 @@ showToast("Code Admin incorrect.");
 function logoutAdmin() {
 state.isAdmin = false;
 switchView("home");
-showToast("Mode Admin fermé.");
+showToast("Mode Admin masqué.");
 }
 
 function logoutToAccount() {
+const user = getCurrentUser();
+if (user) {
+user.lastLogoutAt = nowFormatted();
+}
 state.isAdmin = false;
+saveState();
 switchView("account");
-showToast("Ouverture de la page Compte / Connexion.");
+showToast("Déconnexion enregistrée.");
 }
 
-/* Visual Slot Management */
+/* Visual Slot & Payment Logos Management */
 async function updateVisualSlot(slotKey, event) {
 const file = event.target.files[0];
 if (!file) return;
@@ -1490,6 +1708,18 @@ function clearVisualSlot(slotKey) {
 state.visuals[slotKey] = "";
 showToast("Image retirée.");
 saveState();
+}
+
+async function updatePaymentLogo(methodKey, event) {
+const file = event.target.files[0];
+if (!file) return;
+const dataUrl = await readAndCompressImage(file);
+if (dataUrl) {
+if (!state.visuals.paymentLogos) state.visuals.paymentLogos = { airtel: "", orange: "", mpesa: "" };
+state.visuals.paymentLogos[methodKey] = dataUrl;
+showToast("Logo de la méthode de paiement ajouté !");
+saveState();
+}
 }
 
 /* Converter USD <-> FC */
@@ -1570,7 +1800,7 @@ if (!q) return;
 document.getElementById("aiAdvisorReply").innerHTML = generateAiAdvice(q);
 });
 
-/* Registration & Account Switch */
+/* Registration & Account Switch with Login/Logout Tracking */
 document.getElementById("registerForm").addEventListener("submit", async (e) => {
 e.preventDefault();
 const nom = document.getElementById("regNom").value.trim();
@@ -1584,6 +1814,7 @@ const avatarFile = document.getElementById("regAvatarFile").files[0];
 const avatarData = avatarFile ? await readAndCompressImage(avatarFile) : "";
 
 const fullName = [nom, postNom, prenom].filter(Boolean).join(" ");
+const stamp = nowFormatted();
 let existing = state.users.find(u => u.username.toLowerCase() === username.toLowerCase());
 if (!existing) {
 existing = {
@@ -1601,11 +1832,16 @@ usd: 0,
 fc: 0,
 kycStatus: "Non vérifié",
 kycDoc: "",
-blocked: false
+blocked: false,
+createdAt: stamp,
+lastLoginAt: stamp,
+lastLogoutAt: "—"
 };
 state.users.push(existing);
-} else if (avatarData) {
-existing.avatar = avatarData;
+pushNotif(`👤 Nouvel abonné inscrit : @${existing.username} (${existing.fullName})`);
+} else {
+if (avatarData) existing.avatar = avatarData;
+existing.lastLoginAt = stamp;
 }
 
 state.currentUserId = existing.id;
@@ -1628,6 +1864,7 @@ e.preventDefault();
 const uname = document.getElementById("loginUsername").value.trim().replace(/^@/, "");
 const found = state.users.find(u => u.username.toLowerCase() === uname.toLowerCase());
 if (!found) return showToast("Aucun compte trouvé avec ce nom d'utilisateur.");
+found.lastLoginAt = nowFormatted();
 state.currentUserId = found.id;
 e.target.reset();
 showToast(`Connecté sur @${found.username}`);
@@ -1703,7 +1940,7 @@ method,
 targetUsername,
 ref,
 status: "En attente",
-date: new Date().toLocaleString("fr-FR")
+date: nowFormatted()
 });
 
 const recBox = document.getElementById("lastTxReceipt");
@@ -1725,12 +1962,15 @@ showToast("Demande envoyée à l'Admin.");
 saveState();
 });
 
-/* Market Actions + Order Receipt */
+/* Market Actions + Rental Comments (when available) + Order Receipt */
 function orderProduct(prodId) {
 const user = getCurrentUser();
 if (!ensureNotBlocked(user)) return;
 const prod = state.products.find(p => p.id === prodId);
 if (!prod) return;
+if (prod.itemType === "rental" && prod.available === false) {
+return showToast("Cet article de location n'est pas disponible actuellement.");
+}
 
 const bal = prod.currency === "USD" ? user.usd : user.fc;
 if (bal < prod.price) return showToast(`Solde ${prod.currency} insuffisant.`);
@@ -1775,6 +2015,61 @@ saveState();
 function shareProduct(prod) {
 const text = `${prod.name} — ${formatMoney(prod.price, prod.currency)} sur CBK Kinshasa`;
 copyText(text, "Infos de l'article copiées !");
+}
+
+function addRentalComment(e, prodId) {
+e.preventDefault();
+const user = getCurrentUser();
+if (!ensureNotBlocked(user)) return;
+const prod = state.products.find(p => p.id === prodId);
+if (!prod || prod.itemType !== "rental" || prod.available === false) {
+return showToast("Les commentaires de location sont ouverts quand l'article est disponible.");
+}
+const input = document.getElementById("rentalCommentInput_" + prodId);
+const text = input.value.trim();
+if (!text) return;
+
+if (!Array.isArray(prod.comments)) prod.comments = [];
+prod.comments.push({
+id: "rc_" + Date.now(),
+author: user.username,
+text,
+replies: []
+});
+input.value = "";
+pushNotif(`💬 Nouveau commentaire sur la location "${prod.name}" par @${user.username}`);
+saveState();
+}
+
+function selectRentalCommentToReply(prodId, commentId, authorName) {
+activeRentalReplyTarget = { prodId, commentId };
+renderAll();
+const replyInput = document.getElementById(`rentalReplyInput_${prodId}_${commentId}`);
+if (replyInput) replyInput.focus();
+showToast(`Réponse à @${authorName}`);
+}
+
+function addRentalReply(e, prodId, commentId) {
+e.preventDefault();
+const user = getCurrentUser();
+if (!ensureNotBlocked(user)) return;
+const prod = state.products.find(p => p.id === prodId);
+if (!prod || !Array.isArray(prod.comments)) return;
+const comment = prod.comments.find(c => c.id === commentId);
+if (!comment) return;
+
+const input = document.getElementById(`rentalReplyInput_${prodId}_${commentId}`);
+const text = input.value.trim();
+if (!text) return;
+
+if (!Array.isArray(comment.replies)) comment.replies = [];
+comment.replies.push({
+id: "rr_" + Date.now(),
+author: state.isAdmin ? "PDG Chico Mofonga" : user.username,
+text
+});
+activeRentalReplyTarget = null;
+saveState();
 }
 
 /* Passport & Studio + Service Receipt */
@@ -1852,6 +2147,7 @@ text,
 replies: []
 });
 input.value = "";
+pushNotif(`💬 Nouveau commentaire sur ${artist.name} par @${user.username}`);
 saveState();
 }
 
@@ -1905,13 +2201,18 @@ saveState();
 
 document.getElementById("adminAnnouncementForm").addEventListener("submit", (e) => {
 e.preventDefault();
-state.announcement = {
-title: document.getElementById("annTitleInput").value.trim(),
-body: document.getElementById("annBodyInput").value.trim()
-};
-if (state.announcement.title || state.announcement.body) {
-pushNotif(`📢 Annonce CBK : ${state.announcement.title || state.announcement.body}`);
-showToast("Annonce publiée sur l'Accueil !");
+const title = document.getElementById("annTitleInput").value.trim();
+const body = document.getElementById("annBodyInput").value.trim();
+state.announcement = { title, body };
+if (title || body) {
+state.ceoPosts.unshift({
+id: "ceo_" + Date.now(),
+title: title || "Publication du PDG",
+body,
+date: nowFormatted()
+});
+pushNotif(`📢 Publication du PDG : ${title || body}`);
+showToast("Publication du PDG diffusée en temps réel !");
 } else {
 showToast("Annonce masquée.");
 }
@@ -1984,7 +2285,7 @@ toUsername: target ? target.username : "",
 from: "PDG Chico Mofonga (Admin)",
 text,
 read: false,
-date: new Date().toLocaleString("fr-FR")
+date: nowFormatted()
 });
 if (toUserId === state.currentUserId) {
 pushNotif(`✉️ Nouveau message privé de l'Admin : "${text}"`);
@@ -2026,22 +2327,37 @@ if (fileInput.files && fileInput.files[0]) {
 imgSrc = await readAndCompressImage(fileInput.files[0]);
 }
 
+const itemType = document.getElementById("prodItemType").value || "sale";
+const available = document.getElementById("prodAvailable").value === "true";
+
 const prod = {
 id: "p_" + Date.now(),
 name: document.getElementById("prodName").value.trim(),
+itemType,
+available,
 price: parseFloat(document.getElementById("prodPrice").value),
 currency: document.getElementById("prodCurrency").value,
 badge: document.getElementById("prodBadge").value.trim() || "Vérifié CBK",
 img: imgSrc,
 desc: document.getElementById("prodDesc").value.trim(),
-likes: 0
+likes: 0,
+comments: []
 };
 state.products.unshift(prod);
-pushNotif(`🛒 Nouveau produit au Marché : ${prod.name} (${formatMoney(prod.price, prod.currency)})`);
+pushNotif(`🛒 Nouveau ${itemType === "rental" ? "article en location" : "produit"} : ${prod.name} (${formatMoney(prod.price, prod.currency)})`);
 e.target.reset();
-showToast("Produit et photo publiés !");
+showToast("Article publié en temps réel !");
 saveState();
 });
+
+function toggleProductAvailability(prodId) {
+const prod = state.products.find(p => p.id === prodId);
+if (!prod) return;
+prod.available = prod.available === false ? true : false;
+pushNotif(`📌 Disponibilité mise à jour pour "${prod.name}" : ${prod.available ? "Disponible" : "Indisponible"}`);
+showToast(`Disponibilité mise à jour : ${prod.available ? "Disponible" : "Indisponible"}`);
+saveState();
+}
 
 async function changeProductPhoto(prodId, event) {
 const file = event.target.files[0];
@@ -2130,7 +2446,14 @@ srv.status = status;
 saveState();
 }
 
-/* Notifications & Backup */
+/* Notifications (avec bouton supprimer par notification) + Backup */
+function deleteNotif(notifId) {
+state.notifications = state.notifications.filter(n => n.id !== notifId);
+saveState();
+renderNotifs();
+showToast("Notification supprimée.");
+}
+
 function renderNotifs() {
 const box = document.getElementById("notifList");
 if (!state.notifications.length) {
@@ -2139,7 +2462,10 @@ return;
 }
 box.innerHTML = state.notifications.map(n => `
 <div class="list-box" style="${n.read ? 'opacity:0.65;' : ''}">
-<div class="small"><strong>${n.text}</strong></div>
+<div class="row-between">
+<div class="small" style="flex:1;"><strong>${n.text}</strong></div>
+<button type="button" class="btn btn-sm btn-danger" onclick="deleteNotif('${n.id}')" title="Supprimer la notification">🗑️</button>
+</div>
 <div class="muted small">${n.date}</div>
 </div>
 `).join("");
@@ -2172,7 +2498,14 @@ const parsed = JSON.parse(reader.result);
 state = {
 ...structuredClone(DEFAULT_STATE),
 ...parsed,
-visuals: { ...structuredClone(DEFAULT_STATE.visuals), ...(parsed.visuals || {}) },
+visuals: {
+...structuredClone(DEFAULT_STATE.visuals),
+...(parsed.visuals || {}),
+paymentLogos: {
+...structuredClone(DEFAULT_STATE.visuals.paymentLogos),
+...((parsed.visuals && parsed.visuals.paymentLogos) || {})
+}
+},
 announcement: { ...structuredClone(DEFAULT_STATE.announcement), ...(parsed.announcement || {}) }
 };
 saveState();
@@ -2220,6 +2553,12 @@ el.style.display = "none";
 });
 document.getElementById("headerLogoText").style.display = logoSrc ? "none" : "inline-flex";
 
+// Logos des méthodes de paiement
+const pLogos = (state.visuals && state.visuals.paymentLogos) || {};
+applyOptionalImg(document.getElementById("payLogoAirtel"), pLogos.airtel || "");
+applyOptionalImg(document.getElementById("payLogoOrange"), pLogos.orange || "");
+applyOptionalImg(document.getElementById("payLogoMpesa"), pLogos.mpesa || "");
+
 // Section images
 document.getElementById("pdgImg").src = state.visuals.pdgPhoto || DEFAULT_STATE.visuals.pdgPhoto;
 applyOptionalImg(document.getElementById("homeBannerImg"), state.visuals.homeBanner);
@@ -2229,12 +2568,22 @@ applyOptionalImg(document.getElementById("payBannerImg"), state.visuals.payments
 applyOptionalImg(document.getElementById("donateBannerImg"), state.visuals.donationsImg);
 applyOptionalImg(document.getElementById("aboutBannerImg"), state.visuals.aboutImg);
 
-// Announcement
+// Announcement & CEO Posts
 const annCard = document.getElementById("announcementCard");
-if (state.announcement.title || state.announcement.body) {
+if (state.announcement.title || state.announcement.body || (state.ceoPosts && state.ceoPosts.length)) {
 annCard.style.display = "block";
-document.getElementById("announcementTitle").textContent = state.announcement.title || "Information CBK";
+document.getElementById("announcementTitle").textContent = state.announcement.title || "Publication du PDG CBK";
 document.getElementById("announcementBody").textContent = state.announcement.body || "";
+const feedEl = document.getElementById("ceoPostsFeed");
+feedEl.innerHTML = (state.ceoPosts || []).slice(0, 3).map(post => `
+<div class="list-box">
+<div class="row-between">
+<strong class="small">${post.title}</strong>
+<span class="muted small">${post.date}</span>
+</div>
+<div class="small" style="margin-top:3px;">${post.body}</div>
+</div>
+`).join("");
 } else {
 annCard.style.display = "none";
 }
@@ -2249,10 +2598,6 @@ document.getElementById("sidebarUserLabel").textContent =
 
 document.getElementById("notifCountDesktop").textContent = unreadCount;
 document.getElementById("notifCountMenu").textContent = unreadCount;
-
-document.getElementById("btnAdminDesktop").textContent = state.isAdmin ? "Admin ACTIF" : "Admin";
-document.getElementById("menuAdminLabel").textContent = state.isAdmin ? "⚡ Espace Admin (Actif)" : "🔐 Espace Admin";
-document.getElementById("menuAdminBtn").classList.toggle("active", state.activeView === "admin");
 
 updateConverter();
 
@@ -2304,34 +2649,85 @@ return `
 }).join("")
 : `<p class="muted small">Aucune transaction enregistrée.</p>`;
 
-// Market with Search & Currency Filter
+// Market with Search, Type Filter, Currency Filter & Rental Comments when available
 const searchQ = (document.getElementById("marketSearchInput")?.value || "").trim().toLowerCase();
+const typeFilter = document.getElementById("marketTypeFilter")?.value || "ALL";
 const currFilter = document.getElementById("marketCurrencyFilter")?.value || "ALL";
 const filteredProds = state.products.filter(p => {
+const pType = p.itemType || "sale";
+const matchType = typeFilter === "ALL" || pType === typeFilter;
 const matchCurr = currFilter === "ALL" || p.currency === currFilter;
 const matchQ = !searchQ || p.name.toLowerCase().includes(searchQ) || (p.desc || "").toLowerCase().includes(searchQ);
-return matchCurr && matchQ;
+return matchType && matchCurr && matchQ;
 });
 
 document.getElementById("marketList").innerHTML = filteredProds.length
-? filteredProds.map(p => `
+? filteredProds.map(p => {
+const isRental = (p.itemType || "sale") === "rental";
+const isAvailable = p.available !== false;
+const rentalComments = Array.isArray(p.comments) ? p.comments : [];
+
+return `
 <div class="card" style="margin-bottom:0;">
 ${p.img ? `<img class="media-preview" src="${p.img}" alt="${p.name}" />` : ""}
 <div class="row-between">
 <div>
 <span class="badge">${p.badge}</span>
+<span class="badge">${isRental ? "🔑 LOCATION" : "🛍️ VENTE"}</span>
+${isRental ? `<span class="badge" style="${isAvailable ? '' : 'color:var(--danger); border-color:rgba(255,77,77,0.45); background:rgba(255,77,77,0.12);'}">${isAvailable ? "✓ Disponible" : "✕ Indisponible"}</span>` : ""}
 <h4 style="font-size:1rem; margin-top:4px;">${p.name}</h4>
 </div>
-<div style="font-weight:900; color:var(--lime); font-size:1.05rem;">${formatMoney(p.price, p.currency)}</div>
+<div style="font-weight:900; color:var(--lime); font-size:1.05rem;">${formatMoney(p.price, p.currency)}${isRental ? " / jour" : ""}</div>
 </div>
 <p class="muted small" style="margin-top:6px;">${p.desc || ""}</p>
 <div class="row-gap" style="margin-top:10px;">
-<button type="button" class="btn btn-sm btn-lime" onclick="orderProduct('${p.id}')">Commander</button>
+<button type="button" class="btn btn-sm btn-lime" onclick="orderProduct('${p.id}')">${isRental ? "Louer" : "Commander"}</button>
 <button type="button" class="btn btn-sm" onclick="likeProduct('${p.id}')">👍 Aimer (${p.likes || 0})</button>
 <button type="button" class="btn btn-sm" onclick='shareProduct(${JSON.stringify({ name: p.name, price: p.price, currency: p.currency }).replace(/'/g, "&apos;")})'>🔗 Partager</button>
 </div>
+
+${isRental ? `
+<div class="list-box" style="margin-top:12px;">
+<div class="small" style="margin-bottom:6px;"><strong style="color:var(--lime);">💬 Commentaires sur la location</strong></div>
+${isAvailable ? `
+<form onsubmit="addRentalComment(event, '${p.id}')">
+<div class="row-gap">
+<input id="rentalCommentInput_${p.id}" type="text" placeholder="Laisser un commentaire sur cette location..." style="margin:0; flex:1;" required />
+<button type="submit" class="btn btn-sm btn-lime">Publier</button>
 </div>
-`).join("")
+</form>
+` : `<p class="muted small">Commentaires ouverts une fois l'article de location disponible.</p>`}
+
+${rentalComments.map(c => {
+const isReplyingHere = activeRentalReplyTarget && activeRentalReplyTarget.prodId === p.id && activeRentalReplyTarget.commentId === c.id;
+return `
+<div class="comment-item" onclick="selectRentalCommentToReply('${p.id}', '${c.id}', '${c.author}')">
+<div class="row-between">
+<strong class="small">@${c.author}</strong>
+<span class="muted small">Cliquer pour répondre</span>
+</div>
+<div class="small" style="margin-top:3px;">${c.text}</div>
+${(c.replies && c.replies.length) ? `
+<div class="reply-list">
+${c.replies.map(r => `<div class="small" style="margin-bottom:3px;"><strong style="color:var(--lime);">${r.author} :</strong> ${r.text}</div>`).join("")}
+</div>
+` : ""}
+${isReplyingHere && isAvailable ? `
+<form onclick="event.stopPropagation()" onsubmit="addRentalReply(event, '${p.id}', '${c.id}')" style="margin-top:8px;">
+<div class="row-gap">
+<input id="rentalReplyInput_${p.id}_${c.id}" type="text" placeholder="Répondre à @${c.author}..." style="margin:0; flex:1;" required />
+<button type="submit" class="btn btn-sm btn-lime">Répondre</button>
+</div>
+</form>
+` : ""}
+</div>
+`;
+}).join("")}
+</div>
+` : ""}
+</div>
+`;
+}).join("")
 : `<div class="card"><p class="muted small">Aucun produit trouvé pour ce filtre.</p></div>`;
 
 const myOrders = state.orders.filter(o => o.userId === user.id);
@@ -2456,6 +2852,24 @@ const userOptions = state.users.map(u => `<option value="${u.id}">@${u.username}
 document.getElementById("adminBalUser").innerHTML = userOptions;
 document.getElementById("adminPmUser").innerHTML = userOptions;
 
+// Base professionnelle des abonnés : connexion / déconnexion
+document.getElementById("adminSubscribersProList").innerHTML = state.users.map((u, idx) => `
+<div class="list-box">
+<div class="row-between">
+<div>
+<span class="badge">#${idx + 1}</span>
+<strong>@${u.username}</strong> — ${u.fullName}
+<div class="muted small">Tél : ${u.phone || "—"} ${u.email ? "• Email : " + u.email : ""} • Inscrit le : ${u.createdAt || "—"}</div>
+<div class="small" style="margin-top:3px;">
+<span class="status-ok">🟢 Connexion : ${u.lastLoginAt || "—"}</span> •
+<span class="muted">🔴 Déconnexion : ${u.lastLogoutAt || "—"}</span>
+</div>
+</div>
+<span class="badge">${u.blocked ? "Bloqué" : "Actif"}</span>
+</div>
+</div>
+`).join("");
+
 document.getElementById("adminTxList").innerHTML = state.transactions.length
 ? state.transactions.map(t => `
 <div class="list-box">
@@ -2492,11 +2906,19 @@ document.getElementById("adminUsersList").innerHTML = state.users.map(u => `
 `).join("");
 
 document.getElementById("adminProductsManageList").innerHTML = state.products.length
-? state.products.map(p => `
+? state.products.map(p => {
+const isRental = (p.itemType || "sale") === "rental";
+const isAvail = p.available !== false;
+return `
 <div class="list-box">
 <div class="row-between">
-<div><strong>${p.name}</strong> — ${formatMoney(p.price, p.currency)}</div>
+<div>
+<strong>${p.name}</strong> — ${formatMoney(p.price, p.currency)}
+<span class="badge">${isRental ? "Location" : "Vente"}</span>
+${isRental ? `<span class="badge">${isAvail ? "Disponible" : "Indisponible"}</span>` : ""}
+</div>
 <div class="row-gap">
+${isRental ? `<button type="button" class="btn btn-sm" onclick="toggleProductAvailability('${p.id}')">${isAvail ? "Marquer Indisponible" : "Marquer Disponible"}</button>` : ""}
 <label class="btn btn-sm" style="margin:0;">
 📷 Photo <input type="file" accept="image/*" style="display:none;" onchange="changeProductPhoto('${p.id}', event)" />
 </label>
@@ -2504,7 +2926,8 @@ document.getElementById("adminProductsManageList").innerHTML = state.products.le
 </div>
 </div>
 </div>
-`).join("")
+`;
+}).join("")
 : `<p class="muted small">Aucun produit publié.</p>`;
 
 document.getElementById("adminArtistsManageList").innerHTML = state.artists.length
@@ -2568,6 +2991,7 @@ document.getElementById("adminServicesList").innerHTML = state.serviceRequests.l
 
 switchView(state.activeView || "home");
 renderAll();
+initSupabaseSync();
 </script>
 </body>
 </html>
